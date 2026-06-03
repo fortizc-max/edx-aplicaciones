@@ -12,6 +12,7 @@ GitHub Pages: **https://fortizc-max.github.io/edx-aplicaciones/**
 
 | App | Carpeta | Contenido |
 |-----|---------|-----------|
+| EDx adulto · Valores de referencia | [`valores-adultos/`](valores-adultos/) | Neuroconducción motora, sensitiva y de nervio mixto en adultos (Buschbacher 1999/2003): mediano, cubital, peroneo, tibial, sural, safeno; percentiles por edad/sexo/talla. Datos crudos en `valores-adultos/_datos/` |
 | EDx pediátrico · Valores de referencia | [`valores-pediatricos/`](valores-pediatricos/) | Neuroconducciones motoras y sensitivas (Ryan 2019), ondas F por estatura (Puksa 2011), ondas F por edad (Cai 1997), FED (Sharma 2020) |
 
 ## Cómo añadir una app nueva

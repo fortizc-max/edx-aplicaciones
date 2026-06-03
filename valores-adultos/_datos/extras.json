@@ -1,0 +1,107 @@
+[
+{
+  "study_key":"sural-sensitivo","study_label":"Sural · sensitivo (14 cm)","group":"sensitivo",
+  "reference":"Buschbacher RM. Sural and saphenous 14-cm antidromic sensory nerve conduction studies. Am J Phys Med Rehabil. 2003;82:421-426.",
+  "technique_notes":"Antidrómico, distancia 14 cm. Decúbito lateral; electrodo de barra posteroinferior al maléolo lateral, estímulo 14 cm proximal en la línea media de la pantorrilla. Sensibilidad 2-5 µV/div; filtros 20 Hz–2 kHz; temperatura medida en dorso del pie. n=230 adultos. Límite superior de normalidad = p97; límite inferior (amplitudes y área) = p3. No reporta velocidad de conducción ni subgrupos. Respuesta ausente bilateral en 4 sujetos; en 7% no se identificó latencia de inicio adecuada.",
+  "measures":[
+    {"name":"Valores de referencia","abnormal_side":"mixto","columns":["Parámetro","Media","DE","Rango","Límite de normalidad"],"rows":[
+      ["Latencia de inicio (ms)","3.1","0.3","2.2–3.9","≤ 3.6 (p97)"],
+      ["Latencia de pico (ms)","3.8","0.3","2.8–4.6","≤ 4.5 (p97)"],
+      ["Duración (ms)","1.6","0.3","1.0–2.1","≤ 2.1 (p97)"],
+      ["Amplitud inicio-a-pico neg. (µV)","17","10","2–56","≥ 4 (p3)"],
+      ["Amplitud pico-a-pico (µV)","21","12","3–69","≥ 4 (p3)"],
+      ["Área (nVs)","15","8","2–54","≥ 4 (p3)"]
+    ]},
+    {"name":"Diferencias lado a lado","abnormal_side":"mixto","columns":["Parámetro","Media","DE","Límite de normalidad"],"rows":[
+      ["Latencia de inicio (ms)","0.0","0.2","≤ 0.4"],
+      ["Latencia de pico (ms)","0.0","0.2","≤ 0.5"],
+      ["Duración (ms)","0.0","0.3","≤ 0.6"],
+      ["Caída amplitud inicio-pico dom→no dom (%)","—","—","≤ 72"],
+      ["Caída amplitud pico-pico (%)","—","—","≤ 67"],
+      ["Caída área (%)","—","—","≤ 59"]
+    ]}
+  ]
+},
+{
+  "study_key":"safeno-sensitivo","study_label":"Safeno · sensitivo (14 cm)","group":"sensitivo",
+  "reference":"Buschbacher RM. Sural and saphenous 14-cm antidromic sensory nerve conduction studies. Am J Phys Med Rehabil. 2003;82:421-426.",
+  "technique_notes":"Antidrómico, distancia 14 cm. Decúbito supino; electrodo de barra anterior al maléolo medial, estímulo 14 cm proximal profundo al borde medial de la tibia. n=230 adultos. Límite superior = p97; inferior (amplitudes/área) = p3. La respuesta safena fue inobtenible bilateralmente en 25% de los sujetos (más frecuente en mayores, más altos y pesados); una amplitud de 0 puede ser anormal si hay respuesta contralateral. No reporta velocidad de conducción.",
+  "measures":[
+    {"name":"Valores de referencia","abnormal_side":"mixto","columns":["Parámetro","Media","DE","Rango","Límite de normalidad"],"rows":[
+      ["Latencia de inicio (ms)","3.2","0.3","2.1–3.9","≤ 3.8 (p97)"],
+      ["Latencia de pico (ms)","3.8","0.3","2.3–4.6","≤ 4.4 (p97)"],
+      ["Duración (ms)","1.3","0.3","0.4–2.3","≤ 1.9 (p97)"],
+      ["Amplitud inicio-a-pico neg. (µV)","6","3","1–15","≥ 2 (p3)"],
+      ["Amplitud pico-a-pico (µV)","5","4","1–24","≥ 1 (p3)"],
+      ["Área (nVs)","4","3","1–16","≥ 1 (p3)"]
+    ]},
+    {"name":"Diferencias lado a lado (distribución no normal)","abnormal_side":"mixto","columns":["Parámetro","Media","DE","Límite de normalidad"],"rows":[
+      ["Latencia de inicio (ms)","0.0","0.6","≤ 0.5"],
+      ["Latencia de pico (ms)","0.0","0.7","≤ 0.5"],
+      ["Duración (ms)","0.0","0.3","≤ 0.6"],
+      ["Caída amplitud inicio-pico dom→no dom (%)","—","—","≤ 65"],
+      ["Caída amplitud pico-pico (%)","—","—","≤ 78"],
+      ["Caída área (%)","—","—","≤ 57"]
+    ]}
+  ]
+},
+{
+  "study_key":"sural-vs-safeno","study_label":"Sural vs. safeno (diferencia entre nervios)","group":"sensitivo",
+  "reference":"Buschbacher RM. Sural and saphenous 14-cm antidromic sensory nerve conduction studies. Am J Phys Med Rehabil. 2003;82:421-426.",
+  "technique_notes":"Diferencia de latencia (ms) entre sural y safeno del mismo miembro, según cuál nervio tiene la latencia más alta. Límite superior de normalidad = p97.",
+  "measures":[
+    {"name":"Diferencia de latencia entre nervios","abnormal_side":"alto","columns":["Comparación","Media","DE","Límite de normalidad"],"rows":[
+      ["Sural − safeno · latencia de inicio (ms)","0.1","0.3","≤ 0.3"],
+      ["Sural − safeno · latencia de pico (ms)","0.0","0.3","≤ 0.5"],
+      ["Safeno − sural · latencia de inicio (ms)","0.1","0.3","≤ 0.7"],
+      ["Safeno − sural · latencia de pico (ms)","0.0","0.3","≤ 0.6"]
+    ]}
+  ]
+},
+{
+  "study_key":"mediano-mixto","study_label":"Mediano · mixto (palma–muñeca, 8 cm)","group":"mixto",
+  "reference":"Buschbacher RM. Mixed nerve conduction studies of the median and ulnar nerves. Am J Phys Med Rehabil. 1999;78(6 Suppl):S69-S74.",
+  "technique_notes":"Nervio mixto del mediano: estímulo en palma, registro en muñeca a distancia fija de 8 cm (por ello se reportan latencias y no velocidad). En el 8% de los sujetos no se identificó latencia de inicio adecuada.",
+  "measures":[
+    {"name":"Latencias, tiempo de ascenso y duración (todos los sujetos)","abnormal_side":"alto","columns":["Parámetro","Media","DE","Media+2DE","p95","p97","Más larga"],"rows":[
+      ["Latencia de inicio (ms)","1.6","0.2","2.0","1.9","2.0","2.3"],
+      ["Latencia de pico (ms)","2.1","0.2","2.5","2.4","2.5","2.8"],
+      ["Tiempo de ascenso (ms)","0.5","0.1","0.7","0.7","0.7","0.9"],
+      ["Duración (ms)","1.1","0.2","1.5","1.4","1.5","1.8"]
+    ]},
+    {"name":"Amplitud y área por sexo","abnormal_side":"bajo","columns":["Subgrupo","Amplitud Media (µV)","Amplitud DE","Área Media (µVs)","Área DE"],"rows":[
+      ["Todos","66.9","32.4","49.0","26.3"],
+      ["Hombres","59.6","27.5","44.5","23.1"],
+      ["Mujeres","73.7","34.7","53.2","28.2"]
+    ]},
+    {"name":"Límite inferior de la amplitud (todos, µV)","abnormal_side":"bajo","columns":["Media−2DE","p5","p3","Menor"],"rows":[["2.1","21.0","17.0","9.0"]]}
+  ]
+},
+{
+  "study_key":"cubital-mixto","study_label":"Cubital · mixto (palma–muñeca, 8 cm)","group":"mixto",
+  "reference":"Buschbacher RM. Mixed nerve conduction studies of the median and ulnar nerves. Am J Phys Med Rehabil. 1999;78(6 Suppl):S69-S74.",
+  "technique_notes":"Nervio mixto del cubital: estímulo en palma, registro en muñeca a distancia fija de 8 cm. En el 6% de los sujetos no se identificó latencia de inicio adecuada.",
+  "measures":[
+    {"name":"Latencias (todos los sujetos)","abnormal_side":"alto","columns":["Parámetro","Media","DE","Media+2DE","p95","p97","Más larga"],"rows":[
+      ["Latencia de inicio (ms)","1.6","0.2","2.0","1.9","2.0","2.3"],
+      ["Latencia de pico (ms)","2.0","0.2","2.4","2.3","2.4","2.7"]
+    ]},
+    {"name":"Amplitud y área","abnormal_side":"bajo","columns":["Subgrupo","Amplitud Media (µV)","Amplitud DE","Área Media (µVs)","Área DE"],"rows":[
+      ["Todos","44.9","14.2","28.2","8.5"]
+    ]}
+  ]
+},
+{
+  "study_key":"diferencia-mediano-cubital","study_label":"Diferencia mediano − cubital mixto (8 cm)","group":"mixto",
+  "reference":"Buschbacher RM. Mixed nerve conduction studies of the median and ulnar nerves. Am J Phys Med Rehabil. 1999;78(6 Suppl):S69-S74.",
+  "technique_notes":"Diferencia entre las latencias del nervio mixto mediano y cubital a la misma distancia fija de 8 cm (útil para comparación interna en sospecha de síndrome del túnel carpiano).",
+  "measures":[
+    {"name":"Mediano − cubital","abnormal_side":"alto","columns":["Estadístico","Inicio (ms)","Pico (ms)"],"rows":[
+      ["Media","0","0"],["DE","0.2","0.2"],["Media+2DE","0.4","0.4"],["p95","0.3","0.3"],["p97","0.3","0.3"],["p100","0.6","0.6"]
+    ]},
+    {"name":"Cubital − mediano","abnormal_side":"alto","columns":["Estadístico","Inicio (ms)","Pico (ms)"],"rows":[
+      ["Media","0","0"],["DE","0.2","0.2"],["Media+2DE","0.4","0.4"],["p95","0.2","0.3"],["p97","0.3","0.3"],["p100","0.4","0.4"]
+    ]}
+  ]
+}
+]
