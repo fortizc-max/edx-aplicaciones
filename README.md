@@ -14,6 +14,7 @@ GitHub Pages: **https://fortizc-max.github.io/edx-aplicaciones/**
 |-----|---------|-----------|
 | EDx adulto · Valores de referencia | [`valores-adultos/`](valores-adultos/) | Neuroconducción motora, sensitiva y de nervio mixto en adultos (Buschbacher 1999/2003): mediano, cubital, peroneo, tibial, sural, safeno; percentiles por edad/sexo/talla. Datos crudos en `valores-adultos/_datos/` |
 | EDx pediátrico · Valores de referencia | [`valores-pediatricos/`](valores-pediatricos/) | Neuroconducciones motoras y sensitivas (Ryan 2019), ondas F por estatura (Puksa 2011), ondas F por edad (Cai 1997), FED (Sharma 2020) |
+| CIDP · Clasificador de criterios | [`cidp-criterios/`](cidp-criterios/) | Clasificador guiado de la polineuropatía desmielinizante inflamatoria crónica según la guía EAN/PNS 2021 (Van den Bergh 2021): fenotipo clínico, criterios electrodiagnósticos motores (a–g) y sensitivos, y categorías «CIDP» / «posible CIDP» |
 
 ## Cómo añadir una app nueva
 
