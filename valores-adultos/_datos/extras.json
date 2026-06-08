@@ -2,6 +2,7 @@
 {
   "study_key":"sural-sensitivo","study_label":"Sural · sensitivo (14 cm)","group":"sensitivo",
   "reference":"Buschbacher RM. Sural and saphenous 14-cm antidromic sensory nerve conduction studies. Am J Phys Med Rehabil. 2003;82:421-426.",
+  "montaje":{"Posición": "Decúbito lateral (sobre el lado a estudiar)", "Activo": "Electrodo de barra de 3 cm, posteroinferior al maléolo lateral", "Tierra": "Entre el electrodo de barra y el cátodo", "Estímulo": "14 cm proximal, en la línea media posterior de la pantorrilla", "Filtros": "20 Hz / 2 kHz · 2–5 µV/div · barrido 1 ms/div"},
   "technique_notes":"Antidrómico, distancia 14 cm. Decúbito lateral; electrodo de barra posteroinferior al maléolo lateral, estímulo 14 cm proximal en la línea media de la pantorrilla. Sensibilidad 2-5 µV/div; filtros 20 Hz–2 kHz; temperatura medida en dorso del pie. n=230 adultos. Límite superior de normalidad = p97; límite inferior (amplitudes y área) = p3. No reporta velocidad de conducción ni subgrupos. Respuesta ausente bilateral en 4 sujetos; en 7% no se identificó latencia de inicio adecuada.",
   "measures":[
     {"name":"Valores de referencia","abnormal_side":"mixto","columns":["Parámetro","Media","DE","Rango","Límite de normalidad"],"rows":[
@@ -25,6 +26,7 @@
 {
   "study_key":"safeno-sensitivo","study_label":"Safeno · sensitivo (14 cm)","group":"sensitivo",
   "reference":"Buschbacher RM. Sural and saphenous 14-cm antidromic sensory nerve conduction studies. Am J Phys Med Rehabil. 2003;82:421-426.",
+  "montaje":{"Posición": "Supino", "Activo": "Electrodo de barra de 3 cm, anterior al maléolo medial", "Tierra": "Entre el electrodo de barra y el cátodo", "Estímulo": "14 cm proximal, profundo al borde medial de la tibia", "Filtros": "20 Hz / 2 kHz · 2–5 µV/div · barrido 1 ms/div"},
   "technique_notes":"Antidrómico, distancia 14 cm. Decúbito supino; electrodo de barra anterior al maléolo medial, estímulo 14 cm proximal profundo al borde medial de la tibia. n=230 adultos. Límite superior = p97; inferior (amplitudes/área) = p3. La respuesta safena fue inobtenible bilateralmente en 25% de los sujetos (más frecuente en mayores, más altos y pesados); una amplitud de 0 puede ser anormal si hay respuesta contralateral. No reporta velocidad de conducción.",
   "measures":[
     {"name":"Valores de referencia","abnormal_side":"mixto","columns":["Parámetro","Media","DE","Rango","Límite de normalidad"],"rows":[
@@ -61,6 +63,7 @@
 {
   "study_key":"mediano-mixto","study_label":"Mediano · mixto (palma–muñeca, 8 cm)","group":"mixto",
   "reference":"Buschbacher RM. Mixed nerve conduction studies of the median and ulnar nerves. Am J Phys Med Rehabil. 1999;78(6 Suppl):S69-S74.",
+  "montaje":{"Posición": "Supino, antebrazo en supinación", "Activo": "Electrodo de barra de 3 cm en el pliegue proximal de la muñeca, ligeramente ulnar al tendón del flexor carpi radialis", "Referencia": "Proximal (en la misma barra)", "Tierra": "Dorso de la mano", "Estímulo": "8 cm distal al activo, en la mitad de la palma", "Filtros": "20 Hz / 2 kHz · 20 µV/div · barrido 1 ms/div"},
   "technique_notes":"Nervio mixto del mediano: estímulo en palma, registro en muñeca a distancia fija de 8 cm (por ello se reportan latencias y no velocidad). En el 8% de los sujetos no se identificó latencia de inicio adecuada.",
   "measures":[
     {"name":"Latencias, tiempo de ascenso y duración (todos los sujetos)","abnormal_side":"alto","columns":["Parámetro","Media","DE","Media+2DE","p95","p97","Más larga"],"rows":[
@@ -80,6 +83,7 @@
 {
   "study_key":"cubital-mixto","study_label":"Cubital · mixto (palma–muñeca, 8 cm)","group":"mixto",
   "reference":"Buschbacher RM. Mixed nerve conduction studies of the median and ulnar nerves. Am J Phys Med Rehabil. 1999;78(6 Suppl):S69-S74.",
+  "montaje":{"Posición": "Supino, antebrazo en supinación", "Activo": "Electrodo de barra de 3 cm en el pliegue proximal de la muñeca, ligeramente radial al tendón del flexor carpi ulnaris", "Referencia": "Proximal (en la misma barra)", "Tierra": "Dorso de la mano", "Estímulo": "8 cm distal al activo, entre el 4.º y el 5.º metacarpianos", "Filtros": "20 Hz / 2 kHz · 20 µV/div · barrido 1 ms/div"},
   "technique_notes":"Nervio mixto del cubital: estímulo en palma, registro en muñeca a distancia fija de 8 cm. En el 6% de los sujetos no se identificó latencia de inicio adecuada.",
   "measures":[
     {"name":"Latencias (todos los sujetos)","abnormal_side":"alto","columns":["Parámetro","Media","DE","Media+2DE","p95","p97","Más larga"],"rows":[
