@@ -65,6 +65,9 @@ summary{padding:13px 0;font-weight:700;font-size:13.5px;cursor:pointer;list-styl
 summary::-webkit-details-marker{display:none}summary::after{content:"＋";float:right;color:var(--muted)}
 details[open]>summary::after{content:"－"}
 .tech{font-size:11.5px;color:var(--muted);font-style:italic;border-bottom:1px solid var(--line);padding:0 0 10px;margin-bottom:6px}
+dl.mont{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:10px 0 8px;padding-bottom:8px;border-bottom:1px solid var(--line);font-size:11.5px}
+dl.mont dt{color:var(--accent);font-weight:600;white-space:nowrap}
+dl.mont dd{margin:0;color:var(--txt)}
 .ref{font-size:10.5px;color:var(--muted);margin:2px 0 10px}
 .meas{margin:12px 0}
 .meas h3{font-size:12.5px;color:var(--accent);margin:0 0 6px}
@@ -122,6 +125,7 @@ function render(list){
     if(st.group!==lastG){ html += '<div class="grp">'+(GRP[st.group]||st.group)+'</div>'; lastG=st.group; }
     html += '<details class="study g-'+st.group+'" data-txt="'+(st.study_label+' '+st.measures.map(m=>m.name).join(' ')).toLowerCase()+'">';
     html += '<summary>'+st.study_label+'</summary>';
+    if(st.montaje){ html += '<dl class="mont">'; for(const k in st.montaje){ html += '<dt>'+k+'</dt><dd>'+st.montaje[k]+'</dd>'; } html += '</dl>'; }
     if(st.technique_notes) html += '<div class="tech">'+st.technique_notes+'</div>';
     st.measures.forEach(m=> html += table(m));
     html += '<div class="ref">'+st.reference+'</div>';
@@ -138,7 +142,8 @@ q.addEventListener("input", ()=>{
   if(!t){ render(STUDIES); return; }
   // filtra estudios cuyo label o alguna medida coincida; abre los que coinciden
   const filtered = STUDIES.map(st=>{
-    const inStudy = norm(st.study_label).includes(t);
+    const montTxt = st.montaje ? Object.values(st.montaje).join(" ") : "";
+    const inStudy = norm(st.study_label+" "+montTxt).includes(t);
     const meas = st.measures.filter(m=> norm(m.name).includes(t));
     if(inStudy) return st;
     if(meas.length) return Object.assign({}, st, {measures:meas});

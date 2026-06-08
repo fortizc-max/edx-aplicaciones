@@ -4,7 +4,16 @@
   "study_label": "Axilar · motor (deltoides)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro sobre el deltoides medio; referencia en la unión musculotendinosa; estímulo en el punto de Erb. 100 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,5 ms, amplitud ≤54 %.",
+  "montaje": {
+   "Posición": "Sentado",
+   "Activo": "Parte más prominente del deltoides medio",
+   "Referencia": "Unión del deltoides con su tendón de inserción",
+   "Tierra": "Sobre el acromion",
+   "Estímulo": "Punto de Erb (cátodo sobre el borde superior de la clavícula, lateral a la cabeza clavicular del ECM; ánodo superomedial)",
+   "Filtros": "2–3 Hz / 10 kHz",
+   "Raíces": "C5–C6, tronco superior, fascículo posterior"
+  },
+  "technique_notes": "100 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,5 ms, amplitud ≤54 %.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -125,7 +134,11 @@
   "study_label": "Torácico largo · motor (serrato anterior)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro en la digitación del serrato anterior sobre la 5.ª costilla (línea axilar media); estímulo en el punto de Erb. Latencia con aguja concéntrica (44 sujetos) y con aguja monopolar (25 sujetos, 21-23 °C).",
+  "montaje": {
+   "Registro": "Aguja concéntrica en la digitación del serrato anterior sobre la 5.ª costilla (línea axilar media); alternativa: aguja monopolar con referencia 2 cm caudal",
+   "Estímulo": "Punto de Erb"
+  },
+  "technique_notes": "Latencia con aguja concéntrica (44 sujetos) y con aguja monopolar (25 sujetos, 21–23 °C).",
   "measures": [
    {
     "name": "Latencia de inicio — aguja concéntrica (ms)",
@@ -178,7 +191,12 @@
   "study_label": "Mediano · motor (flexor carpi radialis)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro sobre el vientre del flexor carpi radialis (1/3 de la distancia epicóndilo medial→estiloides radial); estímulo 10 cm proximal en la fosa antecubital. 208 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,8 ms, amplitud ≤53 %.",
+  "montaje": {
+   "Activo": "Vientre del flexor carpi radialis, a 1/3 de la distancia epicóndilo medial → estiloides radial",
+   "Referencia": "Sobre la estiloides radial",
+   "Estímulo": "10 cm proximal al activo, sobre el mediano en la fosa antecubital (ánodo proximal)"
+  },
+  "technique_notes": "208 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,8 ms, amplitud ≤53 %.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -287,7 +305,12 @@
   "study_label": "Mediano · motor (pronator quadratus)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro en el dorso del antebrazo, 3 cm proximal a la estiloides ulnar; estímulo en el codo. 207 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,6 ms, amplitud ≤37 %.",
+  "montaje": {
+   "Activo": "Punto medio entre radio y cúbito en el dorso del antebrazo, 3 cm proximal a la estiloides ulnar",
+   "Referencia": "Sobre la estiloides radial",
+   "Estímulo": "Cátodo en el codo, medial al pulso braquial (ánodo proximal)"
+  },
+  "technique_notes": "207 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,6 ms, amplitud ≤37 %.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -419,7 +442,12 @@
   "study_label": "Mediano · motor (pronator teres)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro en el antebrazo proximal (triángulo equilátero con epicóndilo medial y tendón del bíceps); estímulo 10 cm proximal en la fosa antecubital. 208 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,6 ms, amplitud ≤54 %.",
+  "montaje": {
+   "Activo": "Antebrazo proximal, en el 3.er vértice de un triángulo equilátero con el epicóndilo medial y el tendón del bíceps",
+   "Referencia": "Sobre la estiloides radial",
+   "Estímulo": "10 cm proximal al activo, en la fosa antecubital (ánodo proximal)"
+  },
+  "technique_notes": "208 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,6 ms, amplitud ≤54 %.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -528,7 +556,12 @@
   "study_label": "Mediano · motor (1.er lumbrical)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro en la palma, radial al tendón flexor del índice, 1 cm proximal al pliegue palmar medio; estímulo 10 cm proximal. 196 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,7 ms, amplitud ≤59 %.",
+  "montaje": {
+   "Activo": "Palma, radial al tendón flexor del índice, 1 cm proximal al pliegue palmar medio",
+   "Referencia": "Base del índice",
+   "Estímulo": "Cátodo 10 cm proximal al activo (hacia el punto medio del pliegue distal de la muñeca, ligeramente ulnar al tendón del FCR)"
+  },
+  "technique_notes": "196 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,7 ms, amplitud ≤59 %.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -605,7 +638,12 @@
   "study_label": "Mediano · motor (2.º lumbrical)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro en la palma, radial y 1 cm proximal al punto medio del 3.er metacarpiano; estímulo 10 cm proximal. 196 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,8 ms, amplitud ≤67 %.",
+  "montaje": {
+   "Activo": "Palma, radial y 1 cm proximal al punto medio del 3.er metacarpiano",
+   "Referencia": "Distal a la 3.ª articulación metacarpofalángica",
+   "Estímulo": "Cátodo 10 cm proximal al activo"
+  },
+  "technique_notes": "196 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,8 ms, amplitud ≤67 %.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -682,7 +720,12 @@
   "study_label": "Reflejo H · flexor carpi radialis",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro en el vientre del flexor carpi radialis; estímulo del nervio mediano en el codo. 39 sujetos; límites = media ± 2 DE. Dif. lado a lado de la latencia ≤1,0 ms.",
+  "montaje": {
+   "Activo": "Vientre del flexor carpi radialis (~1/3 epicóndilo medial → estiloides radial)",
+   "Referencia": "Sobre el braquiorradial",
+   "Estímulo": "Nervio mediano en el codo (cátodo proximal)"
+  },
+  "technique_notes": "39 sujetos; límites = media ± 2 DE. Dif. lado a lado de la latencia ≤1,0 ms.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -721,7 +764,12 @@
   "study_label": "Musculocutáneo · motor (bíceps braquial)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro distal al punto medio del bíceps braquial; estímulo en el punto de Erb. 100 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,4 ms, amplitud ≤33 %.",
+  "montaje": {
+   "Activo": "Distal al punto medio del bíceps braquial",
+   "Referencia": "Proximal a la fosa antecubital, cerca de la unión de las fibras musculares con el tendón del bíceps",
+   "Estímulo": "Punto de Erb (cátodo lateral a la cabeza clavicular del ECM; ánodo superomedial)"
+  },
+  "technique_notes": "100 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,4 ms, amplitud ≤33 %.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -853,7 +901,12 @@
   "study_label": "Frénico · motor (diafragma)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro 5 cm superior a la apófisis xifoides, referencia 16 cm distal en el reborde costal; estímulo en la fosa supraclavicular (borde posterior del esternocleidomastoideo). 25 sujetos.",
+  "montaje": {
+   "Activo": "5 cm superior a la apófisis xifoides",
+   "Referencia": "16 cm distal por el reborde costal (~7.º espacio intercostal)",
+   "Estímulo": "Fosa supraclavicular, en el borde posterior del ECM (cátodo ~3 cm sobre la clavícula)"
+  },
+  "technique_notes": "25 sujetos. Límite de referencia sugerido por los autores.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -930,7 +983,12 @@
   "study_label": "Radial · motor (braquiorradial y extensor carpi ulnaris)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Estímulo con aguja monopolar 5-6 cm proximal al epicóndilo lateral. 40 sujetos (ambos lados combinados), piel >31 °C. Dif. ECU − braquiorradial ≤1,8 ms; dif. lado a lado ≤0,4 ms.",
+  "montaje": {
+   "Activo": "Braquiorradial (3 cm distal al codo) o extensor carpi ulnaris (antebrazo medio)",
+   "Referencia": "Sobre el pulgar",
+   "Estímulo": "Aguja monopolar 5–6 cm proximal al epicóndilo lateral, en la cara lateral del brazo (ánodo subcutáneo 2 cm proximal)"
+  },
+  "technique_notes": "40 sujetos (ambos lados combinados), piel >31 °C. Dif. ECU − braquiorradial ≤1,8 ms; dif. lado a lado ≤0,4 ms.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -965,7 +1023,13 @@
   "study_label": "Radial · motor (extensor digitorum)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro 8 cm distal a S1 sobre el extensor digitorum; S1 en la fosa antecubital lateral al tendón del bíceps, S2 en la axila. 30 sujetos, ≥34 °C; límites = media ± 2 DE.",
+  "montaje": {
+   "Activo": "8 cm distal a S1, sobre el extensor digitorum",
+   "Referencia": "Sobre la estiloides ulnar",
+   "Tierra": "Entre el estímulo y el registro",
+   "Estímulo": "S1 en la fosa antecubital, lateral al tendón del bíceps; S2 en la axila (entre coracobraquial y cabeza larga del tríceps)"
+  },
+  "technique_notes": "30 sujetos, ≥34 °C; límites = media ± 2 DE.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -1019,7 +1083,13 @@
   "study_label": "Radial · motor (extensor indicis, registro de superficie)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro de superficie sobre el punto motor del extensor indicis, 4 cm proximal a la estiloides ulnar; estímulos S1 a 8 cm y S2 en el surco radial. 25 sujetos, ≥33 °C.",
+  "montaje": {
+   "Activo": "Superficie sobre el punto motor del extensor indicis, 4 cm proximal a la estiloides ulnar",
+   "Referencia": "Sobre la estiloides ulnar",
+   "Tierra": "Dorso del antebrazo",
+   "Estímulo": "S1 a 8 cm del activo; S2 a 8–10 cm sobre el surco radial; onda F en la región antecubital"
+  },
+  "technique_notes": "25 sujetos, ≥33 °C.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -1086,7 +1156,12 @@
   "study_label": "Radial · motor (extensor indicis, registro con aguja)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro con aguja concéntrica en el extensor indicis (~4 cm proximal a la estiloides ulnar); estímulos S1 distal, S2 proximal al epicóndilo lateral, S3 en Erb. 29-49 sujetos. Sospechar lesión proximal si la VCN proximal <60 m/s.",
+  "montaje": {
+   "Registro": "Aguja concéntrica en el extensor indicis (~4 cm proximal a la estiloides ulnar, ~1 cm de profundidad)",
+   "Tierra": "Dorso de la mano",
+   "Estímulo": "S1 a 3–4 cm proximal a la aguja; S2 a 5–6 cm proximal al epicóndilo lateral; S3 en el punto de Erb"
+  },
+  "technique_notes": "29–49 sujetos. Sospechar lesión proximal si la VCN proximal <60 m/s.",
   "measures": [
    {
     "name": "Latencia de inicio, distancia 2,8-6,6 cm (ms)",
@@ -1140,7 +1215,13 @@
   "study_label": "Supraescapular · motor (supraespinoso e infraespinoso)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro 2 cm de la espina de la escápula (supraespinoso medial, infraespinoso inferior); estímulo en el punto de Erb. 100 sujetos, ≥32 °C. Dif. lado a lado: latencia supra ≤0,7 ms, infra ≤0,4 ms; amplitud ≤48 %.",
+  "montaje": {
+   "Activo": "Supraespinoso: 2 cm medial al punto medio de la espina escapular · Infraespinoso: 2 cm inferior a ese punto",
+   "Referencia": "Línea media torácica, al mismo nivel",
+   "Tierra": "Sobre el acromion",
+   "Estímulo": "Punto de Erb (cátodo lateral a la cabeza clavicular del ECM; ánodo superomedial)"
+  },
+  "technique_notes": "100 sujetos, ≥32 °C. Dif. lado a lado: latencia supra ≤0,7 ms, infra ≤0,4 ms; amplitud ≤48 %.",
   "measures": [
    {
     "name": "Latencia de inicio — supraespinoso (ms)",
@@ -1349,7 +1430,14 @@
   "study_label": "Toracodorsal · motor (latísimo del dorso)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro en la línea axilar posterior a nivel del polo inferior de la escápula; estímulo en la axila. 30 sujetos (lado derecho). Dif. lado a lado de la amplitud ≤50 %.",
+  "montaje": {
+   "Posición": "Supino, hombro en abducción de 90°",
+   "Activo": "Línea axilar posterior, a nivel del polo inferior de la escápula",
+   "Referencia": "Flanco ipsilateral",
+   "Tierra": "Pared torácica lateral ipsilateral",
+   "Estímulo": "En la axila (ánodo proximal)"
+  },
+  "technique_notes": "30 sujetos (lado derecho). Dif. lado a lado de la amplitud ≤50 %.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -1390,7 +1478,14 @@
   "study_label": "Femoral · motor (cuádriceps, vasto medial)",
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
-  "technique_notes": "Registro sobre el vasto medial; estímulo por encima y por debajo del ligamento inguinal, lateral a la arteria femoral (idealmente con aguja bajo guía ecográfica). 100 sujetos, temperatura no reportada. El retraso a través del ligamento localiza la lesión a ese nivel.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Sobre el vasto medial",
+   "Referencia": "Tendón del cuádriceps, proximal a la rótula",
+   "Tierra": "Entre el estímulo y el registro",
+   "Estímulo": "Aguja: S1 proximal y S2 distal al ligamento inguinal, lateral a la arteria femoral (idealmente con guía ecográfica)"
+  },
+  "technique_notes": "100 sujetos, temperatura no reportada. El retraso a través del ligamento localiza la lesión a ese nivel.",
   "measures": [
    {
     "name": "Latencia, estímulo proximal al ligamento (ms)",
