@@ -132,13 +132,14 @@ function render(list){
 render(STUDIES);
 
 const q = document.getElementById("q");
+const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 q.addEventListener("input", ()=>{
-  const t = q.value.trim().toLowerCase();
+  const t = norm(q.value.trim());
   if(!t){ render(STUDIES); return; }
   // filtra estudios cuyo label o alguna medida coincida; abre los que coinciden
   const filtered = STUDIES.map(st=>{
-    const inStudy = (st.study_label.toLowerCase().includes(t));
-    const meas = st.measures.filter(m=> m.name.toLowerCase().includes(t));
+    const inStudy = norm(st.study_label).includes(t);
+    const meas = st.measures.filter(m=> norm(m.name).includes(t));
     if(inStudy) return st;
     if(meas.length) return Object.assign({}, st, {measures:meas});
     return null;
