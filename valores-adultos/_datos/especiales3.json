@@ -1,0 +1,807 @@
+[
+ {
+  "study_key": "calcaneo-medial-sensitivo",
+  "study_label": "Calcáneo medial · sensitivo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "A 1/3 de la distancia del ápex del talón a un punto entre el tubérculo navicular y el maléolo medial",
+   "Referencia": "Sobre el ápex del talón",
+   "Tierra": "Entre el estímulo y el registro",
+   "Estímulo": "Cátodo 10 cm proximal al activo, posterior al maléolo medial por el borde medial de la tibia (ánodo proximal)",
+   "Filtros": "2 Hz / 2 kHz · 10–20 µV/div · 1 ms/div"
+  },
+  "technique_notes": "36 sujetos, ≥31 °C. Dif. lado a lado: latencia ≤0,3 ms, amplitud ≤12 µV.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "1.7",
+      "0.3",
+      "1.4-2.0",
+      "2.0"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.5",
+      "0.3",
+      "2.2-2.8",
+      "2.8"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud basal-a-pico (µV)",
+    "columns": [
+     "Media",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "18",
+      "8-34",
+      "8"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "femoral-cutaneo-medial-sensitivo",
+  "study_label": "Femoral cutáneo medial · sensitivo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "14 cm distal al pulso femoral en la ingle, por la línea pulso → borde medial de la rótula",
+   "Referencia": "4 cm distal al activo en la misma línea",
+   "Tierra": "Proximal al activo, en el muslo lateral",
+   "Estímulo": "Cátodo inmediatamente lateral a la arteria femoral en la ingle (ánodo proximal)",
+   "Filtros": "20 Hz / 2 kHz · 5 µV/div · 1 ms/div"
+  },
+  "technique_notes": "32 sujetos, muslo ≥33 °C. Raíces L2–L3 por la división posterior del plexo. Algunos valores se reportan como rango.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.3–2.4",
+      "0.2",
+      "1.9-2.9",
+      "2.7–2.8"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.9",
+      "0.2–0.3",
+      "2.3-3.5",
+      "3.3–3.5"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud inicio-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "4.8–4.9",
+      "1.0",
+      "3.4-7.9"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "peroneo-profundo-sensitivo",
+  "study_label": "Peroneo profundo · sensitivo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Sobre la rama sensitiva terminal, en el espacio entre las cabezas del 1.er y 2.º metatarsianos",
+   "Referencia": "3 cm distal al activo, en el 2.º dedo",
+   "Tierra": "Dorso del pie, entre estímulo y registro",
+   "Estímulo": "Cátodo en el tobillo, 12 cm proximal al activo, lateral al tendón del extensor hallucis longus (ánodo proximal)",
+   "Filtros": "20 Hz / 2 kHz · 5 µV/div · 1 ms/div · promediado 5–20"
+  },
+  "technique_notes": "40 sujetos, dorso del pie ≥29 °C.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "2.9",
+      "0.4",
+      "2.1-3.6"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "3.6",
+      "0.4",
+      "2.7-4.2"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud inicio-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "3.4",
+      "1.2",
+      "1.6-6.6"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "peroneo-superficial-sensitivo",
+  "study_label": "Peroneo superficial · sensitivo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "A nivel del tobillo tras localizar el nervio por palpación en flexión plantar e inversión (rama intermedia)",
+   "Referencia": "3–4 cm distal al activo",
+   "Tierra": "Dorso distal de la pierna, entre el registro y el cátodo",
+   "Estímulo": "Cátodo 14 cm proximal al activo, en la cara anterolateral de la pierna (ánodo proximal)",
+   "Filtros": "20 Hz / 2 kHz · 20 µV/div · 2 ms/div"
+  },
+  "technique_notes": "Técnica de Izzo (latencias, 80 sujetos, ≥28 °C); amplitud por técnica de Jabre.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.8",
+      "0.3",
+      "2.2-3.6",
+      "3.4"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "3.4",
+      "0.4",
+      "2.8-4.6",
+      "4.2"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "15.1",
+      "8.2",
+      "4-40"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "femoral-cutaneo-posterior-sensitivo",
+  "study_label": "Femoral cutáneo posterior · sensitivo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Prono",
+   "Activo": "Electrodo de barra en la línea media del muslo posterior, 6 cm proximal a la región poplítea media",
+   "Referencia": "Distal al activo",
+   "Tierra": "Justo proximal a la barra",
+   "Estímulo": "Cátodo 12 cm proximal al activo, en el surco entre los isquiotibiales medial y lateral, hacia la tuberosidad isquiática (ánodo proximal)",
+   "Filtros": "20 Hz / 2 kHz · 5 µV/div · 1–2 ms/div"
+  },
+  "technique_notes": "Rama del nervio ciático; útil en lesiones glúteas y plexopatías lumbosacras.",
+  "measures": [
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.8",
+      "0.2",
+      "2.3-3.3",
+      "3.2"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "6.5",
+      "1.5",
+      "4.1-12.0"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "sural-rama-lateral-dorsal-sensitivo",
+  "study_label": "Sural · sensitivo (rama dorsal lateral cutánea)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Electrodo de fieltro sobre el dorso lateral del pie, en el punto medio del 5.º metatarsiano, lateral al tendón del EDB del 5.º dedo (interelectrodo fijo 37 mm)",
+   "Referencia": "Distal al activo",
+   "Tierra": "Dorso del pie",
+   "Estímulo": "Cátodo 12 cm proximal al activo, posterior al maléolo lateral (ánodo proximal)",
+   "Filtros": "20 Hz / 2 kHz · 5 µV/div · 1 ms/div · promediado 5–10"
+  },
+  "technique_notes": "40 sujetos, dorso del pie ≥31 °C. Rama terminal del sural.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "3.2",
+      "0.4",
+      "2.5-4.0",
+      "4.0"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "3.9",
+      "0.5",
+      "3.0-4.9",
+      "4.9"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud basal-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "5.8",
+      "2.1",
+      "3.0-11.0"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "tibial-plantar-mixto",
+  "study_label": "Tibial · mixto plantar (medial y lateral)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Registro": "Electrodo de barra sobre el nervio tibial, proximal al retináculo flexor; activo distal, referencia proximal",
+   "Tierra": "Dorso del pie",
+   "Estímulo": "Cátodo 14 cm distal al registro: rama medial en el interespacio 1.º–2.º metatarsianos; rama lateral entre 4.º y 5.º (ánodo distal)",
+   "Filtros": "32 Hz / 3,2 kHz · 5–10 µV/div · 1 ms/div"
+  },
+  "technique_notes": "41 sujetos, 26–32 °C. Útil en el síndrome del túnel tarsiano.",
+  "measures": [
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Rama",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Medial",
+      "3.16",
+      "0.26",
+      "2.6-3.7",
+      "3.7"
+     ],
+     [
+      "Lateral",
+      "3.15",
+      "0.25",
+      "2.7-3.7",
+      "3.7"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud (µV)",
+    "columns": [
+     "Rama",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "Medial",
+      "10-30"
+     ],
+     [
+      "Lateral",
+      "8-20"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "reflejo-parpadeo",
+  "study_label": "Reflejo de parpadeo (blink)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Sentado",
+   "Activo": "Sobre la porción inferolateral del orbicular de los ojos, bilateral",
+   "Referencia": "Sien o cara lateral de la nariz",
+   "Tierra": "Bajo el mentón, frente o mejilla",
+   "Estímulo": "Cátodo sobre el nervio supraorbitario en la escotadura supraorbitaria (ánodo superolateral)",
+   "Filtros": "20 Hz / 10 kHz · 50–200 µV/div · 10 ms/div"
+  },
+  "technique_notes": "83 sujetos (límite = media + 3 DE). Vía: V (aferente) → VII (eferente). Dif. lado a lado: D ≤0,6 ms; R1 ≤1,2 ms; R2 ≤5 ms (registro dual) o ≤7 ms (registro único).",
+  "measures": [
+   {
+    "name": "Latencia (ms)",
+    "columns": [
+     "Componente",
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Directa (D)",
+      "2.9",
+      "0.4",
+      "4.1"
+     ],
+     [
+      "R1",
+      "10.5",
+      "0.8",
+      "13.0"
+     ],
+     [
+      "R2 ipsilateral",
+      "30.5",
+      "3.4",
+      "40"
+     ],
+     [
+      "R2 contralateral",
+      "30.5",
+      "4.4",
+      "41"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "facial-directo",
+  "study_label": "Facial (CN VII) · motor directo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Sentado",
+   "Activo": "Sobre el nasal (u orbicular de los ojos / de la boca / elevador del labio)",
+   "Referencia": "Punta o dorso de la nariz",
+   "Tierra": "Base del cuello o mejilla",
+   "Estímulo": "Preauricular sobre la parótida, o postauricular en el agujero estilomastoideo (cátodo)",
+   "Filtros": "8 Hz / 8 kHz · 200–1000 µV/div · 1–2 ms/div"
+  },
+  "technique_notes": "44 sujetos, 23–26 °C. Una diferencia de amplitud lado a lado >50 % sugiere patología (con morfología similar).",
+  "measures": [
+   {
+    "name": "Latencia al nasal — estímulo preauricular (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "3.57",
+      "0.35",
+      "2.8-4.1"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia al nasal — estímulo postauricular (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "3.88",
+      "0.36",
+      "3.2-4.4"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "accesorio-trapecio",
+  "study_label": "Accesorio espinal (CN XI) · trapecio",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Sentado",
+   "Activo": "Sobre el trapecio superior, ~9 cm lateral a la apófisis espinosa de C7",
+   "Referencia": "3 cm lateral al activo",
+   "Tierra": "Entre el estímulo y el registro",
+   "Estímulo": "Cátodo en el triángulo posterior del cuello, 1–2 cm posterior al borde posterior del ECM, sobre su punto medio (ánodo superior)",
+   "Filtros": "2–3 Hz / 10 kHz · 1 mV/div · 1–2 ms/div"
+  },
+  "technique_notes": "28 sujetos, 23–26 °C. Útil en lesiones del nervio tras disección cervical o biopsia ganglionar.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "2.3",
+      "0.4",
+      "1.7-3.0"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico (mV)",
+    "columns": [
+     "Valor normal"
+    ],
+    "rows": [
+     [
+      "> 3–4"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "auricular-mayor-sensitivo",
+  "study_label": "Auricular mayor · sensitivo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Sentado",
+   "Activo": "En la cara posterior del lóbulo de la oreja (electrodos a 2 cm, activo inferior)",
+   "Referencia": "Superior, en el lóbulo",
+   "Tierra": "Nuca",
+   "Estímulo": "Cátodo en el borde posterior del ECM, 8 cm superior al activo (ánodo inferior)",
+   "Filtros": "32 Hz / 3,2 kHz · 20 µV/div · 1 ms/div"
+  },
+  "technique_notes": "64 nervios en 32 sujetos (14–88 años), piel ≥33 °C.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "1.34",
+      "0.15",
+      "1.6"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "1.89",
+      "0.21",
+      "2.3"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE"
+    ],
+    "rows": [
+     [
+      "22.4",
+      "8.93"
+     ]
+    ]
+   },
+   {
+    "name": "Duración (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "0.8",
+      "0.2",
+      "1.2"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "raices-lumbosacras",
+  "study_label": "Estimulación de raíces lumbosacras",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Registro": "Sobre el punto motor del músculo de MII de interés (vasto medial, tibial anterior, abductor/flexor hallucis, sóleo)",
+   "Referencia": "Sobre el tendón distal del músculo",
+   "Tierra": "Entre el estímulo y el registro",
+   "Estímulo": "Aguja monopolar (cátodo) sobre la lámina vertebral: L2–L4, 2–2,5 cm lateral a la espinosa de L4; L5/S1, medial e inferior a la espina ilíaca posterosuperior",
+   "Filtros": "10 Hz / 10 kHz · 2–5 mV/div · 2–5 ms/div"
+  },
+  "technique_notes": "El tiempo de conducción transplexo se obtiene restando el estímulo distal (femoral o ciático) al de la raíz.",
+  "measures": [
+   {
+    "name": "Latencia motora (ms)",
+    "columns": [
+     "Músculo / raíz",
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "Sóleo (L5/S1)",
+      "15.4",
+      "1.3",
+      "—"
+     ],
+     [
+      "Tibial anterior",
+      "12.4",
+      "1.3",
+      "10.8-13.7"
+     ],
+     [
+      "Flexor hallucis brevis",
+      "25.1",
+      "2.0",
+      "21.7-29.7"
+     ]
+    ]
+   },
+   {
+    "name": "Tiempo de conducción transplexo (ms)",
+    "columns": [
+     "Segmento",
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "L2/L3/L4 (vasto medial)",
+      "3.4",
+      "0.6",
+      "2.0-4.4"
+     ],
+     [
+      "L5/S1 (abductor hallucis)",
+      "3.9",
+      "0.7",
+      "2.5-4.9"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "pudendo",
+  "study_label": "Pudendo · sensitivo (esfínter anal)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino, caderas y rodillas flexionadas, piernas abducidas",
+   "Registro": "Electrodos de 1 cm sobre los pliegues radiales del esfínter anal externo (a las 9 o las 3 según el lado)",
+   "Referencia": "En la línea media del pliegue glúteo, a unos cm del esfínter",
+   "Estímulo": "Electrodo de St. Mark (sobre el dedo enguantado) en la espina isquiática, vía transvaginal",
+   "Filtros": "10 Hz / 10 kHz · 50 µV/div · 2 ms/div · promediado"
+  },
+  "technique_notes": "42 sujetos. Útil en incontinencia y neuropatía pudenda.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Edad",
+     "Media",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Todos",
+      "1.94",
+      "1.55-2.54",
+      "2.23"
+     ],
+     [
+      "<40 años",
+      "1.91",
+      "1.64-2.35",
+      "2.16"
+     ],
+     [
+      "40-59 años",
+      "1.93",
+      "1.55-2.54",
+      "2.26"
+     ],
+     [
+      "≥60 años",
+      "2.10",
+      "1.90-2.30",
+      "2.33"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud basal-a-pico (µV)",
+    "columns": [
+     "Edad",
+     "Media",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "Todos",
+      "101",
+      "20-260",
+      "48"
+     ],
+     [
+      "<40 años",
+      "119",
+      "25-260",
+      "56"
+     ],
+     [
+      "40-59 años",
+      "87",
+      "20-210",
+      "44"
+     ],
+     [
+      "≥60 años",
+      "80",
+      "60-115",
+      "55"
+     ]
+    ]
+   }
+  ]
+ }
+]
