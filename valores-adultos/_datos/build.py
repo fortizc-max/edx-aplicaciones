@@ -18,6 +18,7 @@ studies += load("motor.json",   "motor")
 studies += load("sensory.json", "sensitivo")
 studies += load("extras.json",  None)  # ya traen group
 studies += load("especiales.json", "especial")  # cola larga: nervios poco frecuentes (Manual 2015)
+studies += load("especiales2.json", "especial")  # 2.ª tanda de nervios poco frecuentes
 
 # --- validación de forma ---
 problems = 0

@@ -1,0 +1,1480 @@
+[
+ {
+  "study_key": "cubital-interoseo-palmar",
+  "study_label": "Cubital · motor (interóseo palmar)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Palma, ligeramente radial al punto medio del 3.er metacarpiano",
+   "Referencia": "Ligeramente distal a la 3.ª articulación metacarpofalángica",
+   "Tierra": "Dorso de la mano",
+   "Estímulo": "Cátodo 10 cm proximal al activo, radial al tendón del flexor carpi ulnaris (ánodo proximal)",
+   "Filtros": "2–3 Hz / 10 kHz · 5 mV/div · barrido 2 ms/div"
+  },
+  "technique_notes": "Dif. lado a lado: latencia ≤0,5 ms, amplitud ≤58 %.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "3.1",
+      "0.3",
+      "2.6-4.4",
+      "4.0"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud (mV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "6.9",
+      "2.3",
+      "1.7-15.4",
+      "3.0"
+     ]
+    ]
+   },
+   {
+    "name": "Área de la fase negativa (mV·ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "17.4",
+      "6.6",
+      "4.4-42.3",
+      "6.9"
+     ]
+    ]
+   },
+   {
+    "name": "Duración de la fase negativa (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "4.6",
+      "0.7",
+      "2.7-6.8",
+      "6.3"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "cubital-1er-interoseo-dorsal",
+  "study_label": "Cubital · motor (1.er interóseo dorsal)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Dorso del 1.er espacio interdigital, en el centro del triángulo entre la 1.ª articulación carpometacarpiana y las articulaciones MCF 1.ª y 2.ª",
+   "Referencia": "Ligeramente distal a la articulación interfalángica del pulgar",
+   "Tierra": "Dorso de la mano",
+   "Estímulo": "Cátodo en el punto de estímulo del cubital motor al abductor digiti minimi",
+   "Filtros": "2–3 Hz / 10 kHz · 5 mV/div · barrido 2 ms/div"
+  },
+  "technique_notes": "Dif. lado a lado: latencia ≤0,8 ms, amplitud ≤52 %. Dif. con el abductor digiti minimi ≤1,3 ms.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "3.4",
+      "0.3",
+      "2.8-4.5",
+      "4.0"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud (mV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "15.8",
+      "4.2",
+      "8.8-26.1",
+      "9.2"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "antebraquial-cutaneo-lateral-sensitivo",
+  "study_label": "Antebraquial cutáneo lateral · sensitivo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Electrodo de barra de 3 cm en la cara lateral del antebrazo (eje longitudinal), 10 cm distal al estímulo",
+   "Referencia": "Distal al activo",
+   "Tierra": "Cara volar media del antebrazo proximal",
+   "Estímulo": "Cátodo lateral al tendón distal del bíceps (ánodo proximal)",
+   "Filtros": "20 Hz / 2 kHz · 5–10 µV/div · barrido 1 ms/div"
+  },
+  "technique_notes": "Rama sensitiva terminal del musculocutáneo. Útil en plexopatías del fascículo lateral.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "1.7",
+      "0.2",
+      "1.3-2.3",
+      "2.1"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.2",
+      "0.2",
+      "1.6-2.8",
+      "2.5"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud inicio-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "18",
+      "10",
+      "4-56",
+      "5"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "22",
+      "15",
+      "6"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "antebraquial-cutaneo-medial-sensitivo",
+  "study_label": "Antebraquial cutáneo medial · sensitivo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Electrodo de barra de 3 cm en la cara medial del antebrazo (eje longitudinal), 10 cm distal al estímulo",
+   "Referencia": "Distal al activo",
+   "Tierra": "Cara volar media del antebrazo",
+   "Estímulo": "Cátodo en el punto medio entre el epicóndilo medial y el tendón distal del bíceps (ánodo proximal)",
+   "Filtros": "20 Hz / 2 kHz · 5–10 µV/div · barrido 1 ms/div"
+  },
+  "technique_notes": "Rama sensitiva pura del fascículo medial (C8-T1). Clave para lesiones del tronco inferior del plexo. 207 sujetos.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "1.7",
+      "0.2",
+      "1.3-2.4",
+      "2.0"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.2",
+      "0.2",
+      "1.8-2.8",
+      "2.6"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud inicio-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "13",
+      "7",
+      "3-46",
+      "4"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "10",
+      "7",
+      "2-43",
+      "3"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "mediano-palmar-cutaneo-sensitivo",
+  "study_label": "Mediano · sensitivo (rama palmar cutánea)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino (montaje como el mediano motor al abductor pollicis brevis)",
+   "Activo": "A mitad de camino entre el punto medio del pliegue distal de la muñeca y la 1.ª articulación metacarpofalángica",
+   "Referencia": "Ligeramente distal a la 1.ª MCF",
+   "Tierra": "Dorso de la mano",
+   "Estímulo": "Cátodo 8 cm proximal al activo, ligeramente ulnar al tendón del flexor carpi radialis (ánodo proximal)",
+   "Filtros": "20 Hz / 2 kHz · 10 µV/div · barrido 1 ms/div"
+  },
+  "technique_notes": "Solo 10 sujetos; temperatura no reportada. Útil para diferenciar STC de lesiones más proximales del mediano.",
+  "measures": [
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "1.54",
+      "0.08",
+      "1.38-1.70",
+      "1.70"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE"
+    ],
+    "rows": [
+     [
+      "9.03",
+      "10.58"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "antebraquial-cutaneo-posterior-sensitivo",
+  "study_label": "Antebraquial cutáneo posterior · sensitivo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino, antebrazo en pronación",
+   "Activo": "En la línea del estímulo al dorso medio de la muñeca, ~12 cm distal al estímulo",
+   "Referencia": "3 cm distal al activo",
+   "Tierra": "Entre el estímulo y el registro",
+   "Estímulo": "Cátodo justo por encima del epicóndilo lateral, entre el bíceps y el tríceps (ánodo proximal)",
+   "Filtros": "5 Hz / 5 kHz · 10 µV/div · barrido 1 ms/div"
+  },
+  "technique_notes": "63 sujetos; distancia 12 cm, piel 32-34 °C. Dif. lado a lado de la amplitud ≤40 %.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Edad",
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "20-39",
+      "2.00",
+      "0.13",
+      "—"
+     ],
+     [
+      "40-59",
+      "2.05",
+      "0.11",
+      "—"
+     ],
+     [
+      "≥60",
+      "2.19",
+      "0.17",
+      "—"
+     ],
+     [
+      "Todos",
+      "2.07",
+      "0.16",
+      "1.80-2.60"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Edad",
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "20-39",
+      "2.25",
+      "0.12",
+      "—"
+     ],
+     [
+      "40-59",
+      "2.34",
+      "0.13",
+      "—"
+     ],
+     [
+      "≥60",
+      "2.48",
+      "0.18",
+      "—"
+     ],
+     [
+      "Todos",
+      "2.35",
+      "0.15",
+      "2.05-2.90"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico (µV)",
+    "columns": [
+     "Edad",
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "20-39",
+      "6.93",
+      "2.01",
+      "—"
+     ],
+     [
+      "40-59",
+      "6.41",
+      "2.10",
+      "—"
+     ],
+     [
+      "≥60",
+      "4.74",
+      "1.54",
+      "—"
+     ],
+     [
+      "Todos",
+      "6.10",
+      "2.11",
+      "2.90-13.00"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "radial-sensitivo-dorso-mano",
+  "study_label": "Radial · sensitivo (dorso de la mano)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Electrodo de barra de 3 cm sobre el nervio radial superficial, a su paso sobre el tendón del extensor pollicis longus",
+   "Referencia": "Distal al activo",
+   "Tierra": "Dorso de la mano",
+   "Estímulo": "Cátodo en el borde radial del antebrazo, 10 cm proximal al activo (ánodo proximal)",
+   "Filtros": "20 Hz / 2 kHz · 5–10 µV/div · barrido 1 ms/div"
+  },
+  "technique_notes": "212 sujetos, piel del dorso de la mano ≥32 °C. Muy útil en el tamizaje de polineuropatía.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "1.9",
+      "0.2",
+      "1.4-2.4",
+      "2.2"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.4",
+      "0.2",
+      "1.9-3.1",
+      "2.8"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud inicio-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "29",
+      "13",
+      "4-75",
+      "7"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "33",
+      "14",
+      "4-92",
+      "11"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "cubital-dorsal-cutaneo-sensitivo",
+  "study_label": "Cubital · sensitivo (rama dorsal cutánea)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino, codo flexionado 90°",
+   "Activo": "Electrodo de barra de 3 cm en la «V» de los metacarpianos 4.º y 5.º dorsales proximales",
+   "Referencia": "Distal al activo",
+   "Tierra": "Dorso de la mano",
+   "Estímulo": "Cátodo 10 cm proximal al activo, sobre el cúbito o entre el cúbito y el flexor carpi ulnaris (ánodo proximal)",
+   "Filtros": "20 Hz / 2 kHz · 5–10 µV/div · barrido 1 ms/div"
+  },
+  "technique_notes": "194 sujetos. Conservada en lesiones distales del cubital (muñeca): ayuda a localizar el atrapamiento.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "1.8",
+      "0.3",
+      "1.2-4.5",
+      "2.3"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.3",
+      "0.4",
+      "1.8-6.1",
+      "2.9"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud inicio-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "17",
+      "10",
+      "4-50",
+      "5"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico (µV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "20",
+      "13",
+      "5-76",
+      "5"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "mediano-radial-pulgar-sensitivo",
+  "study_label": "Mediano y radial · sensitivos al pulgar",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino, antebrazo en supinación",
+   "Activo": "Electrodo de anillo justo distal a la 1.ª MCF del pulgar",
+   "Referencia": "Anillo 4 cm distal en el pulgar",
+   "Tierra": "Dorso de la mano",
+   "Estímulo": "Radial: 10 cm proximal por el borde lateral del radio · Mediano: 10 cm proximal, ulnar al tendón del flexor carpi radialis",
+   "Filtros": "20 Hz / 2 kHz · 5–20 µV/div · barrido 1 ms/div"
+  },
+  "technique_notes": "203 sujetos. Comparación mediano-radial en el mismo dedo; útil en STC.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Nervio",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Mediano",
+      "2.1",
+      "0.2",
+      "1.7-3.3",
+      "2.5"
+     ],
+     [
+      "Radial",
+      "2.0",
+      "0.2",
+      "1.6-2.5",
+      "2.4"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Nervio",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Mediano",
+      "2.7",
+      "0.2",
+      "2.2-3.2",
+      "3.1"
+     ],
+     [
+      "Radial",
+      "2.6",
+      "0.2",
+      "2.1-3.4",
+      "3.0"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud inicio-a-pico, todos (µV)",
+    "columns": [
+     "Nervio",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "Mediano",
+      "33",
+      "16",
+      "5-79",
+      "10"
+     ],
+     [
+      "Radial",
+      "9",
+      "6",
+      "3-46",
+      "3"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "mediano-cubital-4to-dedo-sensitivo",
+  "study_label": "Mediano y cubital · sensitivos al 4.º dedo",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Electrodo de anillo a mitad de camino entre el espacio interdigital y la articulación interfalángica proximal del 4.º dedo",
+   "Referencia": "Anillo 4 cm distal en el mismo dedo",
+   "Tierra": "Dorso de la mano",
+   "Estímulo": "Mediano: 14 cm proximal, ulnar al tendón del flexor carpi radialis · Cubital: 14 cm proximal, radial al tendón del flexor carpi ulnaris",
+   "Filtros": "20 Hz / 2 kHz · 10–20 µV/div · barrido 1 ms/div"
+  },
+  "technique_notes": "192 sujetos. Prueba comparativa del 4.º dedo: una diferencia mediano-cubital ≥0,5 ms sugiere STC.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Nervio",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Mediano",
+      "2.7",
+      "0.3",
+      "2.2-3.7",
+      "3.4"
+     ],
+     [
+      "Cubital",
+      "2.6",
+      "0.2",
+      "2.0-3.3",
+      "3.0"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia de pico (ms)",
+    "columns": [
+     "Nervio",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Mediano",
+      "3.4",
+      "0.3",
+      "2.7-4.8",
+      "4.1"
+     ],
+     [
+      "Cubital",
+      "3.3",
+      "0.3",
+      "2.4-4.7",
+      "3.9"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud inicio-a-pico (µV)",
+    "columns": [
+     "Nervio",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "Mediano",
+      "21",
+      "12",
+      "4-84",
+      "5"
+     ],
+     [
+      "Cubital",
+      "23",
+      "12",
+      "4-63",
+      "5"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "peroneo-fibularis-brevis",
+  "study_label": "Peroneo · motor (fibularis brevis)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Disco de 32 mm a 2/5 de la distancia desde la cabeza del peroné a la punta del maléolo lateral",
+   "Referencia": "Distal al activo, sobre el tendón del músculo",
+   "Tierra": "Sobre la tibia, 3-4 cm distal a la referencia",
+   "Estímulo": "S1 justo bajo la cabeza del peroné; S2 en el borde lateral de la fosa poplítea a nivel de la rótula (~6-10 cm proximal a S1)",
+   "Filtros": "Ajustes motores estándar"
+  },
+  "technique_notes": "34 sujetos, temperatura ambiente 22-23 °C.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "3.0",
+      "0.8",
+      "1.7-5.4",
+      "4.6"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud (mV)",
+    "columns": [
+     "Media",
+     "DE"
+    ],
+    "rows": [
+     [
+      "5.3",
+      "1.7"
+     ]
+    ]
+   },
+   {
+    "name": "Velocidad de conducción (m/s)",
+    "columns": [
+     "Media",
+     "DE",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "55.3",
+      "10.2",
+      "35"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "peroneo-fibularis-longus",
+  "study_label": "Peroneo · motor (fibularis longus)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "8 cm del cátodo, sobre el fibularis longus en la cara lateral del peroné",
+   "Referencia": "En el tobillo, sobre el tendón del fibularis longus",
+   "Tierra": "Cara anterior superior de la pierna",
+   "Estímulo": "Cátodo en la cara posterolateral del cuello del peroné (ánodo proximal)",
+   "Filtros": "2 Hz / 10 kHz · 2 mV/div · barrido 2 ms/div"
+  },
+  "technique_notes": "81 sujetos, piel ≥32 °C.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.6",
+      "0.2",
+      "1.9-3.0",
+      "3.0"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud (mV)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "6.2",
+      "1.7",
+      "3.4-10.6"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "peroneo-tibial-anterior",
+  "study_label": "Peroneo · motor (tibial anterior)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "A 1/3 de la distancia del tubérculo tibial al maléolo lateral",
+   "Referencia": "Inferomedial al activo, sobre la superficie ósea de la tibia",
+   "Tierra": "Entre el estímulo y el registro",
+   "Estímulo": "S1 posteroinferior a la cabeza del peroné; S2 ~10 cm proximal, medial al tendón del bíceps femoral",
+   "Filtros": "2–3 Hz / 10 kHz · 5 mV/div · barrido 2 ms/div"
+  },
+  "technique_notes": "244 sujetos, dorso del pie ≥31 °C. Dif. lado a lado: latencia ≤1,2 ms, amplitud ≤50 %, VCN ≤23 m/s. Útil cuando no se obtiene respuesta en el extensor digitorum brevis.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Talla",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "<160 cm",
+      "3.1",
+      "0.5",
+      "2.2-4.1",
+      "4.1"
+     ],
+     [
+      "160-180 cm",
+      "3.5",
+      "0.6",
+      "2.2-5.2",
+      "4.7"
+     ],
+     [
+      ">180 cm",
+      "4.2",
+      "0.6",
+      "2.7-5.4",
+      "5.4"
+     ],
+     [
+      "Todos",
+      "3.6",
+      "0.6",
+      "2.2-5.4",
+      "4.9"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud (mV)",
+    "columns": [
+     "Edad",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "19-29",
+      "4.3",
+      "1.9",
+      "1.3-10.7",
+      "2.1"
+     ],
+     [
+      "30-79",
+      "3.6",
+      "1.9",
+      "1.1-20.0",
+      "1.5"
+     ],
+     [
+      "Todos",
+      "3.8",
+      "2.0",
+      "1.1-20.0",
+      "1.7"
+     ]
+    ]
+   },
+   {
+    "name": "Duración de la fase negativa (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "10.1",
+      "2.5",
+      "3.9-15.9",
+      "15.0"
+     ]
+    ]
+   },
+   {
+    "name": "Velocidad de conducción (m/s) — todos",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "62",
+      "10",
+      "30-89",
+      "43"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "ciatico-pie",
+  "study_label": "Ciático · motor (registro en el pie)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Prono",
+   "Activo": "Músculos distales del pie: extensor digitorum brevis (porción peronea) o abductor hallucis / abductor digiti minimi (porción tibial)",
+   "Tierra": "Entre el estímulo y el registro",
+   "Estímulo": "S1 de superficie en la fosa poplítea; S2 con aguja larga bajo el pliegue glúteo, sobre el vértice de la fosa poplítea",
+   "Filtros": "2–3 Hz / 10 kHz · 5 mV/div · barrido 2 ms/div"
+  },
+  "technique_notes": "18 sujetos, temperatura ambiente 23-26 °C.",
+  "measures": [
+   {
+    "name": "Velocidad de conducción (m/s)",
+    "columns": [
+     "Porción",
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "Tibial",
+      "52.8",
+      "4.7",
+      "46.7-59.6"
+     ],
+     [
+      "Peronea",
+      "54.3",
+      "4.4",
+      "48.5-61.5"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "reflejo-h-soleo",
+  "study_label": "Reflejo H · sóleo (pantorrilla)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Prono, tobillo en ligera flexión plantar",
+   "Activo": "En el punto medio entre el pliegue poplíteo y el calcáneo posterior",
+   "Referencia": "Sobre el calcáneo posterior",
+   "Tierra": "Entre el estímulo y el registro",
+   "Estímulo": "Cátodo en el pliegue poplíteo medio (ánodo distal), duración 1,0 ms",
+   "Filtros": "2–3 Hz / 10 kHz · 500 µV/div · barrido 10 ms/div"
+  },
+  "technique_notes": "251 sujetos, tobillo ≥31 °C. Arco S1 monosináptico. Muy dependiente de la talla y la edad. Dif. lado a lado de la latencia ≤2,0 ms.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Edad",
+     "Talla",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "19-39",
+      "<160 cm",
+      "27.1",
+      "1.8",
+      "23.9-29.8",
+      "29.8"
+     ],
+     [
+      "19-39",
+      "160-169 cm",
+      "28.6",
+      "1.9",
+      "21.3-34.1",
+      "32.3"
+     ],
+     [
+      "19-39",
+      "170-179 cm",
+      "30.3",
+      "1.8",
+      "26.0-33.7",
+      "33.7"
+     ],
+     [
+      "19-39",
+      "≥180 cm",
+      "32.0",
+      "2.1",
+      "28.2-35.9",
+      "35.9"
+     ],
+     [
+      "40-49",
+      "<160 cm",
+      "27.8",
+      "1.1",
+      "26.4-29.7",
+      "29.7"
+     ],
+     [
+      "40-49",
+      "160-169 cm",
+      "30.2",
+      "1.4",
+      "27.2-33.0",
+      "32.8"
+     ],
+     [
+      "40-49",
+      "170-179 cm",
+      "31.0",
+      "1.6",
+      "28.4-33.5",
+      "33.5"
+     ],
+     [
+      "40-49",
+      "≥180 cm",
+      "32.7",
+      "2.1",
+      "28.2-35.3",
+      "33.5"
+     ],
+     [
+      "50-79",
+      "<160 cm",
+      "29.3",
+      "1.9",
+      "25.9-35.3",
+      "33.6"
+     ],
+     [
+      "50-79",
+      "160-169 cm",
+      "31.7",
+      "1.6",
+      "28.1-35.9",
+      "35.6"
+     ],
+     [
+      "50-79",
+      "170-179 cm",
+      "31.9",
+      "1.7",
+      "27.9-35.1",
+      "35.6"
+     ],
+     [
+      "50-79",
+      "≥180 cm",
+      "33.2",
+      "2.5",
+      "29.7-36.4",
+      "36.4"
+     ],
+     [
+      "Todos",
+      "—",
+      "30.3",
+      "2.4",
+      "21.3-36.4",
+      "35.0"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "tibial-flexor-digiti-minimi",
+  "study_label": "Tibial · motor (flexor digiti minimi brevis)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Activo": "Punto medio del borde inferolateral del 5.º metatarsiano",
+   "Referencia": "Ligeramente distal a la 5.ª articulación metatarsofalángica (cara lateral)",
+   "Tierra": "Dorso del pie",
+   "Estímulo": "Cátodo posterior al maléolo medial, 8 cm proximal al activo (ánodo proximal)",
+   "Filtros": "2–3 Hz / 10 kHz · 5 mV/div · barrido 5 ms/div"
+  },
+  "technique_notes": "205 sujetos, dorso del pie ≥31 °C. Dif. lado a lado: latencia ≤1,5 ms, amplitud ≤58 %. La rama lateral normalmente tiene mayor latencia que la medial.",
+  "measures": [
+   {
+    "name": "Latencia de inicio (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "6.4",
+      "1.0",
+      "2.8-11.0",
+      "8.3"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud (mV)",
+    "columns": [
+     "Edad",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "19-29",
+      "7.8",
+      "3.2",
+      "2.5-16.9",
+      "2.8"
+     ],
+     [
+      "30-59",
+      "6.0",
+      "3.2",
+      "1.2-15.9",
+      "1.7"
+     ],
+     [
+      "60-79",
+      "4.7",
+      "3.1",
+      "1.0-15.1",
+      "1.0"
+     ],
+     [
+      "Todos",
+      "6.1",
+      "3.3",
+      "1.0-16.9",
+      "1.4"
+     ]
+    ]
+   },
+   {
+    "name": "Área (mV·ms)",
+    "columns": [
+     "Edad",
+     "Media",
+     "DE",
+     "Rango",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "19-59",
+      "17.5",
+      "9.5",
+      "1.8-48.7",
+      "4.2"
+     ],
+     [
+      "60-79",
+      "11.8",
+      "6.6",
+      "1.0-26.8",
+      "3.1"
+     ],
+     [
+      "Todos",
+      "16.2",
+      "9.2",
+      "1.0-48.7",
+      "3.1"
+     ]
+    ]
+   },
+   {
+    "name": "Duración (ms)",
+    "columns": [
+     "Media",
+     "DE",
+     "Rango",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "5.8",
+      "1.7",
+      "2.1-11.9",
+      "10.0"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "study_key": "femorocutaneo-lateral-sensitivo",
+  "study_label": "Femorocutáneo lateral · sensitivo (meralgia)",
+  "group": "especial",
+  "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
+  "montaje": {
+   "Posición": "Supino",
+   "Registro": "Dos técnicas descritas: Ma-Liveson (activo 17-20 cm distal a la EIAS hacia el borde lateral de la rótula, referencia 3 cm más distal) y Spevak-Prevec (dos tiras de 8 cm separadas 2,5 cm en el muslo anterolateral, ~25 cm distal al estímulo)",
+   "Tierra": "Entre el estímulo y el registro",
+   "Estímulo": "Bajo el ligamento inguinal / 1 cm medial a la EIAS (Ma-Liveson) o 6-10 cm bajo la EIAS donde la sensación irradia al muslo lateral (Spevak-Prevec)",
+   "Filtros": "Ma-Liveson 32 Hz / 3,2 kHz · Spevak-Prevec 100 Hz / 5 kHz"
+  },
+  "technique_notes": "Meralgia parestésica. Ma-Liveson n=20; Spevak-Prevec n=29. Dif. lado a lado de la VCN nunca >6 m/s.",
+  "measures": [
+   {
+    "name": "Latencia de inicio — técnica de Ma-Liveson (ms)",
+    "columns": [
+     "Estímulo",
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "S1 (14-18 cm)",
+      "2.5",
+      "0.2",
+      "2.2-2.8"
+     ],
+     [
+      "S2 (17-20 cm)",
+      "2.8",
+      "0.4",
+      "2.3-3.2"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico — Ma-Liveson (µV)",
+    "columns": [
+     "Estímulo",
+     "Media",
+     "DE",
+     "Rango"
+    ],
+    "rows": [
+     [
+      "S1",
+      "7.0",
+      "1.8",
+      "4-11"
+     ],
+     [
+      "S2",
+      "6.0",
+      "1.5",
+      "3-10"
+     ]
+    ]
+   },
+   {
+    "name": "Latencia — técnica de Spevak-Prevec (ms)",
+    "columns": [
+     "Medida",
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Inicio",
+      "4.1",
+      "0.7",
+      "5.5"
+     ],
+     [
+      "Pico",
+      "4.6",
+      "0.7",
+      "6.0"
+     ]
+    ]
+   },
+   {
+    "name": "Velocidad de conducción — Spevak-Prevec (m/s)",
+    "columns": [
+     "Media",
+     "DE",
+     "Límite inferior"
+    ],
+    "rows": [
+     [
+      "62.3",
+      "5.5",
+      "51.3"
+     ]
+    ]
+   },
+   {
+    "name": "Amplitud pico-a-pico — Spevak-Prevec (µV)",
+    "columns": [
+     "Media",
+     "DE"
+    ],
+    "rows": [
+     [
+      "2.0",
+      "1.0"
+     ]
+    ]
+   }
+  ]
+ }
+]
