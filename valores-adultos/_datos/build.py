@@ -17,6 +17,7 @@ studies = []
 studies += load("motor.json",   "motor")
 studies += load("sensory.json", "sensitivo")
 studies += load("extras.json",  None)  # ya traen group
+studies += load("especiales.json", "especial")  # cola larga: nervios poco frecuentes (Manual 2015)
 
 # --- validación de forma ---
 problems = 0
@@ -34,7 +35,7 @@ else:
     print("VALIDACIÓN: todas las filas cuadran con sus columnas ✓")
 
 # --- orden por grupo ---
-order = {"motor": 0, "sensitivo": 1, "mixto": 2}
+order = {"motor": 0, "sensitivo": 1, "mixto": 2, "especial": 3}
 seq   = {"mediano-motor":0,"cubital-motor":1,"peroneo-motor":2,"tibial-motor":3,
          "mediano-sensitivo":0,"cubital-sensitivo":1,"sural-sensitivo":2,
          "safeno-sensitivo":3,"sural-vs-safeno":4,
@@ -85,7 +86,7 @@ details.crit .body li{margin-bottom:6px}
 </style></head><body>
 <header>
 <h1>Electrodiagnóstico del adulto</h1>
-<p>Valores de referencia de neuroconducción · Buschbacher 1999/2003 · percentiles por edad, sexo y talla</p>
+<p>Valores de referencia de neuroconducción · Buschbacher 1999/2003 y Manual 2015 · percentiles por edad, sexo y talla</p>
 </header>
 <div class="wrap">
 <input id="q" type="search" placeholder="Buscar nervio o parámetro (p. ej. peroneo, latencia, sural)…" autocomplete="off">
@@ -104,7 +105,7 @@ details.crit .body li{margin-bottom:6px}
 </div>
 <script>
 const STUDIES = __DATA__;
-const GRP = {motor:"Estudios motores", sensitivo:"Estudios sensitivos", mixto:"Estudios de nervio mixto y diferencias"};
+const GRP = {motor:"Estudios motores", sensitivo:"Estudios sensitivos", mixto:"Estudios de nervio mixto y diferencias", especial:"Nervios poco frecuentes (Manual de Buschbacher 2015)"};
 const app = document.getElementById("app");
 
 function table(m){
