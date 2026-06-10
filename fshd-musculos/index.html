@@ -1,0 +1,119 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>FSHD · Patrón muscular interactivo</title>
+<style>
+:root{--bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;--accent:#3aa0ff;
+--early:#d6409a;--late:#3a86d6}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 40px}
+header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:16px;border-bottom:1px solid var(--line)}
+header h1{margin:0;font-size:18px}
+header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+a.back{color:var(--accent);text-decoration:none;font-size:12px}
+.wrap{padding:14px;max-width:820px;margin:0 auto}
+.controls{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.controls button{flex:1;min-width:90px;padding:9px;border-radius:9px;border:1px solid var(--line);background:#0c1626;color:var(--txt);font-size:13px}
+.controls button.on{border-color:var(--accent);background:#13314e}
+.figs{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.fig{flex:1;min-width:240px;max-width:380px;text-align:center}
+.fig h2{font-size:12px;color:var(--muted);margin:0 0 4px;font-weight:600;letter-spacing:.5px}
+svg{width:100%;height:auto;background:#0c1626;border:1px solid var(--line);border-radius:12px}
+.body{fill:#1b2a44;stroke:#33486e;stroke-width:1.2}
+.mus{cursor:pointer;stroke:#0c1626;stroke-width:1;transition:opacity .15s,stroke .15s}
+.mus.early{fill:var(--early)}
+.mus.late{fill:var(--late)}
+.mus.dim{opacity:.16}
+.mus.sel{stroke:#fff;stroke-width:2.4}
+.legend{display:flex;gap:16px;justify-content:center;margin:10px 0 4px;font-size:12px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:13px;height:13px;border-radius:3px;display:inline-block}
+#info{background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px;margin-top:12px;min-height:64px}
+#info .es{font-size:15px;font-weight:600}
+#info .la{font-style:italic;color:var(--accent);font-size:13px}
+#info .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:20px;margin-left:8px;color:#fff;vertical-align:middle}
+#info .nota{font-size:13px;color:var(--muted);margin-top:6px}
+#info .hint{color:var(--muted);font-size:13px}
+footer{max-width:820px;margin:18px auto 0;padding:0 14px;font-size:11px;color:var(--muted);font-style:italic}
+</style></head><body>
+<header>
+<a class="back" href="../">‹ Aplicaciones</a>
+<h1>Distrofia facioescapulohumeral · patrón muscular</h1>
+<p>Esquema interactivo del compromiso muscular temprano y tardío. Toque un músculo.</p>
+</header>
+<div class="wrap">
+<div class="controls">
+<button data-f="all" class="on">Ambas fases</button>
+<button data-f="early">Temprano</button>
+<button data-f="late">Tardío</button>
+</div>
+<div class="legend">
+<span><i class="dot" style="background:var(--early)"></i>Compromiso temprano</span>
+<span><i class="dot" style="background:var(--late)"></i>Compromiso tardío</span>
+</div>
+<div class="figs">
+<div class="fig"><h2>ANTERIOR</h2>
+<svg id="svg-ant" viewBox="0 0 200 430" role="img" aria-label="Vista anterior"></svg></div>
+<div class="fig"><h2>POSTERIOR</h2>
+<svg id="svg-post" viewBox="0 0 200 430" role="img" aria-label="Vista posterior"></svg></div>
+</div>
+<div id="info"><span class="hint">Seleccione un músculo del esquema para ver el detalle de su compromiso en la FSHD.</span></div>
+</div>
+<footer>Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular</i>. Esquema original con fines docentes; el patrón de afectación se basa en la literatura (Brun et al., 2026). No sustituye la valoración clínica.</footer>
+<script>
+// silueta corporal común (cabeza, tronco, brazos, piernas)
+const BODY='<circle class="body" cx="100" cy="36" r="22"/>'+
+'<rect class="body" x="93" y="56" width="14" height="12"/>'+
+'<path class="body" d="M70,66 Q58,70 56,96 L52,180 Q52,202 70,206 L130,206 Q148,202 148,180 L144,96 Q142,70 130,66 Z"/>'+
+'<rect class="body" x="40" y="92" width="16" height="122" rx="8"/>'+
+'<rect class="body" x="144" y="92" width="16" height="122" rx="8"/>'+
+'<rect class="body" x="71" y="200" width="23" height="206" rx="11"/>'+
+'<rect class="body" x="106" y="200" width="23" height="206" rx="11"/>';
+// músculos: timing early/late, view, posiciones [cx,cy,rx,ry]
+const M=[
+{id:'oo',es:'Orbicular de los ojos',la:'Orbicularis oculi',t:'early',v:'ant',n:'Debilidad facial: dificultad para cerrar los ojos por completo (signo de las pestañas).',s:[[93,30,5,3],[107,30,5,3]]},
+{id:'ob',es:'Orbicular de la boca',la:'Orbicularis oris',t:'early',v:'ant',n:'No puede silbar, inflar las mejillas ni sonreír con normalidad; «sonrisa transversal».',s:[[100,46,9,4]]},
+{id:'pec',es:'Pectoral mayor',la:'Pectoralis major',t:'early',v:'ant',n:'Su atrofia contribuye al aspecto característico del tórax y la axila.',s:[[83,112,15,12],[117,112,15,12]]},
+{id:'ser',es:'Serrato anterior',la:'Serratus anterior',t:'early',v:'ant',n:'Fijador de la escápula; su debilidad participa en la escápula alada.',s:[[66,142,9,12],[134,142,9,12]]},
+{id:'bic',es:'Bíceps braquial',la:'Biceps brachii',t:'early',v:'ant',n:'Brazo afectado de forma precoz, con preservación relativa del deltoides.',s:[[48,142,9,18],[152,142,9,18]]},
+{id:'rab',es:'Recto del abdomen',la:'Rectus abdominis',t:'early',v:'ant',n:'Predomina la porción inferior: signo de Beevor (ascenso del ombligo al flexionar el cuello en supino).',s:[[100,172,15,28]]},
+{id:'tib',es:'Tibial anterior',la:'Tibialis anterior',t:'early',v:'ant',n:'Pie caído precoz, con preservación del extensor corto de los dedos (ayuda a distinguir de causa neurógena).',s:[[83,350,8,26],[117,350,8,26]]},
+{id:'del_a',es:'Deltoides',la:'Deltoideus',t:'late',v:'ant',n:'Preservado de forma relativa frente al bíceps y el tríceps: contraste de gran valor diagnóstico. Se compromete en fases tardías.',s:[[60,98,13,12],[140,98,13,12]]},
+{id:'rf',es:'Recto femoral',la:'Rectus femoris',t:'late',v:'ant',n:'Cintura pélvica y muslo: afectación más tardía.',s:[[83,256,13,30],[117,256,13,30]]},
+// posterior
+{id:'tra',es:'Trapecio',la:'Trapezius',t:'early',v:'post',n:'Fijador de la escápula; su debilidad genera la escápula alada asimétrica, desplazada lateral y hacia arriba (signo casi patognomónico).',s:[[100,94,30,24]]},
+{id:'rom',es:'Romboides',la:'Rhomboideus',t:'early',v:'post',n:'Fijador de la escápula; participa en la escápula alada.',s:[[100,120,16,12]]},
+{id:'dor',es:'Dorsal ancho',la:'Latissimus dorsi',t:'early',v:'post',n:'Afectación del tronco y la cintura escapular.',s:[[100,162,30,24]]},
+{id:'tri',es:'Tríceps braquial',la:'Triceps brachii',t:'early',v:'post',n:'Brazo afectado de forma precoz, con deltoides relativamente preservado.',s:[[48,142,9,18],[152,142,9,18]]},
+{id:'del_p',es:'Deltoides',la:'Deltoideus',t:'late',v:'post',n:'Relativamente preservado; se compromete en fases tardías.',s:[[60,98,13,12],[140,98,13,12]]},
+{id:'isq',es:'Isquiotibiales',la:'Biceps femoris',t:'late',v:'post',n:'Músculos del muslo: afectación más tardía.',s:[[83,258,13,30],[117,258,13,30]]}
+];
+const TLABEL={early:'Temprano',late:'Tardío'};const TCOL={early:'var(--early)',late:'var(--late)'};
+function build(svgId,view){
+ const svg=document.getElementById(svgId);
+ let h=BODY;
+ M.filter(m=>m.v===view).forEach(m=>{
+   m.s.forEach((p,i)=>{h+=`<ellipse class="mus ${m.t}" data-id="${m.id}" cx="${p[0]}" cy="${p[1]}" rx="${p[2]}" ry="${p[3]}"><title>${m.es}</title></ellipse>`;});
+ });
+ svg.innerHTML=h;
+}
+build('svg-ant','ant');build('svg-post','post');
+const info=document.getElementById('info');
+let cur='all';
+function select(id){
+ document.querySelectorAll('.mus.sel').forEach(e=>e.classList.remove('sel'));
+ document.querySelectorAll('.mus[data-id="'+id+'"]').forEach(e=>e.classList.add('sel'));
+ const m=M.find(x=>x.id===id);
+ info.innerHTML=`<span class="es">${m.es}</span><span class="badge" style="background:${TCOL[m.t]}">${TLABEL[m.t]}</span><div class="la">${m.la}</div><div class="nota">${m.n}</div>`;
+}
+document.querySelectorAll('.mus').forEach(e=>e.addEventListener('click',()=>select(e.dataset.id)));
+function applyFilter(f){
+ cur=f;
+ document.querySelectorAll('.controls button').forEach(b=>b.classList.toggle('on',b.dataset.f===f));
+ document.querySelectorAll('.mus').forEach(e=>{
+   const t=e.classList.contains('early')?'early':'late';
+   e.classList.toggle('dim', f!=='all' && t!==f);
+ });
+}
+document.querySelectorAll('.controls button').forEach(b=>b.addEventListener('click',()=>applyFilter(b.dataset.f)));
+</script>
+</body></html>
