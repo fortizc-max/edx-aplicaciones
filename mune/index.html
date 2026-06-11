@@ -17,22 +17,26 @@
   header h1{margin:0;font-size:19px}
   header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
   .wrap{max-width:1080px;margin:0 auto;padding:16px}
-  h2{margin:0 0 2px;font-size:16px}
-  h3{margin:0 0 8px;font-size:13px;color:var(--accent)}
-  .sub{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+  h2{margin:0 0 8px;font-size:16px}
   .row{display:flex;gap:18px;flex-wrap:wrap}
   .col-plot{flex:1 1 520px;min-width:320px}
   .col-side{flex:1 1 300px;min-width:280px}
   svg{width:100%;background:var(--plotbg);border:1px solid var(--line);border-radius:8px}
   .narr{background:#13203a;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;
-        padding:11px 13px;margin:12px 0 0;font-size:14px;min-height:48px;color:#eaf1fb}
+        padding:12px 14px;margin:12px 0 0;font-size:14.5px;min-height:54px;color:#eaf1fb;transition:border-color .2s}
+  .narr.flash{border-left-color:var(--accent2)}
   .narr b{color:var(--accent)}
+  .actbar{display:flex;gap:12px;align-items:center;margin-top:12px}
+  button.act{font-size:15px;border:1px solid var(--green);border-radius:9px;padding:12px 20px;cursor:pointer;background:var(--green);color:#06200f;font-weight:700}
+  button.act:hover{filter:brightness(1.08)}
+  .stepc{font-size:12px;color:var(--muted)}
   .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:14px}
   .stat{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line)}
-  .stat.dim .lab,.stat.dim .val{opacity:0.35}
+  .stat.dim .lab,.stat.dim .val{opacity:0.32}
   .stat .lab{color:var(--muted);font-size:12px}
   .stat .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:600;color:var(--txt)}
-  .big{font-size:17px;font-weight:700;margin-top:8px;text-align:center}
+  .big{font-size:16px;font-weight:700;margin-top:8px;text-align:center}
+  .big.dim{opacity:0.32}
   .big b{color:var(--accent);font-size:22px}
   .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}
   .badge.ok{background:#10331f;color:var(--green);border:1px solid var(--green)}
@@ -43,20 +47,18 @@
   .seg button.on{background:var(--accent);color:#06203b}
   #scenSeg button[data-v="normal"].on{background:var(--green);color:#06200f}
   #scenSeg button[data-v="neuro"].on{background:var(--bad);color:#2a0d0d}
-  .sl{display:block;margin:10px 0}
+  .sl{display:block;margin:10px 0 2px}
   .sl .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
   .sl .top .l{color:var(--muted)}
   .sl .top .v{font-family:ui-monospace,monospace;color:var(--txt)}
   input[type=range]{width:100%;accent-color:var(--accent)}
-  button.play{font-size:14px;border:1px solid var(--green);border-radius:8px;padding:10px 18px;cursor:pointer;background:var(--green);color:#06200f;font-weight:700}
-  button.play:hover{filter:brightness(1.08)}
   footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
 </style>
 </head>
 <body>
 <header>
 <h1>MUNE · estimación del número de unidades motoras</h1>
-<p>Electrodiagnóstico y Ultrasonido Neuromuscular · demostración interactiva</p>
+<p>Electrodiagnóstico y Ultrasonido Neuromuscular · examen paso a paso</p>
 </header>
 
 <div class="wrap">
@@ -65,12 +67,15 @@
       <h2 id="plotTitle">—</h2>
       <svg id="plot" viewBox="0 0 720 360"></svg>
       <div class="narr" id="narr">—</div>
-      <div style="margin-top:10px"><button id="play" class="play">▶ Iniciar examen</button></div>
+      <div class="actbar">
+        <button id="act" class="act">⚡ Estimular</button>
+        <span class="stepc" id="stepc"></span>
+      </div>
     </div>
 
     <div class="col-side">
       <div class="panel">
-        <h3>Configuración</h3>
+        <h3 style="margin:0 0 8px;font-size:13px;color:var(--accent)">Configuración</h3>
         <div class="seglabel">Método</div>
         <div class="seg" id="modeSeg">
           <button data-v="inc" class="on">Incremental</button>
@@ -83,16 +88,17 @@
         </div>
         <div class="sl"><div class="top"><span class="l" id="kLab">Muestras</span><span class="v" id="kV"></span></div>
           <input type="range" id="k"></div>
+        <p class="stepc" style="margin:4px 0 0">Cambiar el método, el estado o las muestras reinicia el examen.</p>
       </div>
 
       <div class="panel">
-        <h3>Cálculo en curso</h3>
+        <h3 style="margin:0 0 8px;font-size:13px;color:var(--accent)">Cálculo</h3>
         <div class="stat" id="rowU"><span class="lab" id="uLab">Unidades reclutadas</span><span class="val" id="uVal">0</span></div>
-        <div class="stat dim" id="rowS"><span class="lab">① SMUP promedio (una unidad)</span><span class="val" id="smup">—</span></div>
+        <div class="stat dim" id="rowS"><span class="lab">① SMUP (una unidad)</span><span class="val" id="smup">—</span></div>
         <div class="stat dim" id="rowC"><span class="lab">② CMAP máximo (todas)</span><span class="val" id="cmap">—</span></div>
-        <div class="big" id="muneLine">③ MUNE = <span id="muneFormula">CMAP ÷ SMUP</span> = <b id="mune">—</b></div>
+        <div class="big dim" id="muneLine">③ MUNE = <span id="muneFormula">CMAP ÷ SMUP</span> = <b id="mune">—</b></div>
         <div class="stat" style="margin-top:6px"><span class="lab">N.º real de unidades</span><span class="val" id="ntrue">—</span></div>
-        <div style="text-align:center"><span class="badge" id="badge">—</span></div>
+        <div style="text-align:center"><span class="badge" id="badge" style="display:none">—</span></div>
       </div>
     </div>
   </div>
@@ -104,30 +110,25 @@ Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromusc
 
 <script>
 const SVGNS="http://www.w3.org/2000/svg";
-const C={trace:"#dbe7f5",accent:"#3aa0ff",accent2:"#ff9d4d",green:"#5ec5a0",grid:"rgba(255,255,255,0.07)",gridMajor:"rgba(255,255,255,0.18)",muted:"#9fb2cc"};
-const PLOT={w:720,h:360,padL:16,padR:16,padT:40,padB:24};   // padT deja sitio a la barra de intensidad
+const C={trace:"#dbe7f5",accent:"#3aa0ff",accent2:"#ff9d4d",grid:"rgba(255,255,255,0.07)",gridMajor:"rgba(255,255,255,0.18)",muted:"#9fb2cc"};
+const PLOT={w:720,h:360,padL:16,padR:16,padT:40,padB:24};
 
 const SCEN={ normal:{n:140,mean:55,cv:0.45}, neuro:{n:35,mean:180,cv:0.5} };
 let mode="inc", scen="normal", K=8;
-
-const STEP=0.75, PAUSE=1.9;        // s por unidad/sitio y por fase
 let units=[], mp=[], cum=[];
-let clock=0, playing=false, lastTs=null;
+let step=0;
+let fade=1, prevInten=0;       // pequeña animación al dar cada estímulo
 
 function gauss(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
-function genUnits(){
-  const s=SCEN[scen]; units=[];
-  for(let i=0;i<s.n;i++){ units.push({amp:Math.max(8,s.mean*Math.exp(gauss()*s.cv*0.7)), thr:Math.random()}); }
-  units.sort((a,b)=>a.thr-b.thr);
-  rebuildCum(); genMP();
-}
+function genUnits(){ const s=SCEN[scen]; units=[];
+  for(let i=0;i<s.n;i++) units.push({amp:Math.max(8,s.mean*Math.exp(gauss()*s.cv*0.7)), thr:Math.random()});
+  units.sort((a,b)=>a.thr-b.thr); rebuildCum(); genMP(); }
 function rebuildCum(){ cum=[]; let c=0; for(let i=0;i<Math.min(K,units.length);i++){c+=units[i].amp;cum.push(c);} }
 function genMP(){ mp=[]; const M=Math.min(K,units.length);
   for(let i=0;i<M;i++){ const lo=Math.floor(i/M*units.length), hi=Math.floor((i+1)/M*units.length);
     const idx=lo+Math.floor(Math.random()*Math.max(1,hi-lo)); mp.push(units[Math.min(idx,units.length-1)]); } }
 function cmapMax(){ return units.reduce((s,u)=>s+u.amp,0); }
-function avgSMUP(){ if(mode==="inc"){ let s=0,k=Math.min(K,units.length); for(let i=0;i<k;i++)s+=units[i].amp; return s/k; }
-  return mp.reduce((s,u)=>s+u.amp,0)/mp.length; }
+function avgSMUP(){ if(mode==="inc"){let s=0,k=Math.min(K,units.length);for(let i=0;i<k;i++)s+=units[i].amp;return s/k;} return mp.reduce((s,u)=>s+u.amp,0)/mp.length; }
 
 const svg=document.getElementById("plot");
 function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
@@ -137,112 +138,111 @@ function trace(amp,yMax,baseline,plotH,color,op,w){
   for(let i=0;i<=N;i++){const u=i/N;d+=(i===0?"M":"L")+(PLOT.padL+u*innerW).toFixed(1)+" "+(baseline-(amp/yMax)*plotH*cmapShape(u)).toFixed(1)+" ";}
   svg.appendChild(el("path",{d:d,fill:"none",stroke:color,"stroke-width":w||1.4,"stroke-linejoin":"round",opacity:op}));
 }
-
-// fases del examen en función del reloj
-function phaseOf(){
-  const tR=(K+0.8)*STEP;
-  const ns=Math.min(K,Math.floor(clock/STEP));
-  if(clock<tR) return {p:"collect",ns,tR};
-  if(clock<tR+PAUSE) return {p:"avg",ns:K,tR};
-  if(clock<tR+2*PAUSE) return {p:"max",ns:K,tR};
-  return {p:"result",ns:K,tR};
-}
-const END_T=()=>(K+0.8)*STEP+2*PAUSE+0.2;
-
 function intensityBar(frac,label){
   const x=PLOT.padL,y=12,w=PLOT.w-PLOT.padL-PLOT.padR,h=12;
   svg.appendChild(el("rect",{x:x,y:y,width:w,height:h,rx:4,fill:"#0b1322",stroke:C.gridMajor,"stroke-width":0.8}));
   svg.appendChild(el("rect",{x:x,y:y,width:Math.max(0,w*frac),height:h,rx:4,fill:C.accent,opacity:0.85}));
-  const t=el("text",{x:x,y:y-3,"font-size":11,fill:C.muted});t.textContent=label;svg.appendChild(t);
+  const t=el("text",{x:x,y:y-4,"font-size":11,fill:C.muted});t.textContent=label;svg.appendChild(t);
+}
+
+// ---- máquina de estados (cada clic = un estímulo / una acción) ----
+function lastStep(){ return mode==="inc" ? K+4 : mp.length+3; }
+function info(){
+  const cmap=cmapMax(), smup=avgSMUP(), mune=Math.round(cmap/smup);
+  if(mode==="inc"){
+    if(step===0) return {draw:"none",n:0,inten:0.06,btn:"⚡ Estimular (baja intensidad)",
+      instr:"Aplique un primer estímulo de <b>baja intensidad</b> y observe la pantalla."};
+    if(step===1) return {draw:"recruit",n:0,inten:0.18,btn:"⚡ Dé un nuevo estímulo, con más intensidad",
+      instr:"<b>Sin respuesta:</b> el estímulo no alcanzó el umbral. <b>Suba la intensidad</b> y estimule de nuevo."};
+    if(step<=K+1){ const n=step-1;
+      if(n<K) return {draw:"recruit",n,inten:0.18+0.54*n/K,btn:"⚡ Dé un nuevo estímulo, con más intensidad",
+        instr:"Apareció la <b>unidad "+n+"</b>. Cada escalón «todo o nada» es <b>una unidad motora</b> que se suma. Suba un poco la intensidad y estimule otra vez."};
+      return {draw:"recruit",n:K,inten:0.72,btn:"Promediar los "+K+" escalones (÷"+K+")",showS:false,
+        instr:"Ya recogió <b>"+K+" incrementos</b>. Ahora <b>promédielos</b> para obtener el potencial de una sola unidad (SMUP)."};
+    }
+    if(step===K+2) return {draw:"avg",n:K,inten:0.72,showS:true,btn:"⚡ Dé un estímulo SUPRAMÁXIMO",
+      instr:"<b>SMUP = "+Math.round(smup)+" µV</b> (tamaño de una unidad). Ahora dé un estímulo <b>supramáximo</b> para activar todas las unidades a la vez."};
+    if(step===K+3) return {draw:"cmap",n:K,inten:1,showS:true,showC:true,btn:"Calcular el MUNE (dividir)",
+      instr:"<b>CMAP máximo = "+(cmap/1000).toFixed(1)+" mV</b> (la suma de TODAS las unidades). <b>Divida</b> el total entre el tamaño de una."};
+    return {draw:"cmap",n:K,inten:1,showS:true,showC:true,showM:true,btn:"↻ Reiniciar examen",
+      instr:"<b>MUNE = "+(cmap/1000).toFixed(1)+" mV ÷ "+Math.round(smup)+" µV = "+mune+"</b> unidades motoras."};
+  } else {
+    const M=mp.length;
+    if(step===0) return {draw:"none",n:0,inten:1,btn:"⚡ Estimular el sitio 1",
+      instr:"En el método multipunto cada estímulo es <b>supramáximo</b>. Estimule el <b>primer sitio</b> para registrar un SMUP de bajo umbral."};
+    if(step<=M){ const n=step;
+      if(n<M) return {draw:"recruit",n,inten:1,btn:"⚡ Mueva el estímulo y estimule el sitio "+(n+1),
+        instr:"Registró el <b>SMUP del sitio "+n+"</b>. <b>Cambie el punto de estímulo</b> a lo largo del nervio y estimule el siguiente sitio."};
+      return {draw:"recruit",n:M,inten:1,btn:"Promediar los "+M+" SMUP (÷"+M+")",
+        instr:"Recogió <b>"+M+" SMUP</b> de distintos sitios. <b>Promédielos</b>."};
+    }
+    if(step===M+1) return {draw:"avg",n:M,inten:1,showS:true,btn:"⚡ Dé un estímulo SUPRAMÁXIMO",
+      instr:"<b>SMUP promedio = "+Math.round(smup)+" µV</b>. Dé un estímulo supramáximo para obtener el CMAP máximo."};
+    if(step===M+2) return {draw:"cmap",n:M,inten:1,showS:true,showC:true,btn:"Calcular el MUNE (dividir)",
+      instr:"<b>CMAP máximo = "+(cmap/1000).toFixed(1)+" mV</b>. Divida para obtener el número de unidades."};
+    return {draw:"cmap",n:M,inten:1,showS:true,showC:true,showM:true,btn:"↻ Reiniciar examen",
+      instr:"<b>MUNE = "+(cmap/1000).toFixed(1)+" mV ÷ "+Math.round(smup)+" µV = "+mune+"</b> unidades."};
+  }
 }
 
 function render(){
   while(svg.firstChild)svg.removeChild(svg.firstChild);
-  const innerH=PLOT.h-PLOT.padT-PLOT.padB;
-  const baseline=PLOT.padT+innerH*0.92, plotH=innerH*0.80;
+  const innerH=PLOT.h-PLOT.padT-PLOT.padB, baseline=PLOT.padT+innerH*0.92, plotH=innerH*0.80;
   svg.appendChild(el("line",{x1:PLOT.padL,y1:baseline,x2:PLOT.w-PLOT.padR,y2:baseline,stroke:C.gridMajor,"stroke-width":0.8}));
-  const st=phaseOf();
-  const cmap=cmapMax(), smup=avgSMUP(), mune=Math.round(cmap/smup);
+  const I=info();
+  const cmap=cmapMax(), smup=avgSMUP();
+  const intenNow = prevInten+(I.inten-prevInten)*fade;
+  const gainTxt = (I.draw==="cmap") ? "ganancia baja (CMAP)" : "ganancia alta (SMUP)";
+  intensityBar(intenNow, "Intensidad del estímulo  ·  "+gainTxt);
 
-  if(mode==="inc"){
-    if(st.p==="collect"||st.p==="avg"){
+  if(I.draw==="recruit"){
+    if(mode==="inc"){
       const yMax=(cum[K-1]||1)*1.12;
-      const n=st.p==="avg"?K:st.ns;
-      for(let i=0;i<n;i++) trace(cum[i],yMax,baseline,plotH,C.trace,0.9);
-      if(n>0) trace(cum[n-1],yMax,baseline,plotH,C.accent,1,1.8);     // último escalón resaltado
-      if(st.p==="avg") trace(smup,yMax,baseline,plotH,C.accent2,1,2); // SMUP promedio
-      const frac=st.p==="avg"?0.72:Math.min(0.72,clock/((K+0.8)*STEP)*0.72);
-      intensityBar(frac,"Intensidad del estímulo (subiendo)  ·  ganancia alta (SMUP)");
+      for(let i=0;i<I.n;i++){ const op=(i===I.n-1)?(0.4+0.6*fade):0.9; trace(cum[i],yMax,baseline,plotH,(i===I.n-1)?C.accent:C.trace,op,(i===I.n-1)?1.8:1.3); }
     } else {
-      trace(cmap,cmap*1.12,baseline,plotH,C.trace,1,2);
-      intensityBar(1,"Estímulo SUPRAMÁXIMO  ·  ganancia baja (CMAP)");
+      const yMax=Math.max(1,...mp.map(u=>u.amp))*1.15;
+      for(let i=0;i<I.n;i++){ const op=(i===I.n-1)?(0.4+0.6*fade):0.85; trace(mp[i].amp,yMax,baseline,plotH,(i===I.n-1)?C.accent:C.trace,op,(i===I.n-1)?1.8:1.3); }
     }
-  } else {
-    if(st.p==="collect"||st.p==="avg"){
-      const yMax=Math.max(...mp.map(u=>u.amp))*1.15;
-      const n=st.p==="avg"?mp.length:st.ns;
-      for(let i=0;i<n;i++) trace(mp[i].amp,yMax,baseline,plotH,C.trace,0.85);
-      if(st.p==="avg") trace(smup,yMax,baseline,plotH,C.accent2,1,2);
-      intensityBar(1,"Estímulo supramáximo en cada sitio  ·  ganancia alta (SMUP)");
-    } else {
-      trace(cmap,cmap*1.12,baseline,plotH,C.trace,1,2);
-      intensityBar(1,"CMAP máximo");
-    }
+  } else if(I.draw==="avg"){
+    if(mode==="inc"){ const yMax=(cum[K-1]||1)*1.12; for(let i=0;i<K;i++) trace(cum[i],yMax,baseline,plotH,C.trace,0.85); trace(smup,yMax,baseline,plotH,C.accent2,1,2.2); }
+    else { const yMax=Math.max(1,...mp.map(u=>u.amp))*1.15; mp.forEach(u=>trace(u.amp,yMax,baseline,plotH,C.trace,0.8)); trace(smup,yMax,baseline,plotH,C.accent2,1,2.2); }
+  } else if(I.draw==="cmap"){
+    trace(cmap,cmap*1.12,baseline,plotH,C.trace,0.5+0.5*fade,2.2);
   }
-  narrate(st,cmap,smup,mune);
-  updatePanel(st,cmap,smup,mune);
-}
 
-function narrate(st,cmap,smup,mune){
-  const n=document.getElementById("narr"); let s="";
-  if(mode==="inc"){
-    if(st.p==="collect"){
-      if(st.ns===0) s="<b>Estímulo débil.</b> Por debajo del umbral, ninguna unidad motora responde.";
-      else s="<b>Subimos la intensidad poco a poco.</b> Cada salto «todo o nada» es una unidad motora que se <b>SUMA</b>: van "+st.ns+" unidad(es).";
-    } else if(st.p==="avg") s="<b>Promediamos</b> los "+K+" escalones (÷"+K+") → el potencial de <b>una sola unidad</b> (SMUP) = <b>"+Math.round(smup)+" µV</b>.";
-    else if(st.p==="max") s="<b>Estímulo supramáximo:</b> responden <b>todas</b> las unidades a la vez → el CMAP máximo (la suma total) = <b>"+(cmap/1000).toFixed(1)+" mV</b>.";
-    else s="<b>Dividimos</b> el total entre el tamaño de una unidad: <b>MUNE = "+(cmap/1000).toFixed(1)+" mV ÷ "+Math.round(smup)+" µV = "+mune+"</b> unidades motoras.";
-  } else {
-    if(st.p==="collect"){
-      if(st.ns===0) s="<b>Estimulamos en el primer sitio.</b> Registramos el potencial de una unidad de bajo umbral (SMUP).";
-      else s="<b>Cambiamos el punto de estímulo.</b> Recogemos un SMUP en cada sitio: van "+st.ns+" de "+K+".";
-    } else if(st.p==="avg") s="<b>Promediamos</b> los "+mp.length+" SMUP recogidos (÷"+mp.length+") → SMUP = <b>"+Math.round(smup)+" µV</b>.";
-    else if(st.p==="max") s="<b>CMAP máximo</b> (suma de todas las unidades) = <b>"+(cmap/1000).toFixed(1)+" mV</b>.";
-    else s="<b>MUNE = "+(cmap/1000).toFixed(1)+" mV ÷ "+Math.round(smup)+" µV = "+mune+"</b> unidades motoras.";
-  }
-  n.innerHTML=s;
-}
-
-function updatePanel(st,cmap,smup,mune){
-  document.getElementById("plotTitle").textContent = mode==="inc"
-    ? "Método incremental (McComas) — examen en tiempo real"
-    : "Método multipunto (Doherty–Brown) — examen en tiempo real";
+  // textos / panel
+  document.getElementById("narr").innerHTML=I.instr;
+  document.getElementById("act").textContent=I.btn;
+  document.getElementById("stepc").textContent="Paso "+Math.min(step+1,lastStep()+1)+" de "+(lastStep()+1);
+  document.getElementById("plotTitle").textContent = mode==="inc" ? "Método incremental (McComas)" : "Método multipunto (Doherty–Brown)";
   document.getElementById("uLab").textContent = mode==="inc" ? "Unidades reclutadas" : "Sitios registrados";
-  document.getElementById("uVal").textContent = (st.p==="collect"?st.ns:K);
-  const showS = st.p!=="collect", showC = (st.p==="max"||st.p==="result"), showM = st.p==="result";
-  document.getElementById("rowS").classList.toggle("dim",!showS);
-  document.getElementById("rowC").classList.toggle("dim",!showC);
-  document.getElementById("smup").textContent = showS ? Math.round(smup)+" µV" : "—";
-  document.getElementById("cmap").textContent = showC ? (cmap/1000).toFixed(1)+" mV" : "—";
-  document.getElementById("muneFormula").textContent = showM ? ((cmap/1000).toFixed(1)+" mV ÷ "+Math.round(smup)+" µV") : "CMAP ÷ SMUP";
-  document.getElementById("mune").textContent = showM ? mune : "—";
-  document.getElementById("ntrue").textContent = units.length;
+  document.getElementById("uVal").textContent = (I.draw==="recruit"||I.draw==="none") ? I.n : (mode==="inc"?K:mp.length);
+  const mune=Math.round(cmap/smup);
+  document.getElementById("rowS").classList.toggle("dim",!I.showS);
+  document.getElementById("rowC").classList.toggle("dim",!I.showC);
+  document.getElementById("muneLine").classList.toggle("dim",!I.showM);
+  document.getElementById("smup").textContent=I.showS?Math.round(smup)+" µV":"—";
+  document.getElementById("cmap").textContent=I.showC?(cmap/1000).toFixed(1)+" mV":"—";
+  document.getElementById("muneFormula").textContent=I.showM?((cmap/1000).toFixed(1)+" mV ÷ "+Math.round(smup)+" µV"):"CMAP ÷ SMUP";
+  document.getElementById("mune").textContent=I.showM?mune:"—";
+  document.getElementById("ntrue").textContent=units.length;
   const b=document.getElementById("badge");
-  if(!showM){ b.className="badge"; b.textContent=""; b.style.display="none"; }
-  else { b.style.display="inline-block";
-    if(scen==="neuro"){ b.className="badge bad"; b.textContent="MUNE reducido · pérdida de unidades motoras"; }
-    else { b.className="badge ok"; b.textContent="MUNE normal"; } }
+  if(I.showM){ b.style.display="inline-block"; if(scen==="neuro"){b.className="badge bad";b.textContent="MUNE reducido · pérdida de unidades";} else {b.className="badge ok";b.textContent="MUNE normal";} }
+  else b.style.display="none";
 }
 
-function loop(ts){
-  if(!playing)return;
-  if(lastTs===null)lastTs=ts;
-  clock+=(ts-lastTs)/1000; lastTs=ts;
-  if(clock>=END_T()){ clock=END_T(); playing=false; }
-  render();
-  if(playing)requestAnimationFrame(loop);
+// animación corta al dar cada estímulo (para que se vea el nuevo potencial aparecer)
+function flashIn(){ fade=0; const t0=performance.now();
+  const n=document.getElementById("narr"); n.classList.add("flash"); setTimeout(()=>n.classList.remove("flash"),350);
+  function step2(ts){ fade=Math.min(1,(ts-t0)/350); render(); if(fade<1)requestAnimationFrame(step2); }
+  requestAnimationFrame(step2);
 }
-function play(){ rebuildCum(); genMP(); clock=0; playing=true; lastTs=null; requestAnimationFrame(loop); }
+
+function advance(){
+  if(step>=lastStep()){ genUnits(); step=0; prevInten=0; render(); return; }
+  prevInten=info().inten;        // intensidad actual (para interpolar)
+  step++; flashIn();
+}
 
 function setSlider(){
   const inp=document.getElementById("k");
@@ -251,24 +251,24 @@ function setSlider(){
   if(K<+inp.min)K=+inp.min; if(K>+inp.max)K=+inp.max;
   inp.value=K; document.getElementById("kV").textContent=K;
 }
+function resetExam(){ step=0; prevInten=0; fade=1; render(); }
 
 document.getElementById("modeSeg").querySelectorAll("button").forEach(btn=>{
   btn.addEventListener("click",()=>{ mode=btn.dataset.v;
     document.getElementById("modeSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===btn));
-    setSlider(); play(); });
+    setSlider(); rebuildCum(); genMP(); resetExam(); });
 });
 document.getElementById("scenSeg").querySelectorAll("button").forEach(btn=>{
   btn.addEventListener("click",()=>{ scen=btn.dataset.v;
     document.getElementById("scenSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===btn));
-    genUnits(); play(); });
+    genUnits(); resetExam(); });
 });
 document.getElementById("k").addEventListener("input",e=>{ K=parseInt(e.target.value);
-  document.getElementById("kV").textContent=K; rebuildCum(); genMP();
-  playing=false; clock=END_T(); render(); });   // muestra el resultado final con esa K
-document.getElementById("play").addEventListener("click",play);
+  document.getElementById("kV").textContent=K; rebuildCum(); genMP(); resetExam(); });
+document.getElementById("act").addEventListener("click",advance);
 
 // init
-genUnits(); setSlider(); clock=END_T(); render();
+genUnits(); setSlider(); resetExam();
 </script>
 </body>
 </html>
