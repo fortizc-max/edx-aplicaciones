@@ -70,7 +70,6 @@
         <select id="scn">
           <option value="norm3">Normal a 3 Hz</option>
           <option value="dec3">Decremento a 3 Hz (postsináptico)</option>
-          <option value="facil">Facilitación normal post-ejercicio</option>
           <option value="decProg">Decremento progresivo (Eaton-Lambert)</option>
           <option value="inc30">Incremento &gt;100 % a 30 Hz (presináptico)</option>
         </select>
@@ -105,8 +104,6 @@ const SCN={
     clin:"A 2–3 Hz, en condiciones normales el decremento es menor del 10 %: las reservas de acetilcolina mantienen estable la amplitud."},
   dec3:{freq:"3 Hz",pat:"ushapeGeom",metric:"dec",mag:{min:0.5,max:10,def:4},
     clin:"Caída homogénea (cada potencial cae el mismo porcentaje respecto al previo) hasta la 5.ª respuesta, con leve recuperación posterior (forma en U): patrón típico de la miastenia gravis (postsináptico)."},
-  facil:{freq:"Post-ejercicio (10 s)",pat:"inc",metric:"inc",mag:{min:0,max:250,def:20},
-    clin:"Tras un ejercicio breve puede haber un leve incremento de amplitud (facilitación) de magnitud normal; en la miastenia repara transitoriamente el decremento."},
   decProg:{freq:"3 Hz",pat:"geom",metric:"dec",mag:{min:0.5,max:10,def:4},
     clin:"Caída homogénea y completamente progresiva (cada potencial cae el mismo porcentaje respecto al previo), sin la recuperación tardía de la miastenia: patrón del síndrome de Eaton-Lambert (presináptico) a baja frecuencia. A alta frecuencia o tras el ejercicio aparece el incremento característico (ver escenario a 30 Hz)."},
   inc30:{freq:"30 Hz",n:28,pat:"inc",metric:"inc",mag:{min:0,max:250,def:140},
