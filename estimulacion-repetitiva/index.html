@@ -41,6 +41,10 @@
   button.play{font-size:13px;border:1px solid var(--green);border-radius:8px;padding:9px 16px;cursor:pointer;background:var(--green);color:#06200f;font-weight:700}
   button.play:hover{filter:brightness(1.08)}
   .clin{font-size:12.5px;color:#cdd9ec;margin-top:6px}
+  table.rns{width:100%;border-collapse:collapse;font-size:13px;text-align:center;min-width:560px}
+  table.rns th,table.rns td{padding:7px 6px;border:1px solid var(--line)}
+  table.rns th{color:var(--muted);font-weight:700;font-size:11.5px;background:#13203a}
+  table.rns td{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600}
   footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
 </style>
 </head>
@@ -87,6 +91,21 @@
       </div>
     </div>
   </div>
+
+  <div class="panel" style="margin-top:2px">
+    <h3>Tabla de resultados</h3>
+    <div style="overflow-x:auto"><table class="rns">
+      <thead><tr>
+        <th>Rate<br>Hz</th><th>Amplitude<br>mV</th><th>Amp&nbsp;Dec<br>%</th><th>Fac&nbsp;Ampl<br>%</th>
+        <th>Area<br>mVms</th><th>Area&nbsp;Dec<br>%</th><th>Fac&nbsp;Area<br>%</th>
+      </tr></thead>
+      <tbody><tr>
+        <td id="tRate">—</td><td id="tAmp">—</td><td id="tAmpDec">—</td><td id="tFacAmpl">—</td>
+        <td id="tArea">—</td><td id="tAreaDec">—</td><td id="tFacArea">—</td>
+      </tr></tbody>
+    </table></div>
+    <p class="sub" style="margin-top:8px">Amp Dec / Area Dec: porcentaje de decremento (negativo). Fac Ampl / Fac Area: facilitación respecto a la 1.ª respuesta (100 % = sin facilitación). El área decrementa menos que la amplitud por la dispersión temporal del potencial.</p>
+  </div>
 </div>
 
 <footer>
@@ -100,13 +119,13 @@ const PLOT={w:720,h:360,padL:16,padR:16,padT:16,padB:30};
 let N=10;   // número de respuestas (depende del escenario/frecuencia)
 
 const SCN={
-  norm3:{freq:"3 Hz",pat:"geom",metric:"dec",mag:{min:0,max:10,def:0.5},
+  norm3:{freq:"3 Hz",rate:3,amp0:6.0,pat:"geom",metric:"dec",mag:{min:0,max:10,def:0.5},
     clin:"A 2–3 Hz, en condiciones normales el decremento es menor del 10 %: las reservas de acetilcolina mantienen estable la amplitud."},
-  dec3:{freq:"3 Hz",pat:"ushapeGeom",metric:"dec",mag:{min:0.5,max:10,def:4},
+  dec3:{freq:"3 Hz",rate:3,amp0:5.5,pat:"ushapeGeom",metric:"dec",mag:{min:0.5,max:10,def:4},
     clin:"Caída homogénea (cada potencial cae el mismo porcentaje respecto al previo) hasta la 5.ª respuesta, con leve recuperación posterior (forma en U): patrón típico de la miastenia gravis (postsináptico)."},
-  decProg:{freq:"3 Hz",pat:"geom",metric:"dec",mag:{min:0.5,max:10,def:4},
+  decProg:{freq:"3 Hz",rate:3,amp0:1.8,pat:"geom",metric:"dec",mag:{min:0.5,max:10,def:4},
     clin:"Caída homogénea y completamente progresiva (cada potencial cae el mismo porcentaje respecto al previo), sin la recuperación tardía de la miastenia: patrón del síndrome de Eaton-Lambert (presináptico) a baja frecuencia. A alta frecuencia o tras el ejercicio aparece el incremento característico (ver escenario a 30 Hz)."},
-  inc30:{freq:"30 Hz",n:28,pat:"inc",metric:"inc",mag:{min:0,max:250,def:140},
+  inc30:{freq:"30 Hz",rate:30,amp0:1.8,n:28,pat:"inc",metric:"inc",mag:{min:0,max:250,def:140},
     clin:"Con estimulación de alta frecuencia (20–50 Hz) o tras ejercicio, un incremento mayor del 100 % indica un trastorno presináptico (Lambert-Eaton, botulismo)."}
 };
 
@@ -202,6 +221,24 @@ function updateOut(f){
   }
   const b=document.getElementById("badge");
   b.className="badge "+(bad?"bad":"ok"); b.textContent=badge;
+  document.getElementById("amp1").textContent=SCN[scn].amp0.toFixed(1)+" mV";
+  fillTable(f);
+}
+
+// tabla estilo equipo: Rate, Amplitude, Amp Dec %, Fac Ampl %, Area, Area Dec %, Fac Area %
+function fillTable(f){
+  const s=SCN[scn], a0=s.amp0;
+  const ampDec=(Math.min(...f)-f[0])/f[0]*100;     // negativo = decremento
+  const facAmpl=Math.max(...f)/f[0]*100;            // 100 % = sin facilitación
+  const DISP=1.0, AREA_K=3.0;                        // el potencial se dispersa al decrementar => el área se conserva más
+  const areas=f.map(x=>a0*x*(1+DISP*Math.max(0,1-x))*AREA_K);
+  const area0=areas[0];
+  const areaDec=(Math.min(...areas)-area0)/area0*100;
+  const facArea=Math.max(...areas)/area0*100;
+  const set=(id,v)=>document.getElementById(id).textContent=v;
+  set("tRate",s.rate); set("tAmp",a0.toFixed(1));
+  set("tAmpDec",ampDec.toFixed(1)); set("tFacAmpl",Math.round(facAmpl));
+  set("tArea",area0.toFixed(1)); set("tAreaDec",areaDec.toFixed(1)); set("tFacArea",Math.round(facArea));
 }
 
 function applyScn(){
