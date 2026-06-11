@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CMAP · Conducción motora del nervio mediano</title>
+<style>
+  :root{
+    --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;
+    --accent:#3aa0ff;--accent2:#ff9d4d;--green:#5ec5a0;
+    --plotbg:#0b1322;--grid:rgba(255,255,255,0.07);--gridMajor:rgba(255,255,255,0.18);--trace:#dbe7f5;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 50px;
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:18px 16px 15px;border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:19px}
+  header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+  h2{margin:0 0 2px;font-size:16px}
+  h3{margin:0 0 8px;font-size:13px;color:var(--accent)}
+  .sub{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col-plot{flex:1 1 520px;min-width:320px}
+  .col-side{flex:1 1 300px;min-width:280px}
+  svg{width:100%;background:var(--plotbg);border:1px solid var(--line);border-radius:8px;touch-action:none}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:14px}
+  .stat{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)}
+  .stat .lab{color:var(--muted);font-size:12px}
+  .stat .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:600;color:var(--txt)}
+  .stat .val .u{color:var(--muted);font-weight:400}
+  .group{font-size:11px;font-weight:700;margin:10px 0 4px}
+  .sl{display:block;margin-bottom:10px}
+  .sl .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+  .sl .top .l{color:var(--muted)}
+  .sl .top .v{font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--txt)}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .two{display:flex;gap:14px;margin-top:12px}
+  .two>div{flex:1}
+  .reset{margin-top:6px;font-size:13px;background:var(--card);border:1px solid var(--line);
+          border-radius:7px;padding:9px 14px;cursor:pointer;color:var(--txt);font-weight:600}
+  .reset:hover{filter:brightness(1.12)}
+  footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<header>
+<h1>CMAP · Conducción motora del nervio mediano</h1>
+<p>Electrodiagnóstico y Ultrasonido Neuromuscular · material interactivo</p>
+</header>
+
+<div class="wrap">
+  <div class="row">
+    <!-- Gráfica -->
+    <div class="col-plot">
+      <h2>Potencial de acción muscular compuesto (CMAP)</h2>
+      <p class="sub">Arrastre los círculos para mover los cursores de latencia y de pico; ajuste los parámetros en el panel.</p>
+      <svg id="plot" viewBox="0 0 720 460"></svg>
+      <div class="two">
+        <div>
+          <div class="sl"><div class="top"><span class="l">Escala de tiempo</span><span class="v" id="msVal"></span></div>
+            <input type="range" id="ms" min="1" max="10" step="1"></div>
+        </div>
+        <div>
+          <div class="sl"><div class="top"><span class="l">Escala de amplitud</span><span class="v" id="uvVal"></span></div>
+            <input type="range" id="uv" min="500" max="10000" step="500"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel lateral -->
+    <div class="col-side">
+      <div class="panel">
+        <h3>Mediciones</h3>
+        <div class="group" style="color:var(--accent)">Distal (muñeca)</div>
+        <div class="stat"><span class="lab">Latencia</span><span class="val" style="color:var(--accent)" id="dLat">—</span></div>
+        <div class="stat"><span class="lab">Amplitud pico</span><span class="val" style="color:var(--accent)" id="dAmp">—</span></div>
+        <div class="stat"><span class="lab">Duración fase neg.</span><span class="val" id="dDur">—</span></div>
+        <div class="stat"><span class="lab">Área (neg.)</span><span class="val" id="dArea">—</span></div>
+        <div class="group" style="color:var(--accent2)">Proximal (codo)</div>
+        <div class="stat"><span class="lab">Latencia</span><span class="val" style="color:var(--accent2)" id="pLat">—</span></div>
+        <div class="stat"><span class="lab">Amplitud pico</span><span class="val" style="color:var(--accent2)" id="pAmp">—</span></div>
+        <div class="stat"><span class="lab">Duración fase neg.</span><span class="val" id="pDur">—</span></div>
+        <div class="stat"><span class="lab">Área (neg.)</span><span class="val" id="pArea">—</span></div>
+        <div class="group" style="color:var(--txt)">Segmento muñeca–codo</div>
+        <div class="stat"><span class="lab">Δ Latencia</span><span class="val" id="dt">—</span></div>
+        <div class="stat"><span class="lab">Distancia</span><span class="val" id="distV">—</span></div>
+        <div class="stat"><span class="lab">Velocidad de conducción</span><span class="val" style="color:var(--green)" id="cv">—</span></div>
+        <div class="stat"><span class="lab">Caída de amplitud</span><span class="val" id="drop">—</span></div>
+      </div>
+
+      <div class="panel">
+        <h3>Parámetros de las respuestas</h3>
+        <div class="group" style="color:var(--accent)">Distal</div>
+        <div class="sl"><div class="top"><span class="l">Latencia</span><span class="v" id="dOnsetV"></span></div>
+          <input type="range" id="dOnset" min="1" max="12" step="0.1"></div>
+        <div class="sl"><div class="top"><span class="l">Amplitud</span><span class="v" id="dAmpV"></span></div>
+          <input type="range" id="dAmpS" min="500" max="12000" step="100"></div>
+        <div class="sl"><div class="top"><span class="l">Duración</span><span class="v" id="dDurV"></span></div>
+          <input type="range" id="dDurS" min="3" max="12" step="0.1"></div>
+
+        <div class="group" style="color:var(--accent2)">Proximal</div>
+        <div class="sl"><div class="top"><span class="l">Latencia</span><span class="v" id="pOnsetV"></span></div>
+          <input type="range" id="pOnset" min="1" max="16" step="0.1"></div>
+        <div class="sl"><div class="top"><span class="l">Amplitud</span><span class="v" id="pAmpV"></span></div>
+          <input type="range" id="pAmpS" min="500" max="12000" step="100"></div>
+        <div class="sl"><div class="top"><span class="l">Duración</span><span class="v" id="pDurV"></span></div>
+          <input type="range" id="pDurS" min="3" max="12" step="0.1"></div>
+
+        <div class="group" style="color:var(--txt)">Segmento</div>
+        <div class="sl"><div class="top"><span class="l">Distancia muñeca–codo</span><span class="v" id="distSV"></span></div>
+          <input type="range" id="distS" min="100" max="350" step="5"></div>
+
+        <button class="reset" id="reset">Restablecer valores</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular</i>. Modelo paramétrico con fines docentes; los valores no representan un registro real ni los de referencia de su laboratorio.
+</footer>
+
+<script>
+const SVGNS = "http://www.w3.org/2000/svg";
+const C = {ink:"#e8eef7",trace:"#dbe7f5",grid:"rgba(255,255,255,0.07)",gridMajor:"rgba(255,255,255,0.18)",
+          accent:"#3aa0ff",accent2:"#ff9d4d",muted:"#9fb2cc"};
+const PLOT = {w:720,h:460,padL:16,padR:16,padT:16,padB:28};
+const DIVS_X = 10, DIVS_Y = 8;
+
+const DEFAULTS = {
+  distal:{onset:3.4,amp:6800,dur:6.5},
+  proximal:{onset:7.8,amp:6400,dur:6.8},
+  distance:240, msPerDiv:5, uvPerDiv:5000
+};
+
+let state = JSON.parse(JSON.stringify(DEFAULTS));
+let cursors = {};
+
+// ---- Modelo continuo del CMAP (sin quiebres) ----
+function cmapAt(t, p){
+  const x = t - p.onset;
+  const peak = p.dur*0.45, wRise = p.dur*0.26, wFall = p.dur*0.5;
+  const blend = 1/(1+Math.exp(-(x-peak)/(p.dur*0.12)));
+  const w = wRise + (wFall-wRise)*blend;
+  const negative = p.amp*Math.exp(-Math.pow((x-peak)/w,2));
+  const posCenter = p.dur*1.15, posW = p.dur*0.6;
+  const positive = -p.amp*0.3*Math.exp(-Math.pow((x-posCenter)/posW,2));
+  const gate = 1/(1+Math.exp(-(x)/(p.dur*0.06)));
+  return (negative+positive)*gate;
+}
+function responseEnd(onset,dur){return onset+dur*2.4;}
+function peakT(p){return p.onset+p.dur*0.45;}
+
+// ---- Geometría ----
+function geom(){
+  const innerW = PLOT.w-PLOT.padL-PLOT.padR;
+  const innerH = PLOT.h-PLOT.padT-PLOT.padB;
+  const laneH = innerH/2;
+  const totalMs = state.msPerDiv*DIVS_X;
+  const uvFullSpan = state.uvPerDiv*2;
+  const xFromT = t => PLOT.padL + (t/totalMs)*innerW;
+  const tFromX = x => ((x-PLOT.padL)/innerW)*totalMs;
+  const baseline = lane => PLOT.padT + laneH*lane + laneH*0.62;
+  const yFromUv = (uv,lane) => baseline(lane) - (uv/uvFullSpan)*(laneH*0.5);
+  return {innerW,innerH,laneH,totalMs,uvFullSpan,xFromT,tFromX,baseline,yFromUv};
+}
+
+const svg = document.getElementById("plot");
+let G;
+
+function el(tag,attrs){
+  const e = document.createElementNS(SVGNS,tag);
+  for(const k in attrs) e.setAttribute(k,attrs[k]);
+  return e;
+}
+
+function buildPath(p,lane){
+  const N=1200; let d="";
+  for(let i=0;i<=N;i++){
+    const t=(i/N)*G.totalMs;
+    const X=G.xFromT(t), Y=G.yFromUv(cmapAt(t,p),lane);
+    d += (i===0?"M":"L")+X.toFixed(1)+" "+Y.toFixed(1)+" ";
+  }
+  return d;
+}
+
+let dragKey=null;
+function makeCursor(t,lane,color,label,key){
+  const p = lane===0?state.distal:state.proximal;
+  const x=G.xFromT(t);
+  const yTop=PLOT.padT+G.laneH*lane+4, yBot=PLOT.padT+G.laneH*(lane+1)-4;
+  const hY=G.yFromUv(cmapAt(t,p),lane);
+  const g=el("g",{});
+  g.appendChild(el("line",{x1:x,y1:yTop,x2:x,y2:yBot,stroke:color,"stroke-width":1,"stroke-dasharray":"4 3"}));
+  const c=el("circle",{cx:x,cy:hY,r:7,fill:color,stroke:"#0b1322","stroke-width":2,style:"cursor:ew-resize"});
+  c.addEventListener("pointerdown",ev=>{ev.preventDefault();dragKey=key;svg.setPointerCapture(ev.pointerId);});
+  g.appendChild(c);
+  const tx=el("text",{x:x,y:yTop-2,"font-size":10,fill:color,"text-anchor":"middle","font-family":"ui-monospace,monospace"});
+  tx.textContent=label; g.appendChild(tx);
+  return g;
+}
+
+function render(){
+  G=geom();
+  while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+  // grid
+  for(let i=0;i<=DIVS_X;i++){
+    const x=PLOT.padL+(i/DIVS_X)*G.innerW;
+    svg.appendChild(el("line",{x1:x,y1:PLOT.padT,x2:x,y2:PLOT.h-PLOT.padB,stroke:i%5===0?C.gridMajor:C.grid,"stroke-width":i%5===0?1:0.5}));
+  }
+  for(let i=0;i<=DIVS_Y;i++){
+    const y=PLOT.padT+(i/DIVS_Y)*G.innerH;
+    svg.appendChild(el("line",{x1:PLOT.padL,y1:y,x2:PLOT.w-PLOT.padR,y2:y,stroke:C.grid,"stroke-width":0.5}));
+  }
+  // basales
+  svg.appendChild(el("line",{x1:PLOT.padL,y1:G.baseline(0),x2:PLOT.w-PLOT.padR,y2:G.baseline(0),stroke:C.gridMajor,"stroke-width":0.8}));
+  svg.appendChild(el("line",{x1:PLOT.padL,y1:G.baseline(1),x2:PLOT.w-PLOT.padR,y2:G.baseline(1),stroke:C.gridMajor,"stroke-width":0.8}));
+  // trazos
+  svg.appendChild(el("path",{d:buildPath(state.distal,0),fill:"none",stroke:C.trace,"stroke-width":1.8,"stroke-linejoin":"round"}));
+  svg.appendChild(el("path",{d:buildPath(state.proximal,1),fill:"none",stroke:C.trace,"stroke-width":1.8,"stroke-linejoin":"round"}));
+  // etiquetas
+  let t1=el("text",{x:PLOT.padL+4,y:PLOT.padT+14,"font-size":11,fill:C.accent,"font-weight":600});t1.textContent="Distal · muñeca";svg.appendChild(t1);
+  let t2=el("text",{x:PLOT.padL+4,y:PLOT.padT+G.laneH+14,"font-size":11,fill:C.accent2,"font-weight":600});t2.textContent="Proximal · codo";svg.appendChild(t2);
+  // cursores
+  svg.appendChild(makeCursor(cursors.dLat,0,C.accent,"Lat","dLat"));
+  svg.appendChild(makeCursor(cursors.dPeak,0,C.accent,"Pico","dPeak"));
+  svg.appendChild(makeCursor(cursors.pLat,1,C.accent2,"Lat","pLat"));
+  svg.appendChild(makeCursor(cursors.pPeak,1,C.accent2,"Pico","pPeak"));
+  // escalas
+  let s1=el("text",{x:PLOT.padL+2,y:PLOT.h-8,"font-size":11,fill:C.muted,"font-family":"ui-monospace,monospace"});s1.textContent=state.uvPerDiv+" µV/div";svg.appendChild(s1);
+  let s2=el("text",{x:PLOT.w-PLOT.padR-2,y:PLOT.h-8,"font-size":11,fill:C.muted,"text-anchor":"end","font-family":"ui-monospace,monospace"});s2.textContent=state.msPerDiv+" ms/div";svg.appendChild(s2);
+
+  updateStats();
+}
+
+function measure(p,latT){
+  const endT=responseEnd(p.onset,p.dur);
+  let area=0; const steps=200;
+  for(let i=0;i<steps;i++){
+    const t0=p.onset+(i/steps)*(endT-p.onset);
+    const v=cmapAt(t0,p);
+    if(v>0) area += v*((endT-p.onset)/steps);
+  }
+  return {latency:latT,peakAmp:p.amp,negDuration:p.dur,area};
+}
+function setTxt(id,val,unit){
+  document.getElementById(id).innerHTML = val+' <span class="u">'+unit+'</span>';
+}
+function updateStats(){
+  const mD=measure(state.distal,cursors.dLat);
+  const mP=measure(state.proximal,cursors.pLat);
+  setTxt("dLat",mD.latency.toFixed(2),"ms");
+  setTxt("dAmp",(mD.peakAmp/1000).toFixed(2),"mV");
+  setTxt("dDur",mD.negDuration.toFixed(2),"ms");
+  setTxt("dArea",(mD.area/1000).toFixed(2),"mV·ms");
+  setTxt("pLat",mP.latency.toFixed(2),"ms");
+  setTxt("pAmp",(mP.peakAmp/1000).toFixed(2),"mV");
+  setTxt("pDur",mP.negDuration.toFixed(2),"ms");
+  setTxt("pArea",(mP.area/1000).toFixed(2),"mV·ms");
+  const dt=mP.latency-mD.latency;
+  setTxt("dt",dt.toFixed(2),"ms");
+  setTxt("distV",state.distance,"mm");
+  setTxt("cv", dt>0?(state.distance/dt).toFixed(1):"—","m/s");
+  setTxt("drop",((1-state.proximal.amp/state.distal.amp)*100).toFixed(0),"%");
+}
+
+// ---- Arrastre de cursores ----
+svg.addEventListener("pointermove",ev=>{
+  if(!dragKey) return;
+  const rect=svg.getBoundingClientRect();
+  const scaleX=PLOT.w/rect.width;
+  const x=(ev.clientX-rect.left)*scaleX;
+  const t=Math.max(0,Math.min(G.totalMs,G.tFromX(x)));
+  cursors[dragKey]=t;
+  render();
+});
+svg.addEventListener("pointerup",ev=>{if(dragKey)svg.releasePointerCapture(ev.pointerId);dragKey=null;});
+svg.addEventListener("pointerleave",()=>{dragKey=null;});
+
+// ---- Sincronizar cursores con parámetros ----
+function syncCursors(){
+  cursors={
+    dLat:state.distal.onset, dPeak:peakT(state.distal),
+    pLat:state.proximal.onset, pPeak:peakT(state.proximal)
+  };
+}
+
+// ---- Controles ----
+function bind(id,labelId,getfmt,onInput){
+  const inp=document.getElementById(id);
+  inp.addEventListener("input",()=>{
+    onInput(parseFloat(inp.value));
+    document.getElementById(labelId).textContent=getfmt();
+    syncCursorsKeepPeak();
+    render();
+  });
+}
+// mantiene los cursores siguiendo a los parámetros (latencia/pico) al mover sliders
+function syncCursorsKeepPeak(){
+  cursors.dLat=state.distal.onset; cursors.dPeak=peakT(state.distal);
+  cursors.pLat=state.proximal.onset; cursors.pPeak=peakT(state.proximal);
+}
+
+function initControls(){
+  const set=(id,v)=>document.getElementById(id).value=v;
+  set("ms",state.msPerDiv); set("uv",state.uvPerDiv);
+  set("dOnset",state.distal.onset); set("dAmpS",state.distal.amp); set("dDurS",state.distal.dur);
+  set("pOnset",state.proximal.onset); set("pAmpS",state.proximal.amp); set("pDurS",state.proximal.dur);
+  set("distS",state.distance);
+  refreshLabels();
+}
+function refreshLabels(){
+  document.getElementById("msVal").textContent=state.msPerDiv+" ms/div";
+  document.getElementById("uvVal").textContent=state.uvPerDiv+" µV/div";
+  document.getElementById("dOnsetV").textContent=state.distal.onset.toFixed(1)+" ms";
+  document.getElementById("dAmpV").textContent=state.distal.amp+" µV";
+  document.getElementById("dDurV").textContent=state.distal.dur.toFixed(1)+" ms";
+  document.getElementById("pOnsetV").textContent=state.proximal.onset.toFixed(1)+" ms";
+  document.getElementById("pAmpV").textContent=state.proximal.amp+" µV";
+  document.getElementById("pDurV").textContent=state.proximal.dur.toFixed(1)+" ms";
+  document.getElementById("distSV").textContent=state.distance+" mm";
+}
+
+bind("ms","msVal",()=>state.msPerDiv+" ms/div",v=>state.msPerDiv=v);
+bind("uv","uvVal",()=>state.uvPerDiv+" µV/div",v=>state.uvPerDiv=v);
+bind("dOnset","dOnsetV",()=>state.distal.onset.toFixed(1)+" ms",v=>state.distal.onset=v);
+bind("dAmpS","dAmpV",()=>state.distal.amp+" µV",v=>state.distal.amp=v);
+bind("dDurS","dDurV",()=>state.distal.dur.toFixed(1)+" ms",v=>state.distal.dur=v);
+bind("pOnset","pOnsetV",()=>state.proximal.onset.toFixed(1)+" ms",v=>state.proximal.onset=v);
+bind("pAmpS","pAmpV",()=>state.proximal.amp+" µV",v=>state.proximal.amp=v);
+bind("pDurS","pDurV",()=>state.proximal.dur.toFixed(1)+" ms",v=>state.proximal.dur=v);
+bind("distS","distSV",()=>state.distance+" mm",v=>state.distance=v);
+
+document.getElementById("reset").addEventListener("click",()=>{
+  state=JSON.parse(JSON.stringify(DEFAULTS));
+  syncCursors(); initControls(); render();
+});
+
+// ---- Inicio ----
+syncCursors();
+initControls();
+render();
+</script>
+</body>
+</html>
