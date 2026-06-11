@@ -25,6 +25,7 @@ GitHub Pages: **https://fortizc-max.github.io/edx-aplicaciones/**
 | EMG de fibra única · jitter y bloqueo | [`fibra-unica/`](fibra-unica/) | Simulador de SFEMG (estimulada y voluntaria, normal/anormal): descargas consecutivas superpuestas en cascada, jitter (MCD) y bloqueo con interpretación |
 | MUNE · número de unidades motoras | [`mune/`](mune/) | Simulador de la estimación del número de unidades motoras (incremental y multipunto): escalones cuantales / SMUP individuales, SMUP promedio y MUNE = CMAP máx ÷ SMUP; escenario normal y neurogénico |
 | Temperatura y neuroconducción | [`temperatura/`](temperatura/) | Efecto de la temperatura sobre el estudio de conducción: latencia, amplitud, duración y velocidad cambian con la temperatura (frío → más lento, más grande, más ancho); recomendación 32–36 °C |
+| Bloqueo de conducción y dispersión temporal | [`bloqueo-dispersion/`](bloqueo-dispersion/) | CMAP distal vs proximal: distingue bloqueo (cae amplitud y área) de dispersión temporal (aumenta duración, área conservada); escenarios e interpretación (desmielinizante vs axonal) |
 
 ## Cómo añadir una app nueva
 
