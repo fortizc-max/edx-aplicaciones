@@ -19,6 +19,7 @@ GitHub Pages: **https://fortizc-max.github.io/edx-aplicaciones/**
 | FSHD · patrón muscular interactivo | [`fshd-musculos/`](fshd-musculos/) | Esquema corporal interactivo del compromiso muscular en la distrofia facioescapulohumeral (temprano/tardío) |
 | EMG sintético · actividad espontánea y unidades motoras | [`emg-sintetico/`](emg-sintetico/) | Simulador de EMG con aguja (trazo + sonido sincronizados): fibrilaciones, ondas positivas, fasciculaciones, descargas miotónicas, repetitivas complejas, mioquimias; unidades normal/polifásica/inestable/neuropática/miopática y reclutamiento normal |
 | CMAP · conducción motora del nervio mediano | [`cmap-mediano/`](cmap-mediano/) | Simulador del potencial de acción muscular compuesto (muñeca y codo) con cursores arrastrables; calcula latencias, amplitudes, duración, área, velocidad de conducción y caída de amplitud |
+| SNAP · conducción sensitiva del nervio mediano | [`snap-mediano/`](snap-mediano/) | Simulador del potencial de acción nervioso sensitivo con cursores de inicio y pico; calcula latencia de inicio y de pico, amplitud base–pico y pico–pico, y velocidad de conducción sensitiva (un solo punto de estímulo) |
 
 ## Cómo añadir una app nueva
 
