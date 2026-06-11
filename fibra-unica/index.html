@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>EMG de fibra única · jitter y bloqueo</title>
+<style>
+  :root{
+    --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;
+    --accent:#3aa0ff;--accent2:#ff9d4d;--green:#5ec5a0;--bad:#ef6a6a;
+    --plotbg:#0b1322;--grid:rgba(255,255,255,0.07);--gridMajor:rgba(255,255,255,0.18);--trace:#dbe7f5;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 50px;
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:18px 16px 15px;border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:19px}
+  header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+  h2{margin:0 0 2px;font-size:16px}
+  h3{margin:0 0 8px;font-size:13px;color:var(--accent)}
+  .sub{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col-plot{flex:1 1 500px;min-width:320px}
+  .col-side{flex:1 1 320px;min-width:290px}
+  svg{width:100%;background:var(--plotbg);border:1px solid var(--line);border-radius:8px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:14px}
+  .stat{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)}
+  .stat .lab{color:var(--muted);font-size:12px}
+  .stat .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:600;color:var(--txt)}
+  .big{font-size:16px;font-weight:700;margin-top:6px}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}
+  .badge.ok{background:#10331f;color:var(--green);border:1px solid var(--green)}
+  .badge.bad{background:#3a1717;color:var(--bad);border:1px solid var(--bad)}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:10px}
+  .seg button{flex:1;border:none;background:var(--card);color:var(--txt);font-weight:600;padding:9px 0;cursor:pointer;font-size:13px}
+  .seg button.on{background:var(--accent);color:#06203b}
+  .sl{display:block;margin-bottom:10px}
+  .sl .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+  .sl .top .l{color:var(--muted)}
+  .sl .top .v{font-family:ui-monospace,monospace;color:var(--txt)}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  button.play{font-size:13px;border:1px solid var(--green);border-radius:8px;padding:9px 16px;cursor:pointer;background:var(--green);color:#06200f;font-weight:700}
+  button.play:hover{filter:brightness(1.08)}
+  .clin{font-size:12.5px;color:#cdd9ec;margin-top:6px}
+  footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<header>
+<h1>EMG de fibra única · jitter y bloqueo</h1>
+<p>Electrodiagnóstico y Ultrasonido Neuromuscular · material interactivo</p>
+</header>
+
+<div class="wrap">
+  <div class="row">
+    <div class="col-plot">
+      <h2>Descargas consecutivas superpuestas (cascada)</h2>
+      <p class="sub" id="trainSub">—</p>
+      <svg id="plot" viewBox="0 0 720 460"></svg>
+      <div style="display:flex;gap:12px;align-items:center;margin-top:10px">
+        <button id="play" class="play">▶ Reproducir en vivo</button>
+        <span class="sub" style="margin:0">Las descargas aparecen una a una; observe la variabilidad (jitter) del potencial.</span>
+      </div>
+    </div>
+
+    <div class="col-side">
+      <div class="panel">
+        <h3>Modo y respuesta</h3>
+        <div class="seg" id="modeSeg">
+          <button data-v="stim" class="on">Estimulada</button>
+          <button data-v="vol">Voluntaria</button>
+        </div>
+        <div class="seg" id="respSeg">
+          <button data-v="norm" class="on">Normal</button>
+          <button data-v="abn">Anormal</button>
+        </div>
+        <div class="clin" id="clin"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Parámetros</h3>
+        <div class="sl"><div class="top"><span class="l">Jitter (MCD)</span><span class="v" id="jitV"></span></div>
+          <input type="range" id="jit" min="5" max="200" step="1"></div>
+        <div class="sl"><div class="top"><span class="l">Bloqueo</span><span class="v" id="blkV"></span></div>
+          <input type="range" id="blk" min="0" max="60" step="1"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Resultado</h3>
+        <div class="stat"><span class="lab">Modo</span><span class="val" id="rMode">—</span></div>
+        <div class="stat"><span class="lab">Jitter (MCD)</span><span class="val" id="rJit">—</span></div>
+        <div class="stat"><span class="lab">Bloqueo</span><span class="val" id="rBlk">—</span></div>
+        <div class="stat"><span class="lab">Límite superior normal</span><span class="val" id="rCut">—</span></div>
+        <div style="text-align:center;margin-top:8px"><span class="badge" id="badge">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular</i>. Modelo paramétrico con fines docentes; los valores no representan un registro real ni los de referencia de su laboratorio.
+</footer>
+
+<script>
+const SVGNS="http://www.w3.org/2000/svg";
+const C={ref:"#9fb2cc",jit:"#3aa0ff",stim:"#ff9d4d",grid:"rgba(255,255,255,0.07)",muted:"#9fb2cc"};
+const PLOT={w:720,h:460,padL:16,padR:16,padT:18,padB:24};
+const NSWEEPS=26;
+const WINDOW_US=2000;          // ventana temporal (µs) que ocupa el ancho útil
+const CUT={stim:28, vol:40};   // límite superior normal del jitter (µs)
+
+let mode="stim", resp="norm";
+let mcd=18, pBlock=0;          // jitter (MCD, µs) y bloqueo (%)
+let samples=[], blocks=[];
+let revealed=NSWEEPS, playing=false, lastTs=null, REV=0.07;
+
+const PRESET={
+  stim:{norm:{mcd:18,blk:0}, abn:{mcd:60,blk:15}},
+  vol :{norm:{mcd:28,blk:0}, abn:{mcd:95,blk:28}}
+};
+
+const svg=document.getElementById("plot");
+function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function gauss(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+
+function genTrain(){
+  samples=[]; blocks=[];
+  const sigma=mcd/1.128;                 // µs (MCD ≈ 1,128·σ)
+  for(let i=0;i<NSWEEPS;i++){ samples.push(gauss()*sigma); blocks.push(Math.random()*100<pBlock); }
+}
+
+function spike(x,y,h,color,op){
+  const w=2.6;
+  const d=`M ${x-4*w} ${y} L ${x-w} ${y} L ${x} ${y-h} L ${x+w} ${y+h} L ${x+3*w} ${y} L ${x+5*w} ${y}`;
+  svg.appendChild(el("path",{d:d,fill:"none",stroke:color,"stroke-width":1.4,"stroke-linejoin":"round",opacity:op}));
+}
+
+function render(){
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  const innerW=PLOT.w-PLOT.padL-PLOT.padR, innerH=PLOT.h-PLOT.padT-PLOT.padB;
+  const rowH=innerH/NSWEEPS;
+  const usToPx=innerW/WINDOW_US;
+  const refX=PLOT.padL+innerW*0.22;            // referencia (estímulo o 1.er potencial), alineada
+  const jX0=refX+innerW*0.40;                  // posición nominal del potencial que varía
+  const h=Math.min(rowH*0.42,9);
+
+  // guías verticales
+  svg.appendChild(el("line",{x1:refX,y1:PLOT.padT,x2:refX,y2:PLOT.h-PLOT.padB,stroke:"rgba(255,255,255,0.20)","stroke-width":1,"stroke-dasharray":"3 3"}));
+  svg.appendChild(el("line",{x1:jX0,y1:PLOT.padT,x2:jX0,y2:PLOT.h-PLOT.padB,stroke:"rgba(58,160,255,0.18)","stroke-width":1,"stroke-dasharray":"3 3"}));
+
+  const nShow=Math.min(NSWEEPS,Math.ceil(revealed)), nFull=Math.floor(revealed);
+  for(let i=0;i<nShow;i++){
+    const op=i<nFull?0.95:Math.max(0.2,revealed-nFull);
+    const y=PLOT.padT+(i+0.5)*rowH;
+    // potencial de referencia (alineado)
+    if(mode==="stim"){
+      svg.appendChild(el("line",{x1:refX,y1:y-h,x2:refX,y2:y+h,stroke:C.stim,"stroke-width":1.3,opacity:op})); // artefacto de estímulo
+    } else {
+      spike(refX,y,h,C.ref,op);                // 1.er potencial (disparador)
+    }
+    // potencial que varía (jitter) — puede faltar (bloqueo)
+    if(!blocks[i]){
+      const x=jX0+samples[i]*usToPx;
+      spike(x,y,h,C.jit,op);
+    }
+  }
+
+  // etiquetas
+  const l1=el("text",{x:refX,y:PLOT.h-8,"font-size":10,fill:C.muted,"text-anchor":"middle","font-family":"ui-monospace,monospace"});
+  l1.textContent=mode==="stim"?"estímulo":"1.er potencial"; svg.appendChild(l1);
+  const l2=el("text",{x:jX0,y:PLOT.h-8,"font-size":10,fill:"#7fbcff","text-anchor":"middle","font-family":"ui-monospace,monospace"});
+  l2.textContent=mode==="stim"?"potencial (jitter)":"2.º potencial (jitter)"; svg.appendChild(l2);
+
+  updateOut();
+}
+
+function updateOut(){
+  const cut=CUT[mode];
+  document.getElementById("rMode").textContent = mode==="stim"?"Estimulada":"Voluntaria";
+  document.getElementById("rJit").innerHTML = "<b>"+Math.round(mcd)+"</b> µs";
+  document.getElementById("rBlk").textContent = Math.round(pBlock)+" %";
+  document.getElementById("rCut").textContent = cut+" µs";
+  const abnormal = mcd>cut || pBlock>1;
+  const b=document.getElementById("badge");
+  if(abnormal){ b.className="badge bad"; b.textContent = pBlock>1 ? "Anormal · jitter aumentado y bloqueo" : "Anormal · jitter aumentado"; }
+  else { b.className="badge ok"; b.textContent="Normal"; }
+  document.getElementById("clin").textContent =
+    mode==="stim"
+    ? "Estimulación axonal a frecuencia fija: el jitter es la variabilidad de la latencia entre el estímulo y el potencial de fibra única. El jitter normal es menor que en la activación voluntaria (una sola unión neuromuscular)."
+    : "Activación voluntaria: se registran dos fibras de la misma unidad motora; el jitter es la variabilidad del intervalo entre sus potenciales en descargas consecutivas. El bloqueo (fallo intermitente de un potencial) aparece cuando el jitter es muy alto.";
+  document.getElementById("trainSub").textContent =
+    (mode==="stim"?"Modo estimulado":"Modo voluntario")+" · "+NSWEEPS+" descargas superpuestas. El potencial azul varía (jitter); los huecos son bloqueos.";
+}
+
+// animación
+function loop(ts){
+  if(!playing)return;
+  if(lastTs===null)lastTs=ts;
+  revealed+=(ts-lastTs)/1000/REV; lastTs=ts;
+  if(revealed>=NSWEEPS){revealed=NSWEEPS;playing=false;}
+  render();
+  if(playing)requestAnimationFrame(loop);
+}
+function play(){genTrain();revealed=0;playing=true;lastTs=null;requestAnimationFrame(loop);}
+
+function setParams(){
+  document.getElementById("jit").value=mcd;
+  document.getElementById("blk").value=pBlock;
+  document.getElementById("jitV").textContent=Math.round(mcd)+" µs";
+  document.getElementById("blkV").textContent=Math.round(pBlock)+" %";
+}
+function applyPreset(){
+  const p=PRESET[mode][resp];
+  mcd=p.mcd; pBlock=p.blk;
+  setParams();
+  play();
+}
+
+document.getElementById("modeSeg").querySelectorAll("button").forEach(btn=>{
+  btn.addEventListener("click",()=>{ mode=btn.dataset.v;
+    document.getElementById("modeSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===btn));
+    applyPreset(); });
+});
+document.getElementById("respSeg").querySelectorAll("button").forEach(btn=>{
+  btn.addEventListener("click",()=>{ resp=btn.dataset.v;
+    document.getElementById("respSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===btn));
+    applyPreset(); });
+});
+document.getElementById("jit").addEventListener("input",e=>{ mcd=parseFloat(e.target.value);
+  document.getElementById("jitV").textContent=Math.round(mcd)+" µs"; genTrain(); revealed=NSWEEPS; render(); });
+document.getElementById("blk").addEventListener("input",e=>{ pBlock=parseFloat(e.target.value);
+  document.getElementById("blkV").textContent=Math.round(pBlock)+" %"; genTrain(); revealed=NSWEEPS; render(); });
+document.getElementById("play").addEventListener("click",play);
+
+// init
+setParams(); applyPreset();
+</script>
+</body>
+</html>

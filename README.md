@@ -22,6 +22,7 @@ GitHub Pages: **https://fortizc-max.github.io/edx-aplicaciones/**
 | SNAP · conducción sensitiva del nervio mediano | [`snap-mediano/`](snap-mediano/) | Simulador del potencial de acción nervioso sensitivo con cursores de inicio y pico; calcula latencia de inicio y de pico, amplitud base–pico y pico–pico, y velocidad de conducción sensitiva (un solo punto de estímulo) |
 | CSI · índice sensorial combinado de Robinson | [`csi-robinson/`](csi-robinson/) | Índice sensorial combinado para el síndrome del túnel del carpo: tres comparaciones mediano vs no mediano (radial–pulgar, cubital–anular y palmar), diferencias de latencia de pico, CSI total e interpretación (normal ≤ 0,9 ms) |
 | Estimulación repetitiva · unión neuromuscular | [`estimulacion-repetitiva/`](estimulacion-repetitiva/) | Simulador del test de estimulación nerviosa repetitiva (RNS) con reproducción animada: tren de CMAP, envolvente y cálculo de decremento/incremento; escenarios normal 3 Hz, decremento (miastenia), decremento progresivo e incremento >100 % a 30 Hz (Lambert-Eaton) |
+| EMG de fibra única · jitter y bloqueo | [`fibra-unica/`](fibra-unica/) | Simulador de SFEMG (estimulada y voluntaria, normal/anormal): descargas consecutivas superpuestas en cascada, jitter (MCD) y bloqueo con interpretación |
 
 ## Cómo añadir una app nueva
 
