@@ -59,8 +59,8 @@
   <div class="row">
     <div class="col-plot">
       <h2>Comparaciones sensitivas mediano vs no mediano</h2>
-      <p class="sub">Tres comparaciones sobre la misma distancia: mediano–radial (pulgar), mediano–ulnar (anular) y mediano palmar–ulnar palmar (muñeca). El CSI es la suma de las tres diferencias de latencia de pico.</p>
-      <svg id="plot" viewBox="0 0 720 430"></svg>
+      <p class="sub">Tres comparaciones sobre la misma distancia: mediano–radial (pulgar), mediano–cubital (anular) y mediano palmar–cubital palmar (muñeca). El CSI es la suma de las tres diferencias de latencia de pico.</p>
+      <svg id="plot" viewBox="0 0 720 500"></svg>
       <div class="sl" style="margin-top:10px"><div class="top"><span class="l">Escala de tiempo</span><span class="v" id="msVal"></span></div>
         <input type="range" id="ms" min="0.5" max="2" step="0.5"></div>
     </div>
@@ -69,8 +69,8 @@
       <div class="panel">
         <h3>Índice combinado (CSI)</h3>
         <div class="seg"><span><span class="med">Mediano</span> − <span class="cmp">Radial</span> (pulgar)</span><span class="d" id="seg0">—</span></div>
-        <div class="seg"><span><span class="med">Mediano</span> − <span class="cmp">Ulnar</span> (anular)</span><span class="d" id="seg1">—</span></div>
-        <div class="seg"><span><span class="med">Med. palmar</span> − <span class="cmp">Uln. palmar</span></span><span class="d" id="seg2">—</span></div>
+        <div class="seg"><span><span class="med">Mediano</span> − <span class="cmp">Cubital</span> (anular)</span><span class="d" id="seg1">—</span></div>
+        <div class="seg"><span><span class="med">Med. palmar</span> − <span class="cmp">Cub. palmar</span></span><span class="d" id="seg2">—</span></div>
         <div class="csi"><span>CSI</span><span class="d" id="csiVal">—</span></div>
         <div style="text-align:center;margin-top:10px"><span class="badge" id="badge">—</span></div>
         <p class="sub" style="margin-top:8px">Normal: CSI ≤ 0,9 ms. Un CSI &gt; 0,9 ms apoya el diagnóstico de síndrome del túnel del carpo (Robinson 1998).</p>
@@ -100,7 +100,7 @@ Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromusc
 <script>
 const SVGNS="http://www.w3.org/2000/svg";
 const C={med:"#3aa0ff",cmp:"#ff9d4d",grid:"rgba(255,255,255,0.07)",gridMajor:"rgba(255,255,255,0.18)",muted:"#9fb2cc",txt:"#e8eef7"};
-const PLOT={w:720,h:430,padL:14,padR:14,padT:14,padB:24};
+const PLOT={w:720,h:500,padL:14,padR:14,padT:14,padB:24};
 const DIVS_X=10;
 const CUTOFF=0.9;       // ms, límite superior normal del CSI
 const DUR=1.3;          // ms, duración aproximada del SNAP
@@ -110,14 +110,14 @@ const BASE={
   medThumb:{lab:"Mediano",site:"Pulgar",lat:3.07,np:50.5,pp:84.4,role:"med"},
   radThumb:{lab:"Radial",site:"Pulgar",lat:3.28,np:27.0,pp:51.3,role:"cmp"},
   medRing:{lab:"Mediano",site:"Anular",lat:3.96,np:39.7,pp:61.5,role:"med"},
-  ulnRing:{lab:"Ulnar",site:"Anular",lat:3.96,np:52.2,pp:129.5,role:"cmp"},
+  ulnRing:{lab:"Cubital",site:"Anular",lat:3.96,np:52.2,pp:129.5,role:"cmp"},
   medPalm:{lab:"Mediano palmar",site:"Muñeca",lat:1.93,np:197.4,pp:148.2,role:"med"},
-  ulnPalm:{lab:"Ulnar palmar",site:"Muñeca",lat:1.88,np:71.0,pp:121.2,role:"cmp"}
+  ulnPalm:{lab:"Cubital palmar",site:"Muñeca",lat:1.88,np:71.0,pp:121.2,role:"cmp"}
 };
 const LANES=[
   {title:"Mediano – Radial (pulgar)",med:"medThumb",cmp:"radThumb"},
-  {title:"Mediano – Ulnar (anular)",med:"medRing",cmp:"ulnRing"},
-  {title:"Mediano palmar – Ulnar palmar (muñeca)",med:"medPalm",cmp:"ulnPalm"}
+  {title:"Mediano – Cubital (anular)",med:"medRing",cmp:"ulnRing"},
+  {title:"Mediano palmar – Cubital palmar (muñeca)",med:"medPalm",cmp:"ulnPalm"}
 ];
 const ORDER=["medThumb","radThumb","medRing","ulnRing","medPalm","ulnPalm"];
 
@@ -139,7 +139,7 @@ function traceVal(t,lat,amp){
 function render(){
   while(svg.firstChild)svg.removeChild(svg.firstChild);
   const innerW=PLOT.w-PLOT.padL-PLOT.padR, innerH=PLOT.h-PLOT.padT-PLOT.padB;
-  const laneH=innerH/3, totalMs=msPerDiv*DIVS_X;
+  const bandH=innerH/3, totalMs=msPerDiv*DIVS_X;
   const xFromT=t=>PLOT.padL+(t/totalMs)*innerW;
 
   // rejilla vertical (tiempo, compartida)
@@ -148,31 +148,33 @@ function render(){
     svg.appendChild(el("line",{x1:x,y1:PLOT.padT,x2:x,y2:PLOT.h-PLOT.padB,stroke:i%5===0?C.gridMajor:C.grid,"stroke-width":i%5===0?1:0.5}));
   }
 
+  // dibuja una traza sobre su propia línea de base, con marca de pico que cruza la banda
+  function drawTrace(p,color,baseY,ampScale,bandTop,bandBot){
+    svg.appendChild(el("line",{x1:PLOT.padL,y1:baseY,x2:PLOT.w-PLOT.padR,y2:baseY,stroke:"rgba(255,255,255,0.10)","stroke-width":0.7}));
+    const N=900;let d="";
+    for(let i=0;i<=N;i++){const t=(i/N)*totalMs;d+=(i===0?"M":"L")+xFromT(t).toFixed(1)+" "+(baseY-traceVal(t,p.lat,p.np)*ampScale).toFixed(1)+" ";}
+    svg.appendChild(el("path",{d:d,fill:"none",stroke:color,"stroke-width":1.6,"stroke-linejoin":"round"}));
+    const px=xFromT(p.lat), py=baseY-traceVal(p.lat,p.lat,p.np)*ampScale;
+    svg.appendChild(el("line",{x1:px,y1:bandTop+3,x2:px,y2:bandBot-3,stroke:color,"stroke-width":0.8,"stroke-dasharray":"3 3"}));
+    svg.appendChild(el("circle",{cx:px,cy:py,r:3.5,fill:color,stroke:"#0b1322","stroke-width":1.5}));
+  }
+
   LANES.forEach((L,li)=>{
-    const laneTop=PLOT.padT+li*laneH;
-    const baseline=laneTop+laneH*0.74;
+    const bandTop=PLOT.padT+li*bandH, bandBot=bandTop+bandH;
     const med=R[L.med], cmp=R[L.cmp];
-    const maxNp=Math.max(med.np,cmp.np);
-    const yFromUv=uv=>baseline-(uv/maxNp)*(laneH*0.52);
-    // separador
-    if(li>0) svg.appendChild(el("line",{x1:PLOT.padL,y1:laneTop,x2:PLOT.w-PLOT.padR,y2:laneTop,stroke:C.gridMajor,"stroke-width":0.6}));
-    // basal
-    svg.appendChild(el("line",{x1:PLOT.padL,y1:baseline,x2:PLOT.w-PLOT.padR,y2:baseline,stroke:"rgba(255,255,255,0.12)","stroke-width":0.7}));
-    // título
-    const tt=el("text",{x:PLOT.padL+3,y:laneTop+13,"font-size":11,fill:C.muted,"font-weight":600});tt.textContent=L.title;svg.appendChild(tt);
-    // trazos
-    [[med,C.med],[cmp,C.cmp]].forEach(([p,color])=>{
-      const N=900;let d="";
-      for(let i=0;i<=N;i++){const t=(i/N)*totalMs;d+=(i===0?"M":"L")+xFromT(t).toFixed(1)+" "+yFromUv(traceVal(t,p.lat,p.np)).toFixed(1)+" ";}
-      svg.appendChild(el("path",{d:d,fill:"none",stroke:color,"stroke-width":1.6,"stroke-linejoin":"round"}));
-      // marcador de pico
-      const px=xFromT(p.lat), py=yFromUv(p.np);
-      svg.appendChild(el("line",{x1:px,y1:laneTop+laneH*0.12,x2:px,y2:baseline,stroke:color,"stroke-width":0.8,"stroke-dasharray":"3 3"}));
-      svg.appendChild(el("circle",{cx:px,cy:py,r:3.5,fill:color,stroke:"#0b1322","stroke-width":1.5}));
-    });
-    // Δ de la comparación
+    const pairMax=Math.max(med.np,cmp.np);
+    const ampScale=(bandH*0.30)/pairMax;     // misma escala para ambas ondas de la comparación
+    const medBase=bandTop+bandH*0.46;        // mediano arriba
+    const cmpBase=bandTop+bandH*0.90;        // comparador abajo (líneas de base separadas)
+    if(li>0) svg.appendChild(el("line",{x1:PLOT.padL,y1:bandTop,x2:PLOT.w-PLOT.padR,y2:bandTop,stroke:C.gridMajor,"stroke-width":0.6}));
+    // título de la comparación
+    const tt=el("text",{x:PLOT.padL+3,y:bandTop+13,"font-size":11,fill:C.muted,"font-weight":600});tt.textContent=L.title;svg.appendChild(tt);
+    // las dos ondas, cada una en su línea de base
+    drawTrace(med,C.med,medBase,ampScale,bandTop,bandBot);
+    drawTrace(cmp,C.cmp,cmpBase,ampScale,bandTop,bandBot);
+    // Δ de latencia de pico de la comparación
     const diff=med.lat-cmp.lat;
-    const dtx=el("text",{x:PLOT.w-PLOT.padR-3,y:laneTop+13,"font-size":11,fill:Math.abs(diff)>0.5?"#ef6a6a":C.txt,"text-anchor":"end","font-family":"ui-monospace,monospace","font-weight":700});
+    const dtx=el("text",{x:PLOT.w-PLOT.padR-3,y:bandTop+13,"font-size":11,fill:Math.abs(diff)>0.5?"#ef6a6a":C.txt,"text-anchor":"end","font-family":"ui-monospace,monospace","font-weight":700});
     dtx.textContent="Δ "+(diff>=0?"+":"")+diff.toFixed(2)+" ms";svg.appendChild(dtx);
   });
 
