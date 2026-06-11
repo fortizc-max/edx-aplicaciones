@@ -32,9 +32,12 @@
   .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}
   .badge.ok{background:#10331f;color:var(--green);border:1px solid var(--green)}
   .badge.bad{background:#3a1717;color:var(--bad);border:1px solid var(--bad)}
-  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:10px}
-  .seg button{flex:1;border:none;background:var(--card);color:var(--txt);font-weight:600;padding:9px 0;cursor:pointer;font-size:13px}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:6px}
+  .seg button{flex:1;border:none;background:var(--card);color:var(--txt);font-weight:600;padding:10px 0;cursor:pointer;font-size:13px}
   .seg button.on{background:var(--accent);color:#06203b}
+  .seglabel{font-size:11px;font-weight:700;color:var(--muted);margin:2px 0 5px;text-transform:uppercase;letter-spacing:0.04em}
+  #respSeg button[data-v="norm"].on{background:var(--green);color:#06200f}
+  #respSeg button[data-v="abn"].on{background:var(--bad);color:#2a0d0d}
   .sl{display:block;margin-bottom:10px}
   .sl .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
   .sl .top .l{color:var(--muted)}
@@ -66,11 +69,13 @@
 
     <div class="col-side">
       <div class="panel">
-        <h3>Modo y respuesta</h3>
+        <h3>Selección del estudio</h3>
+        <div class="seglabel">1 · Método de activación</div>
         <div class="seg" id="modeSeg">
           <button data-v="stim" class="on">Estimulada</button>
           <button data-v="vol">Voluntaria</button>
         </div>
+        <div class="seglabel" style="margin-top:12px">2 · Resultado</div>
         <div class="seg" id="respSeg">
           <button data-v="norm" class="on">Normal</button>
           <button data-v="abn">Anormal</button>
