@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Estimulación repetitiva · unión neuromuscular</title>
+<style>
+  :root{
+    --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;
+    --accent:#3aa0ff;--green:#5ec5a0;--bad:#ef6a6a;
+    --plotbg:#0b1322;--grid:rgba(255,255,255,0.07);--gridMajor:rgba(255,255,255,0.18);--trace:#dbe7f5;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 50px;
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:18px 16px 15px;border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:19px}
+  header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+  h2{margin:0 0 2px;font-size:16px}
+  h3{margin:0 0 8px;font-size:13px;color:var(--accent)}
+  .sub{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col-plot{flex:1 1 500px;min-width:320px}
+  .col-side{flex:1 1 320px;min-width:290px}
+  svg{width:100%;background:var(--plotbg);border:1px solid var(--line);border-radius:8px}
+  select{width:100%;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--card);color:var(--txt);font-weight:600;margin-bottom:10px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:14px}
+  .stat{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)}
+  .stat .lab{color:var(--muted);font-size:12px}
+  .stat .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:600;color:var(--txt)}
+  .big{font-size:16px;font-weight:700;margin-top:6px}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}
+  .badge.ok{background:#10331f;color:var(--green);border:1px solid var(--green)}
+  .badge.bad{background:#3a1717;color:var(--bad);border:1px solid var(--bad)}
+  .sl{display:block;margin-bottom:10px}
+  .sl .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+  .sl .top .l{color:var(--muted)}
+  .sl .top .v{font-family:ui-monospace,monospace;color:var(--txt)}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .clin{font-size:12.5px;color:#cdd9ec;margin-top:6px}
+  footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<header>
+<h1>Estimulación repetitiva · unión neuromuscular</h1>
+<p>Electrodiagnóstico y Ultrasonido Neuromuscular · material interactivo</p>
+</header>
+
+<div class="wrap">
+  <div class="row">
+    <div class="col-plot">
+      <h2>Tren de respuestas (RNS)</h2>
+      <p class="sub" id="trainSub">—</p>
+      <svg id="plot" viewBox="0 0 720 360"></svg>
+      <div class="sl" style="margin-top:10px"><div class="top"><span class="l" id="magLab">Magnitud del cambio</span><span class="v" id="magV"></span></div>
+        <input type="range" id="mag"></div>
+    </div>
+
+    <div class="col-side">
+      <div class="panel">
+        <h3>Escenario</h3>
+        <select id="scn">
+          <option value="norm3">Normal a 3 Hz</option>
+          <option value="dec3">Decremento a 3 Hz (postsináptico)</option>
+          <option value="facil">Facilitación normal post-ejercicio</option>
+          <option value="decProg">Descenso progresivo (anormal)</option>
+          <option value="inc30">Incremento &gt;100 % a 30 Hz (presináptico)</option>
+        </select>
+        <div class="clin" id="clin"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Resultado</h3>
+        <div class="stat"><span class="lab">Frecuencia / condición</span><span class="val" id="freq">—</span></div>
+        <div class="stat"><span class="lab">Número de respuestas</span><span class="val" id="nresp">—</span></div>
+        <div class="stat"><span class="lab">Amplitud 1.ª respuesta</span><span class="val" id="amp1">100 %</span></div>
+        <div class="stat"><span class="lab" id="extLab">Amplitud mínima</span><span class="val" id="extVal">—</span></div>
+        <div class="big" id="metric">—</div>
+        <div style="text-align:center"><span class="badge" id="badge">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular</i>. Modelo paramétrico con fines docentes; los valores no representan un registro real ni los de referencia de su laboratorio.
+</footer>
+
+<script>
+const SVGNS="http://www.w3.org/2000/svg";
+const C={trace:"#dbe7f5",grid:"rgba(255,255,255,0.07)",gridMajor:"rgba(255,255,255,0.18)",accent:"#3aa0ff",muted:"#9fb2cc",bad:"#ef6a6a"};
+const PLOT={w:720,h:360,padL:16,padR:16,padT:16,padB:30};
+const N=10;
+
+const SCN={
+  norm3:{freq:"3 Hz",pat:"flat",metric:"dec",mag:{min:0,max:50,def:3},
+    clin:"A 2–3 Hz, en condiciones normales el decremento es menor del 10 %: las reservas de acetilcolina mantienen estable la amplitud."},
+  dec3:{freq:"3 Hz",pat:"ushape",metric:"dec",mag:{min:0,max:60,def:25},
+    clin:"Decremento mayor del 10 %, máximo hacia la 4.ª–5.ª respuesta con leve recuperación posterior (forma en U): típico de trastornos postsinápticos (miastenia gravis)."},
+  facil:{freq:"Post-ejercicio (10 s)",pat:"inc",metric:"inc",mag:{min:0,max:250,def:20},
+    clin:"Tras un ejercicio breve puede haber un leve incremento de amplitud (facilitación) de magnitud normal; en la miastenia repara transitoriamente el decremento."},
+  decProg:{freq:"3 Hz",pat:"prog",metric:"dec",mag:{min:0,max:70,def:45},
+    clin:"Descenso progresivo y mantenido de la amplitud, sin recuperación: agotamiento de la transmisión; puede acentuarse tras el ejercicio (agotamiento post-activación)."},
+  inc30:{freq:"30 Hz",pat:"inc",metric:"inc",mag:{min:0,max:250,def:140},
+    clin:"Con estimulación de alta frecuencia (20–50 Hz) o tras ejercicio, un incremento mayor del 100 % indica un trastorno presináptico (Lambert-Eaton, botulismo)."}
+};
+
+let scn="norm3", mag=0.03;
+
+const USHAPE=[0,0.45,0.80,1.00,0.95,0.88,0.83,0.80,0.78,0.77];
+const RAMP  =[0,0.45,0.75,0.90,0.97,1.00,1.00,1.00,1.00,1.00];
+
+function factors(){
+  const s=SCN[scn], f=[];
+  for(let i=0;i<N;i++){
+    if(s.pat==="flat") f.push(1 + mag*0.5*Math.sin(i*1.7));      // casi plano
+    else if(s.pat==="ushape") f.push(1 - mag*USHAPE[i]);
+    else if(s.pat==="prog") f.push(1 - mag*(i/(N-1)));
+    else if(s.pat==="inc") f.push(1 + mag*RAMP[i]);
+  }
+  return f;
+}
+
+const svg=document.getElementById("plot");
+function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function cmapShape(u){return Math.exp(-Math.pow((u-0.38)/0.13,2))-0.22*Math.exp(-Math.pow((u-0.62)/0.17,2));}
+const PEAKV=cmapShape(0.38);
+
+function render(){
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  const innerW=PLOT.w-PLOT.padL-PLOT.padR, innerH=PLOT.h-PLOT.padT-PLOT.padB;
+  const baseline=PLOT.padT+innerH*0.80;
+  const f=factors();
+  const maxF=Math.max(1.05,...f.map(Math.abs));
+  const ampPx=(innerH*0.66)/maxF;
+  const slotW=innerW/N;
+
+  // rejilla
+  for(let i=0;i<=N;i++){const x=PLOT.padL+i*slotW;svg.appendChild(el("line",{x1:x,y1:PLOT.padT,x2:x,y2:PLOT.h-PLOT.padB,stroke:C.grid,"stroke-width":0.5}));}
+  svg.appendChild(el("line",{x1:PLOT.padL,y1:baseline,x2:PLOT.w-PLOT.padR,y2:baseline,stroke:C.gridMajor,"stroke-width":0.8}));
+
+  const peaks=[];
+  for(let i=0;i<N;i++){
+    const x0=PLOT.padL+i*slotW, wW=slotW*0.74;
+    let d="";const M=120;
+    for(let k=0;k<=M;k++){const u=k/M;const X=x0+u*wW;const Y=baseline-f[i]*cmapShape(u)*ampPx;d+=(k===0?"M":"L")+X.toFixed(1)+" "+Y.toFixed(1)+" ";}
+    svg.appendChild(el("path",{d:d,fill:"none",stroke:C.trace,"stroke-width":1.6,"stroke-linejoin":"round"}));
+    const px=x0+0.38*wW, py=baseline-f[i]*PEAKV*ampPx;
+    peaks.push([px,py]);
+    // número de respuesta
+    const tn=el("text",{x:x0+wW*0.38,y:PLOT.h-10,"font-size":10,fill:C.muted,"text-anchor":"middle","font-family":"ui-monospace,monospace"});tn.textContent=(i+1);svg.appendChild(tn);
+  }
+  // envolvente
+  let ed="";peaks.forEach((p,i)=>ed+=(i===0?"M":"L")+p[0].toFixed(1)+" "+p[1].toFixed(1)+" ");
+  svg.appendChild(el("path",{d:ed,fill:"none",stroke:C.accent,"stroke-width":1,"stroke-dasharray":"4 3","opacity":0.8}));
+  peaks.forEach(p=>svg.appendChild(el("circle",{cx:p[0],cy:p[1],r:2.6,fill:C.accent})));
+
+  updateOut(f);
+}
+
+function updateOut(f){
+  const s=SCN[scn];
+  document.getElementById("freq").textContent=s.freq;
+  document.getElementById("nresp").textContent=N;
+  const a1=f[0], mn=Math.min(...f), mx=Math.max(...f);
+  let pct, label, badge, bad;
+  if(s.metric==="dec"){
+    pct=(a1-mn)/a1*100;
+    document.getElementById("extLab").textContent="Amplitud mínima";
+    document.getElementById("extVal").textContent=(mn/a1*100).toFixed(0)+" %";
+    document.getElementById("metric").innerHTML="Decremento: <b>"+pct.toFixed(0)+" %</b>";
+    bad = pct>10;
+    badge = bad ? "Anormal · decremento >10 %" : "Normal · decremento <10 %";
+  } else {
+    pct=(mx-a1)/a1*100;
+    document.getElementById("extLab").textContent="Amplitud máxima";
+    document.getElementById("extVal").textContent=(mx/a1*100).toFixed(0)+" %";
+    document.getElementById("metric").innerHTML="Incremento: <b>"+pct.toFixed(0)+" %</b>";
+    bad = pct>100;
+    badge = bad ? "Marcado >100 % · sugiere trastorno presináptico (LEMS)" : "Facilitación de magnitud normal";
+  }
+  const b=document.getElementById("badge");
+  b.className="badge "+(bad?"bad":"ok"); b.textContent=badge;
+}
+
+function applyScn(){
+  const s=SCN[scn];
+  const inp=document.getElementById("mag");
+  inp.min=s.mag.min; inp.max=s.mag.max; inp.step=(s.mag.max>60?1:0.5);
+  inp.value=s.mag.def; mag=s.mag.def/100;
+  document.getElementById("magLab").textContent = s.metric==="dec" ? "Magnitud del decremento" : "Magnitud del incremento";
+  document.getElementById("magV").textContent=s.mag.def+" %";
+  document.getElementById("trainSub").textContent="Tren de "+N+" estímulos · "+s.freq+". La línea punteada une los picos (envolvente).";
+  document.getElementById("clin").textContent=s.clin;
+  render();
+}
+
+document.getElementById("scn").addEventListener("change",e=>{scn=e.target.value;applyScn();});
+document.getElementById("mag").addEventListener("input",e=>{
+  mag=parseFloat(e.target.value)/100;
+  document.getElementById("magV").textContent=parseFloat(e.target.value).toFixed(s_step())+" %";
+  render();
+});
+function s_step(){return SCN[scn].mag.max>60?0:0;}
+
+// init
+applyScn();
+</script>
+</body>
+</html>

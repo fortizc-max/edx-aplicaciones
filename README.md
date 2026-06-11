@@ -21,6 +21,7 @@ GitHub Pages: **https://fortizc-max.github.io/edx-aplicaciones/**
 | CMAP · conducción motora del nervio mediano | [`cmap-mediano/`](cmap-mediano/) | Simulador del potencial de acción muscular compuesto (muñeca y codo) con cursores arrastrables; calcula latencias, amplitudes, duración, área, velocidad de conducción y caída de amplitud |
 | SNAP · conducción sensitiva del nervio mediano | [`snap-mediano/`](snap-mediano/) | Simulador del potencial de acción nervioso sensitivo con cursores de inicio y pico; calcula latencia de inicio y de pico, amplitud base–pico y pico–pico, y velocidad de conducción sensitiva (un solo punto de estímulo) |
 | CSI · índice sensorial combinado de Robinson | [`csi-robinson/`](csi-robinson/) | Índice sensorial combinado para el síndrome del túnel del carpo: tres comparaciones mediano vs no mediano (radial–pulgar, cubital–anular y palmar), diferencias de latencia de pico, CSI total e interpretación (normal ≤ 0,9 ms) |
+| Estimulación repetitiva · unión neuromuscular | [`estimulacion-repetitiva/`](estimulacion-repetitiva/) | Simulador del test de estimulación nerviosa repetitiva (RNS): tren de CMAP, envolvente y cálculo de decremento/incremento; escenarios normal 3 Hz, decremento (miastenia), facilitación post-ejercicio, descenso progresivo e incremento >100 % a 30 Hz (Lambert-Eaton) |
 
 ## Cómo añadir una app nueva
 
