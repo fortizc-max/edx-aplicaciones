@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>CSI · Índice sensorial combinado de Robinson</title>
+<style>
+  :root{
+    --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;
+    --accent:#3aa0ff;--accent2:#ff9d4d;--green:#5ec5a0;--bad:#ef6a6a;
+    --plotbg:#0b1322;--grid:rgba(255,255,255,0.07);--gridMajor:rgba(255,255,255,0.18);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 50px;
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:18px 16px 15px;border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:19px}
+  header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+  h2{margin:0 0 2px;font-size:16px}
+  h3{margin:0 0 8px;font-size:13px;color:var(--accent)}
+  .sub{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col-plot{flex:1 1 500px;min-width:320px}
+  .col-side{flex:1 1 320px;min-width:290px}
+  svg{width:100%;background:var(--plotbg);border:1px solid var(--line);border-radius:8px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:14px}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th,td{padding:5px 6px;text-align:right;border-bottom:1px solid var(--line)}
+  th{color:var(--muted);font-weight:600}
+  td.l,th.l{text-align:left}
+  .val{font-family:ui-monospace,Menlo,Consolas,monospace}
+  .med{color:var(--accent)} .cmp{color:var(--accent2)}
+  .seg{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+  .seg .d{font-family:ui-monospace,monospace;font-weight:700}
+  .csi{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:15px;font-weight:700}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+  .badge.ok{background:#10331f;color:var(--green);border:1px solid var(--green)}
+  .badge.bad{background:#3a1717;color:var(--bad);border:1px solid var(--bad)}
+  .sl{display:block;margin-bottom:9px}
+  .sl .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+  .sl .top .l{color:var(--muted)}
+  .sl .top .v{font-family:ui-monospace,monospace;color:var(--txt)}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .grp{font-size:11px;font-weight:700;margin:10px 0 4px;color:var(--muted)}
+  .reset{margin-top:8px;font-size:13px;background:var(--card);border:1px solid var(--line);
+          border-radius:7px;padding:9px 14px;cursor:pointer;color:var(--txt);font-weight:600}
+  .reset:hover{filter:brightness(1.12)}
+  footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<header>
+<h1>CSI · Índice sensorial combinado de Robinson</h1>
+<p>Electrodiagnóstico y Ultrasonido Neuromuscular · material interactivo · síndrome del túnel del carpo</p>
+</header>
+
+<div class="wrap">
+  <div class="row">
+    <div class="col-plot">
+      <h2>Comparaciones sensitivas mediano vs no mediano</h2>
+      <p class="sub">Tres comparaciones sobre la misma distancia: mediano–radial (pulgar), mediano–ulnar (anular) y mediano palmar–ulnar palmar (muñeca). El CSI es la suma de las tres diferencias de latencia de pico.</p>
+      <svg id="plot" viewBox="0 0 720 430"></svg>
+      <div class="sl" style="margin-top:10px"><div class="top"><span class="l">Escala de tiempo</span><span class="v" id="msVal"></span></div>
+        <input type="range" id="ms" min="0.5" max="2" step="0.5"></div>
+    </div>
+
+    <div class="col-side">
+      <div class="panel">
+        <h3>Índice combinado (CSI)</h3>
+        <div class="seg"><span><span class="med">Mediano</span> − <span class="cmp">Radial</span> (pulgar)</span><span class="d" id="seg0">—</span></div>
+        <div class="seg"><span><span class="med">Mediano</span> − <span class="cmp">Ulnar</span> (anular)</span><span class="d" id="seg1">—</span></div>
+        <div class="seg"><span><span class="med">Med. palmar</span> − <span class="cmp">Uln. palmar</span></span><span class="d" id="seg2">—</span></div>
+        <div class="csi"><span>CSI</span><span class="d" id="csiVal">—</span></div>
+        <div style="text-align:center;margin-top:10px"><span class="badge" id="badge">—</span></div>
+        <p class="sub" style="margin-top:8px">Normal: CSI ≤ 0,9 ms. Un CSI &gt; 0,9 ms apoya el diagnóstico de síndrome del túnel del carpo (Robinson 1998).</p>
+      </div>
+
+      <div class="panel">
+        <h3>Respuestas</h3>
+        <table>
+          <thead><tr><th class="l">Nervio</th><th class="l">Reg.</th><th>Lat. pico</th><th>NP µV</th><th>PP µV</th></tr></thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h3>Latencias de pico (ms)</h3>
+        <div id="sliders"></div>
+        <button class="reset" id="reset">Restablecer (resultado normal)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular</i>. Modelo paramétrico con fines docentes; los valores no representan un registro real ni los de referencia de su laboratorio.
+</footer>
+
+<script>
+const SVGNS="http://www.w3.org/2000/svg";
+const C={med:"#3aa0ff",cmp:"#ff9d4d",grid:"rgba(255,255,255,0.07)",gridMajor:"rgba(255,255,255,0.18)",muted:"#9fb2cc",txt:"#e8eef7"};
+const PLOT={w:720,h:430,padL:14,padR:14,padT:14,padB:24};
+const DIVS_X=10;
+const CUTOFF=0.9;       // ms, límite superior normal del CSI
+const DUR=1.3;          // ms, duración aproximada del SNAP
+
+// Resultado normal de base (de la tabla aportada)
+const BASE={
+  medThumb:{lab:"Mediano",site:"Pulgar",lat:3.07,np:50.5,pp:84.4,role:"med"},
+  radThumb:{lab:"Radial",site:"Pulgar",lat:3.28,np:27.0,pp:51.3,role:"cmp"},
+  medRing:{lab:"Mediano",site:"Anular",lat:3.96,np:39.7,pp:61.5,role:"med"},
+  ulnRing:{lab:"Ulnar",site:"Anular",lat:3.96,np:52.2,pp:129.5,role:"cmp"},
+  medPalm:{lab:"Mediano palmar",site:"Muñeca",lat:1.93,np:197.4,pp:148.2,role:"med"},
+  ulnPalm:{lab:"Ulnar palmar",site:"Muñeca",lat:1.88,np:71.0,pp:121.2,role:"cmp"}
+};
+const LANES=[
+  {title:"Mediano – Radial (pulgar)",med:"medThumb",cmp:"radThumb"},
+  {title:"Mediano – Ulnar (anular)",med:"medRing",cmp:"ulnRing"},
+  {title:"Mediano palmar – Ulnar palmar (muñeca)",med:"medPalm",cmp:"ulnPalm"}
+];
+const ORDER=["medThumb","radThumb","medRing","ulnRing","medPalm","ulnPalm"];
+
+let R = JSON.parse(JSON.stringify(BASE));
+let msPerDiv=1;
+
+const svg=document.getElementById("plot");
+function el(tag,a){const e=document.createElementNS(SVGNS,tag);for(const k in a)e.setAttribute(k,a[k]);return e;}
+
+function traceVal(t,lat,amp){
+  const onset=lat-DUR*0.45, x=t-onset;
+  const gate=1/(1+Math.exp(-(x)/(DUR*0.05)));
+  const neg=amp*Math.exp(-Math.pow((x-DUR*0.45)/(DUR*0.24),2));
+  const pos=-0.5*amp*Math.exp(-Math.pow((x-DUR*1.05)/(DUR*0.42),2));
+  const ip=-0.15*amp*Math.exp(-Math.pow((x-DUR*0.04)/(DUR*0.16),2));
+  return (ip+neg+pos)*gate;
+}
+
+function render(){
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  const innerW=PLOT.w-PLOT.padL-PLOT.padR, innerH=PLOT.h-PLOT.padT-PLOT.padB;
+  const laneH=innerH/3, totalMs=msPerDiv*DIVS_X;
+  const xFromT=t=>PLOT.padL+(t/totalMs)*innerW;
+
+  // rejilla vertical (tiempo, compartida)
+  for(let i=0;i<=DIVS_X;i++){
+    const x=PLOT.padL+(i/DIVS_X)*innerW;
+    svg.appendChild(el("line",{x1:x,y1:PLOT.padT,x2:x,y2:PLOT.h-PLOT.padB,stroke:i%5===0?C.gridMajor:C.grid,"stroke-width":i%5===0?1:0.5}));
+  }
+
+  LANES.forEach((L,li)=>{
+    const laneTop=PLOT.padT+li*laneH;
+    const baseline=laneTop+laneH*0.74;
+    const med=R[L.med], cmp=R[L.cmp];
+    const maxNp=Math.max(med.np,cmp.np);
+    const yFromUv=uv=>baseline-(uv/maxNp)*(laneH*0.52);
+    // separador
+    if(li>0) svg.appendChild(el("line",{x1:PLOT.padL,y1:laneTop,x2:PLOT.w-PLOT.padR,y2:laneTop,stroke:C.gridMajor,"stroke-width":0.6}));
+    // basal
+    svg.appendChild(el("line",{x1:PLOT.padL,y1:baseline,x2:PLOT.w-PLOT.padR,y2:baseline,stroke:"rgba(255,255,255,0.12)","stroke-width":0.7}));
+    // título
+    const tt=el("text",{x:PLOT.padL+3,y:laneTop+13,"font-size":11,fill:C.muted,"font-weight":600});tt.textContent=L.title;svg.appendChild(tt);
+    // trazos
+    [[med,C.med],[cmp,C.cmp]].forEach(([p,color])=>{
+      const N=900;let d="";
+      for(let i=0;i<=N;i++){const t=(i/N)*totalMs;d+=(i===0?"M":"L")+xFromT(t).toFixed(1)+" "+yFromUv(traceVal(t,p.lat,p.np)).toFixed(1)+" ";}
+      svg.appendChild(el("path",{d:d,fill:"none",stroke:color,"stroke-width":1.6,"stroke-linejoin":"round"}));
+      // marcador de pico
+      const px=xFromT(p.lat), py=yFromUv(p.np);
+      svg.appendChild(el("line",{x1:px,y1:laneTop+laneH*0.12,x2:px,y2:baseline,stroke:color,"stroke-width":0.8,"stroke-dasharray":"3 3"}));
+      svg.appendChild(el("circle",{cx:px,cy:py,r:3.5,fill:color,stroke:"#0b1322","stroke-width":1.5}));
+    });
+    // Δ de la comparación
+    const diff=med.lat-cmp.lat;
+    const dtx=el("text",{x:PLOT.w-PLOT.padR-3,y:laneTop+13,"font-size":11,fill:Math.abs(diff)>0.5?"#ef6a6a":C.txt,"text-anchor":"end","font-family":"ui-monospace,monospace","font-weight":700});
+    dtx.textContent="Δ "+(diff>=0?"+":"")+diff.toFixed(2)+" ms";svg.appendChild(dtx);
+  });
+
+  // escala de tiempo
+  const s2=el("text",{x:PLOT.w-PLOT.padR-2,y:PLOT.h-7,"font-size":11,fill:C.muted,"text-anchor":"end","font-family":"ui-monospace,monospace"});s2.textContent=msPerDiv+" ms/div";svg.appendChild(s2);
+
+  updateOut();
+}
+
+function updateOut(){
+  // tabla
+  const tb=document.getElementById("tbody");tb.innerHTML="";
+  ORDER.forEach(k=>{
+    const p=R[k];
+    const tr=document.createElement("tr");
+    tr.innerHTML='<td class="l"><span class="'+p.role+'">'+p.lab+'</span></td><td class="l">'+p.site+'</td>'+
+      '<td class="val">'+p.lat.toFixed(2)+'</td><td class="val">'+p.np.toFixed(1)+'</td><td class="val">'+p.pp.toFixed(1)+'</td>';
+    tb.appendChild(tr);
+  });
+  // segmentos + CSI
+  let csi=0;
+  LANES.forEach((L,i)=>{
+    const d=R[L.med].lat-R[L.cmp].lat; csi+=d;
+    const e=document.getElementById("seg"+i);
+    e.textContent=(d>=0?"+":"")+d.toFixed(2)+" ms";
+    e.style.color=Math.abs(d)>0.5?"#ef6a6a":"var(--txt)";
+  });
+  document.getElementById("csiVal").textContent=(csi>=0?"+":"")+csi.toFixed(2)+" ms";
+  const b=document.getElementById("badge");
+  if(csi>CUTOFF){b.className="badge bad";b.textContent="Anormal · apoya STC";}
+  else{b.className="badge ok";b.textContent="Normal";}
+}
+
+// sliders de latencia de pico
+function buildSliders(){
+  const box=document.getElementById("sliders");box.innerHTML="";
+  LANES.forEach(L=>{
+    const g=document.createElement("div");g.className="grp";g.textContent=L.title;box.appendChild(g);
+    [L.med,L.cmp].forEach(k=>{
+      const p=R[k];
+      const wrap=document.createElement("div");wrap.className="sl";
+      wrap.innerHTML='<div class="top"><span class="l"><span class="'+p.role+'">'+p.lab+'</span> · '+p.site+'</span><span class="v" id="v_'+k+'">'+p.lat.toFixed(2)+' ms</span></div>'+
+        '<input type="range" id="s_'+k+'" min="1" max="6" step="0.01" value="'+p.lat+'" style="accent-color:'+(p.role==="med"?C.med:C.cmp)+'">';
+      box.appendChild(wrap);
+    });
+  });
+  ORDER.forEach(k=>{
+    document.getElementById("s_"+k).addEventListener("input",e=>{
+      R[k].lat=parseFloat(e.target.value);
+      document.getElementById("v_"+k).textContent=R[k].lat.toFixed(2)+" ms";
+      render();
+    });
+  });
+}
+
+document.getElementById("ms").addEventListener("input",e=>{
+  msPerDiv=parseFloat(e.target.value);
+  document.getElementById("msVal").textContent=msPerDiv+" ms/div";
+  render();
+});
+document.getElementById("reset").addEventListener("click",()=>{
+  R=JSON.parse(JSON.stringify(BASE));
+  document.getElementById("ms").value=1;msPerDiv=1;
+  document.getElementById("msVal").textContent="1 ms/div";
+  buildSliders();render();
+});
+
+// init
+document.getElementById("ms").value=1;
+document.getElementById("msVal").textContent="1 ms/div";
+buildSliders();
+render();
+</script>
+</body>
+</html>
