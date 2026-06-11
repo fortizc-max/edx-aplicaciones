@@ -52,6 +52,9 @@
   .sl .top .l{color:var(--muted)}
   .sl .top .v{font-family:ui-monospace,monospace;color:var(--txt)}
   input[type=range]{width:100%;accent-color:var(--accent)}
+  .chip{background:#0b1322;border:1px solid var(--line);border-radius:6px;padding:3px 7px;font-family:ui-monospace,monospace;font-size:12px;color:var(--txt)}
+  .chip.newchip{border-color:var(--accent);color:#bfe0ff}
+  #ampsAvgV.done{color:var(--accent2)}
   footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
 </style>
 </head>
@@ -89,6 +92,12 @@
         <div class="sl"><div class="top"><span class="l" id="kLab">Muestras</span><span class="v" id="kV"></span></div>
           <input type="range" id="k"></div>
         <p class="stepc" style="margin:4px 0 0">Cambiar el método, el estado o las muestras reinicia el examen.</p>
+      </div>
+
+      <div class="panel">
+        <h3 style="margin:0 0 6px;font-size:13px;color:var(--accent)">Amplitudes recogidas <span class="stepc">(lo que se promedia)</span></h3>
+        <div id="amps" style="display:flex;flex-wrap:wrap;gap:6px;min-height:26px"></div>
+        <div class="stat" style="margin-top:8px;border-bottom:none"><span class="lab">Promedio → SMUP</span><span class="val" id="ampsAvgV">—</span></div>
       </div>
 
       <div class="panel">
@@ -156,7 +165,7 @@ function info(){
       instr:"<b>Sin respuesta:</b> el estímulo no alcanzó el umbral. <b>Suba la intensidad</b> y estimule de nuevo."};
     if(step<=K+1){ const n=step-1;
       if(n<K) return {draw:"recruit",n,inten:0.18+0.54*n/K,btn:"⚡ Dé un nuevo estímulo, con más intensidad",
-        instr:"Apareció la <b>unidad "+n+"</b>. Cada escalón «todo o nada» es <b>una unidad motora</b> que se suma. Suba un poco la intensidad y estimule otra vez."};
+        instr:"Apareció la <b>unidad "+n+"</b> — un escalón de <b>"+Math.round(units[n-1].amp)+" µV</b>. Cada escalón es una unidad que se suma (vea la lista al lado). Suba un poco la intensidad y estimule otra vez."};
       return {draw:"recruit",n:K,inten:0.72,btn:"Promediar los "+K+" escalones (÷"+K+")",showS:false,
         instr:"Ya recogió <b>"+K+" incrementos</b>. Ahora <b>promédielos</b> para obtener el potencial de una sola unidad (SMUP)."};
     }
@@ -172,7 +181,7 @@ function info(){
       instr:"En el método multipunto cada estímulo es <b>supramáximo</b>. Estimule el <b>primer sitio</b> para registrar un SMUP de bajo umbral."};
     if(step<=M){ const n=step;
       if(n<M) return {draw:"recruit",n,inten:1,btn:"⚡ Mueva el estímulo y estimule el sitio "+(n+1),
-        instr:"Registró el <b>SMUP del sitio "+n+"</b>. <b>Cambie el punto de estímulo</b> a lo largo del nervio y estimule el siguiente sitio."};
+        instr:"Registró el <b>SMUP del sitio "+n+"</b> = <b>"+Math.round(mp[n-1].amp)+" µV</b> (vea la lista al lado). Cambie el punto de estímulo y estimule el siguiente sitio."};
       return {draw:"recruit",n:M,inten:1,btn:"Promediar los "+M+" SMUP (÷"+M+")",
         instr:"Recogió <b>"+M+" SMUP</b> de distintos sitios. <b>Promédielos</b>."};
     }
@@ -210,6 +219,7 @@ function render(){
     trace(cmap,cmap*1.12,baseline,plotH,C.trace,0.5+0.5*fade,2.2);
   }
 
+  renderAmps(I, smup);
   // textos / panel
   document.getElementById("narr").innerHTML=I.instr;
   document.getElementById("act").textContent=I.btn;
@@ -229,6 +239,22 @@ function render(){
   const b=document.getElementById("badge");
   if(I.showM){ b.style.display="inline-block"; if(scen==="neuro"){b.className="badge bad";b.textContent="MUNE reducido · pérdida de unidades";} else {b.className="badge ok";b.textContent="MUNE normal";} }
   else b.style.display="none";
+}
+
+// lista lateral de amplitudes recogidas (lo que se promedia)
+function renderAmps(I, smup){
+  const box=document.getElementById("amps");
+  let count = (I.draw==="none") ? 0 : (I.draw==="recruit" ? I.n : (mode==="inc"?K:mp.length));
+  const amps=[]; for(let i=0;i<count;i++) amps.push(mode==="inc"?units[i].amp:mp[i].amp);
+  box.innerHTML="";
+  amps.forEach((a,i)=>{ const c=document.createElement("span");
+    c.className="chip"+((i===count-1&&I.draw==="recruit")?" newchip":"");
+    c.textContent=(i+1)+" · "+Math.round(a)+" µV"; box.appendChild(c); });
+  const av=document.getElementById("ampsAvgV");
+  if(count>=1){ const sum=amps.reduce((s,x)=>s+x,0);
+    av.textContent="Σ "+Math.round(sum)+" µV ÷ "+count+" = "+Math.round(sum/count)+" µV";
+    av.className = I.showS ? "done" : "";
+  } else { av.textContent="—"; av.className=""; }
 }
 
 // animación corta al dar cada estímulo (para que se vea el nuevo potencial aparecer)
