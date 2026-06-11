@@ -71,7 +71,7 @@
           <option value="norm3">Normal a 3 Hz</option>
           <option value="dec3">Decremento a 3 Hz (postsináptico)</option>
           <option value="facil">Facilitación normal post-ejercicio</option>
-          <option value="decProg">Descenso progresivo (anormal)</option>
+          <option value="decProg">Decremento progresivo (Eaton-Lambert)</option>
           <option value="inc30">Incremento &gt;100 % a 30 Hz (presináptico)</option>
         </select>
         <div class="clin" id="clin"></div>
@@ -104,11 +104,11 @@ const SCN={
   norm3:{freq:"3 Hz",pat:"flat",metric:"dec",mag:{min:0,max:50,def:3},
     clin:"A 2–3 Hz, en condiciones normales el decremento es menor del 10 %: las reservas de acetilcolina mantienen estable la amplitud."},
   dec3:{freq:"3 Hz",pat:"ushape",metric:"dec",mag:{min:0,max:60,def:25},
-    clin:"Decremento mayor del 10 %, máximo hacia la 4.ª–5.ª respuesta con leve recuperación posterior (forma en U): típico de trastornos postsinápticos (miastenia gravis)."},
+    clin:"Decremento mayor del 10 %, con descenso progresivo y regular hasta la 5.ª respuesta y leve recuperación posterior (forma en U): patrón típico de la miastenia gravis (postsináptico)."},
   facil:{freq:"Post-ejercicio (10 s)",pat:"inc",metric:"inc",mag:{min:0,max:250,def:20},
     clin:"Tras un ejercicio breve puede haber un leve incremento de amplitud (facilitación) de magnitud normal; en la miastenia repara transitoriamente el decremento."},
-  decProg:{freq:"3 Hz",pat:"prog",metric:"dec",mag:{min:0,max:70,def:45},
-    clin:"Descenso progresivo y mantenido de la amplitud, sin recuperación: agotamiento de la transmisión; puede acentuarse tras el ejercicio (agotamiento post-activación)."},
+  decProg:{freq:"3 Hz",pat:"prog",metric:"dec",mag:{min:0,max:70,def:40},
+    clin:"Decremento completamente progresivo, sin la recuperación tardía de la miastenia: patrón del síndrome de Eaton-Lambert (presináptico) a baja frecuencia. A alta frecuencia o tras el ejercicio aparece el incremento característico (ver escenario a 30 Hz)."},
   inc30:{freq:"30 Hz",pat:"inc",metric:"inc",mag:{min:0,max:250,def:140},
     clin:"Con estimulación de alta frecuencia (20–50 Hz) o tras ejercicio, un incremento mayor del 100 % indica un trastorno presináptico (Lambert-Eaton, botulismo)."}
 };
@@ -117,7 +117,7 @@ let scn="norm3", mag=0.03;
 let revealed=N, playing=false, lastTs=null;
 const REVEAL_INTERVAL=0.16;   // s por respuesta (cadencia de la reproducción en vivo)
 
-const USHAPE=[0,0.45,0.80,1.00,0.95,0.88,0.83,0.80,0.78,0.77];
+const USHAPE=[0,0.35,0.65,0.88,1.00,0.94,0.90,0.87,0.85,0.84]; // nadir en el 5.º potencial, leve recuperación
 const RAMP  =[0,0.45,0.75,0.90,0.97,1.00,1.00,1.00,1.00,1.00];
 
 function factors(){
