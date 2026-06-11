@@ -98,7 +98,7 @@ Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromusc
 const SVGNS="http://www.w3.org/2000/svg";
 const C={trace:"#dbe7f5",grid:"rgba(255,255,255,0.07)",gridMajor:"rgba(255,255,255,0.18)",accent:"#3aa0ff",muted:"#9fb2cc",bad:"#ef6a6a"};
 const PLOT={w:720,h:360,padL:16,padR:16,padT:16,padB:30};
-const N=10;
+let N=10;   // número de respuestas (depende del escenario/frecuencia)
 
 const SCN={
   norm3:{freq:"3 Hz",pat:"geom",metric:"dec",mag:{min:0,max:10,def:0.5},
@@ -109,19 +109,18 @@ const SCN={
     clin:"Tras un ejercicio breve puede haber un leve incremento de amplitud (facilitación) de magnitud normal; en la miastenia repara transitoriamente el decremento."},
   decProg:{freq:"3 Hz",pat:"geom",metric:"dec",mag:{min:0.5,max:10,def:4},
     clin:"Caída homogénea y completamente progresiva (cada potencial cae el mismo porcentaje respecto al previo), sin la recuperación tardía de la miastenia: patrón del síndrome de Eaton-Lambert (presináptico) a baja frecuencia. A alta frecuencia o tras el ejercicio aparece el incremento característico (ver escenario a 30 Hz)."},
-  inc30:{freq:"30 Hz",pat:"inc",metric:"inc",mag:{min:0,max:250,def:140},
+  inc30:{freq:"30 Hz",n:28,pat:"inc",metric:"inc",mag:{min:0,max:250,def:140},
     clin:"Con estimulación de alta frecuencia (20–50 Hz) o tras ejercicio, un incremento mayor del 100 % indica un trastorno presináptico (Lambert-Eaton, botulismo)."}
 };
 
 let scn="norm3", mag=0.005;
 let revealed=N, playing=false, lastTs=null;
-const REVEAL_INTERVAL=0.16;   // s por respuesta (cadencia de la reproducción en vivo)
-
-const RAMP=[0,0.45,0.75,0.90,0.97,1.00,1.00,1.00,1.00,1.00];
+let REVEAL_INTERVAL=0.16;   // s por respuesta (cadencia de la reproducción en vivo)
 
 function factors(){
   const s=SCN[scn], f=[], d=mag;     // d = caída fraccional por estímulo (p. ej. 0,04 = 4 %)
-  if(s.pat==="inc"){ for(let i=0;i<N;i++) f.push(1 + d*RAMP[i]); return f; }
+  // incremento: crece progresivamente y se estabiliza (independiente de N)
+  if(s.pat==="inc"){ for(let i=0;i<N;i++){ const t=N>1?i/(N-1):0; f.push(1 + d*(1-Math.exp(-t*4))); } return f; }
   // decremento HOMOGÉNEO: cada potencial cae exactamente d respecto al precedente
   for(let i=0;i<N;i++){
     if(s.pat==="ushapeGeom" && i>4){
@@ -151,7 +150,8 @@ function render(){
   const f=factors();
   const maxF=Math.max(1.05,...f.map(Math.abs));
   const ampPx=(innerH*0.42)/maxF;
-  const stepX=innerW*0.058, cmapW=innerW*0.23;   // desplazamiento pequeño + ancho mayor => se superponen (abanico)
+  const k=3.4;                                        // solape = ancho del CMAP / paso
+  const stepX=(innerW*0.90)/((N-1)+k), cmapW=k*stepX; // se adapta a N: más respuestas => más juntas, llenan la pantalla
 
   // rejilla punteada tenue
   for(let i=0;i<=10;i++){const x=PLOT.padL+(i/10)*innerW;svg.appendChild(el("line",{x1:x,y1:PLOT.padT,x2:x,y2:PLOT.h-PLOT.padB,stroke:C.grid,"stroke-width":0.5}));}
@@ -209,6 +209,7 @@ function updateOut(f){
 
 function applyScn(){
   const s=SCN[scn];
+  N = s.n || 10;
   const inp=document.getElementById("mag");
   inp.min=s.mag.min; inp.max=s.mag.max; inp.step=(s.mag.max>60?1:0.5);
   inp.value=s.mag.def; mag=s.mag.def/100;
@@ -227,7 +228,7 @@ function loop(ts){
   render();
   if(playing)requestAnimationFrame(loop);
 }
-function play(){revealed=0;playing=true;lastTs=null;requestAnimationFrame(loop);}
+function play(){revealed=0;playing=true;lastTs=null;REVEAL_INTERVAL=Math.max(0.05,1.8/N);requestAnimationFrame(loop);}
 
 document.getElementById("play").addEventListener("click",play);
 document.getElementById("scn").addEventListener("change",e=>{scn=e.target.value;applyScn();});
