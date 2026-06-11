@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MUNE · estimación del número de unidades motoras</title>
+<style>
+  :root{
+    --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;
+    --accent:#3aa0ff;--accent2:#ff9d4d;--green:#5ec5a0;--bad:#ef6a6a;
+    --plotbg:#0b1322;--grid:rgba(255,255,255,0.07);--gridMajor:rgba(255,255,255,0.18);--trace:#dbe7f5;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 50px;
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:18px 16px 15px;border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:19px}
+  header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+  h2{margin:0 0 2px;font-size:16px}
+  h3{margin:0 0 8px;font-size:13px;color:var(--accent)}
+  .sub{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col-plot{flex:1 1 500px;min-width:320px}
+  .col-side{flex:1 1 320px;min-width:290px}
+  svg{width:100%;background:var(--plotbg);border:1px solid var(--line);border-radius:8px}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:14px}
+  .stat{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px solid var(--line)}
+  .stat .lab{color:var(--muted);font-size:12px}
+  .stat .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;font-weight:600;color:var(--txt)}
+  .big{font-size:17px;font-weight:700;margin-top:6px}
+  .big b{color:var(--accent)}
+  .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px}
+  .badge.ok{background:#10331f;color:var(--green);border:1px solid var(--green)}
+  .badge.bad{background:#3a1717;color:var(--bad);border:1px solid var(--bad)}
+  .seglabel{font-size:11px;font-weight:700;color:var(--muted);margin:2px 0 5px;text-transform:uppercase;letter-spacing:0.04em}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:6px}
+  .seg button{flex:1;border:none;background:var(--card);color:var(--txt);font-weight:600;padding:10px 0;cursor:pointer;font-size:13px}
+  .seg button.on{background:var(--accent);color:#06203b}
+  #scenSeg button[data-v="normal"].on{background:var(--green);color:#06200f}
+  #scenSeg button[data-v="neuro"].on{background:var(--bad);color:#2a0d0d}
+  .sl{display:block;margin-bottom:10px}
+  .sl .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px}
+  .sl .top .l{color:var(--muted)}
+  .sl .top .v{font-family:ui-monospace,monospace;color:var(--txt)}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .clin{font-size:12.5px;color:#cdd9ec;margin-top:6px}
+  footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<header>
+<h1>MUNE · estimación del número de unidades motoras</h1>
+<p>Electrodiagnóstico y Ultrasonido Neuromuscular · material interactivo</p>
+</header>
+
+<div class="wrap">
+  <div class="row">
+    <div class="col-plot">
+      <h2 id="plotTitle">—</h2>
+      <p class="sub" id="plotSub">—</p>
+      <svg id="plot" viewBox="0 0 720 380"></svg>
+      <div class="sl" style="margin-top:10px"><div class="top"><span class="l" id="kLab">Muestras</span><span class="v" id="kV"></span></div>
+        <input type="range" id="k"></div>
+    </div>
+
+    <div class="col-side">
+      <div class="panel">
+        <h3>Configuración</h3>
+        <div class="seglabel">Método</div>
+        <div class="seg" id="modeSeg">
+          <button data-v="inc" class="on">Incremental</button>
+          <button data-v="mp">Multipunto</button>
+        </div>
+        <div class="seglabel" style="margin-top:12px">Estado</div>
+        <div class="seg" id="scenSeg">
+          <button data-v="normal" class="on">Normal</button>
+          <button data-v="neuro">Neurogénico</button>
+        </div>
+        <div class="clin" id="clin"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Cálculo</h3>
+        <div class="stat"><span class="lab">CMAP máximo</span><span class="val" id="cmap">—</span></div>
+        <div class="stat"><span class="lab">SMUP promedio</span><span class="val" id="smup">—</span></div>
+        <div class="stat"><span class="lab" id="sampLab">Muestras</span><span class="val" id="samp">—</span></div>
+        <div class="big">MUNE = CMAP / SMUP = <b id="mune">—</b></div>
+        <div class="stat" style="margin-top:6px"><span class="lab">N.º real de unidades</span><span class="val" id="ntrue">—</span></div>
+        <div style="text-align:center"><span class="badge" id="badge">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular</i>. Modelo paramétrico con fines docentes; los valores no representan un registro real ni los de referencia de su laboratorio.
+</footer>
+
+<script>
+const SVGNS="http://www.w3.org/2000/svg";
+const C={trace:"#dbe7f5",accent:"#3aa0ff",accent2:"#ff9d4d",grid:"rgba(255,255,255,0.07)",gridMajor:"rgba(255,255,255,0.18)",muted:"#9fb2cc"};
+const PLOT={w:720,h:380,padL:16,padR:16,padT:16,padB:26};
+
+const SCEN={
+  normal:{n:140,mean:55,cv:0.45},
+  neuro :{n:35, mean:180,cv:0.5}
+};
+let mode="inc", scen="normal", K=10;     // K = muestras (incrementos o sitios)
+
+let units=[], mp=[];                       // unidades (ordenadas por umbral) y selección multipunto
+function gauss(){let u=0,v=0;while(u===0)u=Math.random();while(v===0)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function genUnits(){
+  const s=SCEN[scen]; units=[];
+  for(let i=0;i<s.n;i++){
+    const amp=Math.max(8, s.mean*Math.exp(gauss()*s.cv*0.7));   // µV, distribución log-normal
+    units.push({amp, thr:Math.random()});
+  }
+  units.sort((a,b)=>a.thr-b.thr);          // por umbral de reclutamiento
+  genMP();
+}
+function genMP(){
+  // multipunto: un SMUP de bajo umbral por sitio, en rangos repartidos (muestra representativa)
+  mp=[]; const M=Math.min(K,units.length);
+  for(let i=0;i<M;i++){ const lo=Math.floor(i/M*units.length), hi=Math.floor((i+1)/M*units.length);
+    const idx=lo+Math.floor(Math.random()*Math.max(1,hi-lo)); mp.push(units[Math.min(idx,units.length-1)]); }
+}
+function cmapMax(){ return units.reduce((s,u)=>s+u.amp,0); }   // µV
+function avgSMUP(){
+  if(mode==="inc"){ const k=Math.min(K,units.length); let s=0; for(let i=0;i<k;i++)s+=units[i].amp; return s/k; }
+  else { return mp.reduce((s,u)=>s+u.amp,0)/mp.length; }
+}
+
+const svg=document.getElementById("plot");
+function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
+function cmapShape(u){return Math.exp(-Math.pow((u-0.40)/0.13,2))-0.22*Math.exp(-Math.pow((u-0.64)/0.17,2));}
+
+function trace(amp, yMax, baseline, plotH, color, op, w){
+  const innerW=PLOT.w-PLOT.padL-PLOT.padR, N=160; let d="";
+  for(let i=0;i<=N;i++){const u=i/N; const X=PLOT.padL+u*innerW; const Y=baseline-(amp/yMax)*plotH*cmapShape(u); d+=(i===0?"M":"L")+X.toFixed(1)+" "+Y.toFixed(1)+" ";}
+  svg.appendChild(el("path",{d:d,fill:"none",stroke:color,"stroke-width":w||1.4,"stroke-linejoin":"round",opacity:op}));
+}
+
+function render(){
+  while(svg.firstChild)svg.removeChild(svg.firstChild);
+  const innerH=PLOT.h-PLOT.padT-PLOT.padB;
+  const baseline=PLOT.padT+innerH*0.92;
+  const plotH=innerH*0.82;
+  svg.appendChild(el("line",{x1:PLOT.padL,y1:baseline,x2:PLOT.w-PLOT.padR,y2:baseline,stroke:C.gridMajor,"stroke-width":0.8}));
+
+  if(mode==="inc"){
+    // niveles acumulados de los primeros K incrementos cuantales (alto gain)
+    const k=Math.min(K,units.length);
+    let cum=0; const levels=[];
+    for(let i=0;i<k;i++){ cum+=units[i].amp; levels.push(cum); }
+    const yMax=cum*1.08;
+    levels.forEach((lv,i)=>trace(lv,yMax,baseline,plotH,C.trace,0.9));
+    // marca del último nivel y etiqueta del paso (SMUP)
+    trace(levels[k-1],yMax,baseline,plotH,C.accent,1,1.8);
+    const sc=el("text",{x:PLOT.padL+4,y:PLOT.padT+14,"font-size":11,fill:C.muted});sc.textContent=k+" incrementos cuantales (cada escalón = 1 unidad motora)";svg.appendChild(sc);
+  } else {
+    // SMUP individuales recogidos en cada sitio, superpuestos
+    const yMax=Math.max(...mp.map(u=>u.amp))*1.12;
+    mp.forEach(u=>trace(u.amp,yMax,baseline,plotH,C.trace,0.85));
+    const av=avgSMUP();
+    trace(av,yMax,baseline,plotH,C.accent2,1,1.8);  // SMUP promedio resaltado
+    const sc=el("text",{x:PLOT.padL+4,y:PLOT.padT+14,"font-size":11,fill:C.muted});sc.textContent=mp.length+" SMUP individuales (un sitio cada uno) · naranja = promedio";svg.appendChild(sc);
+  }
+  updateOut();
+}
+
+function updateOut(){
+  const cmap=cmapMax(), smup=avgSMUP(), mune=Math.round(cmap/smup), n=units.length;
+  document.getElementById("cmap").textContent=(cmap/1000).toFixed(1)+" mV";
+  document.getElementById("smup").textContent=Math.round(smup)+" µV";
+  document.getElementById("sampLab").textContent = mode==="inc" ? "Incrementos promediados" : "Sitios (SMUP)";
+  document.getElementById("samp").textContent = (mode==="inc"?Math.min(K,n):mp.length);
+  document.getElementById("mune").textContent=mune;
+  document.getElementById("ntrue").textContent=n;
+  const reduced = scen==="neuro";
+  const b=document.getElementById("badge");
+  if(reduced){ b.className="badge bad"; b.textContent="MUNE reducido · pérdida de unidades motoras (neurogénico)"; }
+  else { b.className="badge ok"; b.textContent="MUNE normal"; }
+  document.getElementById("clin").textContent = mode==="inc"
+    ? "MUNE incremental (McComas): al subir la intensidad, las unidades se reclutan en escalones «todo o nada». Se promedian los primeros incrementos cuantales para obtener el SMUP."
+    : "MUNE multipunto (Doherty–Brown): se registra el SMUP de menor umbral en varios sitios de estímulo y se promedian, ampliando la muestra de unidades.";
+  document.getElementById("plotTitle").textContent = mode==="inc" ? "Estimación incremental (escalones cuantales)" : "Estimación multipunto (SMUP individuales)";
+  document.getElementById("plotSub").textContent = "Registro a alta ganancia (nivel de SMUP). El CMAP máximo se mide aparte. MUNE = CMAP máx ÷ SMUP promedio.";
+}
+
+function setSlider(){
+  const inp=document.getElementById("k");
+  if(mode==="inc"){ inp.min=3; inp.max=15; document.getElementById("kLab").textContent="Incrementos registrados"; }
+  else { inp.min=3; inp.max=20; document.getElementById("kLab").textContent="Número de sitios"; }
+  if(K<inp.min)K=+inp.min; if(K>inp.max)K=+inp.max;
+  inp.value=K; document.getElementById("kV").textContent=K;
+}
+
+document.getElementById("modeSeg").querySelectorAll("button").forEach(btn=>{
+  btn.addEventListener("click",()=>{ mode=btn.dataset.v;
+    document.getElementById("modeSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===btn));
+    setSlider(); genMP(); render(); });
+});
+document.getElementById("scenSeg").querySelectorAll("button").forEach(btn=>{
+  btn.addEventListener("click",()=>{ scen=btn.dataset.v;
+    document.getElementById("scenSeg").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===btn));
+    genUnits(); render(); });
+});
+document.getElementById("k").addEventListener("input",e=>{ K=parseInt(e.target.value);
+  document.getElementById("kV").textContent=K; genMP(); render(); });
+
+// init
+genUnits(); setSlider(); render();
+</script>
+</body>
+</html>
