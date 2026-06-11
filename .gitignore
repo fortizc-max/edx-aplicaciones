@@ -1,3 +1,6 @@
 # Archivos basura de macOS
 .DS_Store
 **/.DS_Store
+
+# Archivos temporales de Office
+~$*
