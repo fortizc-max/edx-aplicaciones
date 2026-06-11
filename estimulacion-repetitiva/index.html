@@ -38,6 +38,8 @@
   .sl .top .l{color:var(--muted)}
   .sl .top .v{font-family:ui-monospace,monospace;color:var(--txt)}
   input[type=range]{width:100%;accent-color:var(--accent)}
+  button.play{font-size:13px;border:1px solid var(--green);border-radius:8px;padding:9px 16px;cursor:pointer;background:var(--green);color:#06200f;font-weight:700}
+  button.play:hover{filter:brightness(1.08)}
   .clin{font-size:12.5px;color:#cdd9ec;margin-top:6px}
   footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
 </style>
@@ -54,7 +56,11 @@
       <h2>Tren de respuestas (RNS)</h2>
       <p class="sub" id="trainSub">—</p>
       <svg id="plot" viewBox="0 0 720 360"></svg>
-      <div class="sl" style="margin-top:10px"><div class="top"><span class="l" id="magLab">Magnitud del cambio</span><span class="v" id="magV"></span></div>
+      <div style="display:flex;gap:12px;align-items:center;margin-top:10px">
+        <button id="play" class="play">▶ Reproducir en vivo</button>
+        <span class="sub" style="margin:0">Los potenciales aparecen uno a uno, como en el registro real.</span>
+      </div>
+      <div class="sl" style="margin-top:12px"><div class="top"><span class="l" id="magLab">Magnitud del cambio</span><span class="v" id="magV"></span></div>
         <input type="range" id="mag"></div>
     </div>
 
@@ -108,6 +114,8 @@ const SCN={
 };
 
 let scn="norm3", mag=0.03;
+let revealed=N, playing=false, lastTs=null;
+const REVEAL_INTERVAL=0.16;   // s por respuesta (cadencia de la reproducción en vivo)
 
 const USHAPE=[0,0.45,0.80,1.00,0.95,0.88,0.83,0.80,0.78,0.77];
 const RAMP  =[0,0.45,0.75,0.90,0.97,1.00,1.00,1.00,1.00,1.00];
@@ -125,37 +133,48 @@ function factors(){
 
 const svg=document.getElementById("plot");
 function el(t,a){const e=document.createElementNS(SVGNS,t);for(const k in a)e.setAttribute(k,a[k]);return e;}
-function cmapShape(u){return Math.exp(-Math.pow((u-0.38)/0.13,2))-0.22*Math.exp(-Math.pow((u-0.62)/0.17,2));}
-const PEAKV=cmapShape(0.38);
+function cmapShape(u){
+  const ini=-0.08*Math.exp(-Math.pow((u-0.10)/0.07,2));   // pequeña positiva inicial (despegue)
+  const neg= 1.00*Math.exp(-Math.pow((u-0.34)/0.15,2));   // fase negativa dominante (arriba), redondeada
+  const pos=-0.30*Math.exp(-Math.pow((u-0.66)/0.20,2));   // fase positiva terminal
+  return ini+neg+pos;
+}
+const PEAKV=cmapShape(0.34);
 
 function render(){
   while(svg.firstChild)svg.removeChild(svg.firstChild);
   const innerW=PLOT.w-PLOT.padL-PLOT.padR, innerH=PLOT.h-PLOT.padT-PLOT.padB;
-  const baseline=PLOT.padT+innerH*0.80;
+  const baseline=PLOT.padT+innerH*0.60;
   const f=factors();
   const maxF=Math.max(1.05,...f.map(Math.abs));
-  const ampPx=(innerH*0.66)/maxF;
-  const slotW=innerW/N;
+  const ampPx=(innerH*0.42)/maxF;
+  const stepX=innerW*0.058, cmapW=innerW*0.23;   // desplazamiento pequeño + ancho mayor => se superponen (abanico)
 
-  // rejilla
-  for(let i=0;i<=N;i++){const x=PLOT.padL+i*slotW;svg.appendChild(el("line",{x1:x,y1:PLOT.padT,x2:x,y2:PLOT.h-PLOT.padB,stroke:C.grid,"stroke-width":0.5}));}
-  svg.appendChild(el("line",{x1:PLOT.padL,y1:baseline,x2:PLOT.w-PLOT.padR,y2:baseline,stroke:C.gridMajor,"stroke-width":0.8}));
+  // rejilla punteada tenue
+  for(let i=0;i<=10;i++){const x=PLOT.padL+(i/10)*innerW;svg.appendChild(el("line",{x1:x,y1:PLOT.padT,x2:x,y2:PLOT.h-PLOT.padB,stroke:C.grid,"stroke-width":0.5}));}
+  for(let i=0;i<=6;i++){const y=PLOT.padT+(i/6)*innerH;svg.appendChild(el("line",{x1:PLOT.padL,y1:y,x2:PLOT.w-PLOT.padR,y2:y,stroke:C.grid,"stroke-width":0.5}));}
+  svg.appendChild(el("line",{x1:PLOT.padL,y1:baseline,x2:PLOT.w-PLOT.padR,y2:baseline,stroke:C.gridMajor,"stroke-width":0.7}));
 
+  const nFull=Math.floor(revealed), frac=revealed-nFull;
+  const nShow=Math.min(N,Math.ceil(revealed));
   const peaks=[];
-  for(let i=0;i<N;i++){
-    const x0=PLOT.padL+i*slotW, wW=slotW*0.74;
-    let d="";const M=120;
-    for(let k=0;k<=M;k++){const u=k/M;const X=x0+u*wW;const Y=baseline-f[i]*cmapShape(u)*ampPx;d+=(k===0?"M":"L")+X.toFixed(1)+" "+Y.toFixed(1)+" ";}
-    svg.appendChild(el("path",{d:d,fill:"none",stroke:C.trace,"stroke-width":1.6,"stroke-linejoin":"round"}));
-    const px=x0+0.38*wW, py=baseline-f[i]*PEAKV*ampPx;
-    peaks.push([px,py]);
-    // número de respuesta
-    const tn=el("text",{x:x0+wW*0.38,y:PLOT.h-10,"font-size":10,fill:C.muted,"text-anchor":"middle","font-family":"ui-monospace,monospace"});tn.textContent=(i+1);svg.appendChild(tn);
+  for(let i=0;i<nShow;i++){
+    const op = i<nFull ? 1 : Math.max(0.2,frac);   // la respuesta que está "apareciendo" se atenúa
+    const x0=PLOT.padL+i*stepX;
+    let d="";const M=150;
+    for(let k=0;k<=M;k++){const u=k/M;const X=x0+u*cmapW;const Y=baseline-f[i]*cmapShape(u)*ampPx;d+=(k===0?"M":"L")+X.toFixed(1)+" "+Y.toFixed(1)+" ";}
+    svg.appendChild(el("path",{d:d,fill:"none",stroke:C.trace,"stroke-width":1.5,"stroke-linejoin":"round",opacity:op}));
+    if(i<nFull) peaks.push([x0+0.34*cmapW, baseline-f[i]*PEAKV*ampPx]);
   }
-  // envolvente
-  let ed="";peaks.forEach((p,i)=>ed+=(i===0?"M":"L")+p[0].toFixed(1)+" "+p[1].toFixed(1)+" ");
-  svg.appendChild(el("path",{d:ed,fill:"none",stroke:C.accent,"stroke-width":1,"stroke-dasharray":"4 3","opacity":0.8}));
-  peaks.forEach(p=>svg.appendChild(el("circle",{cx:p[0],cy:p[1],r:2.6,fill:C.accent})));
+  // envolvente (une los picos de las respuestas ya completas)
+  if(peaks.length>1){
+    let ed="";peaks.forEach((p,i)=>ed+=(i===0?"M":"L")+p[0].toFixed(1)+" "+p[1].toFixed(1)+" ");
+    svg.appendChild(el("path",{d:ed,fill:"none",stroke:C.accent,"stroke-width":1,"stroke-dasharray":"4 3","opacity":0.75}));
+  }
+  peaks.forEach(p=>svg.appendChild(el("circle",{cx:p[0],cy:p[1],r:2.4,fill:C.accent})));
+
+  // etiqueta de escala
+  const sc=el("text",{x:PLOT.w-PLOT.padR-2,y:PLOT.h-8,"font-size":11,fill:C.muted,"text-anchor":"end","font-family":"ui-monospace,monospace"});sc.textContent="5 ms/div · 2 mV/div";svg.appendChild(sc);
 
   updateOut(f);
 }
@@ -194,16 +213,26 @@ function applyScn(){
   document.getElementById("magV").textContent=s.mag.def+" %";
   document.getElementById("trainSub").textContent="Tren de "+N+" estímulos · "+s.freq+". La línea punteada une los picos (envolvente).";
   document.getElementById("clin").textContent=s.clin;
-  render();
+  play();   // reproduce la aparición secuencial de los potenciales
 }
 
+function loop(ts){
+  if(!playing)return;
+  if(lastTs===null)lastTs=ts;
+  revealed += (ts-lastTs)/1000/REVEAL_INTERVAL; lastTs=ts;
+  if(revealed>=N){revealed=N;playing=false;}
+  render();
+  if(playing)requestAnimationFrame(loop);
+}
+function play(){revealed=0;playing=true;lastTs=null;requestAnimationFrame(loop);}
+
+document.getElementById("play").addEventListener("click",play);
 document.getElementById("scn").addEventListener("change",e=>{scn=e.target.value;applyScn();});
 document.getElementById("mag").addEventListener("input",e=>{
   mag=parseFloat(e.target.value)/100;
-  document.getElementById("magV").textContent=parseFloat(e.target.value).toFixed(s_step())+" %";
-  render();
+  document.getElementById("magV").textContent=Math.round(parseFloat(e.target.value))+" %";
+  revealed=N; render();
 });
-function s_step(){return SCN[scn].mag.max>60?0:0;}
 
 // init
 applyScn();
