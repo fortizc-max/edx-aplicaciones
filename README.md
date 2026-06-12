@@ -27,6 +27,9 @@ GitHub Pages: **https://fortizc-max.github.io/edx-aplicaciones/**
 | Temperatura y neuroconducción | [`temperatura/`](temperatura/) | Efecto de la temperatura sobre el estudio de conducción: latencia, amplitud, duración y velocidad cambian con la temperatura (frío → más lento, más grande, más ancho); recomendación 32–36 °C |
 | Bloqueo de conducción y dispersión temporal | [`bloqueo-dispersion/`](bloqueo-dispersion/) | CMAP distal vs proximal: distingue bloqueo (cae amplitud y área) de dispersión temporal (aumenta duración, área conservada); escenarios e interpretación (desmielinizante vs axonal) |
 | Potencial de unidad motora · sumación de fibras | [`potencial-unidad-motora/`](potencial-unidad-motora/) | Modelo biofísico del MUAP de aguja por suma de potenciales de fibra única (corriente de membrana → conductor de volumen 1/√(r²+z²) → propagación a velocidad v): cadena paso a paso, comparación normal/neurogénico/miopático y laboratorio interactivo con métricas (amplitud, duración, fases, giros). No es el CMAP |
+| Efecto de los filtros sobre el potencial | [`filtros/`](filtros/) | Efecto de los filtros pasa-altas (LFF) y pasa-bajas (HFF) sobre un CMAP/PUM/SNAP: amplitud, duración, latencia y fases en vivo, con los patrones falsamente miopático (LFF alto) o desmielinizado (HFF bajo). Heurística de componentes lentos/rápidos |
+| Muestreo y aliasing | [`muestreo-aliasing/`](muestreo-aliasing/) | Teorema de Nyquist: señal real vs muestras del A/D; por debajo de 2× la frecuencia aparece el aliasing (frecuencia aparente, límite de Nyquist) e incluye resolución en bits/cuantificación |
+| Rechazo de modo común (CMRR) | [`cmrr/`](cmrr/) | Amplificación diferencial E-1 − E-2: cancelación del ruido de red común con perillas de CMRR y de desbalance de impedancia; muestra cómo el desbalance —más que el CMRR— deja pasar el ruido residual |
 
 ## Cómo añadir una app nueva
 

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Efecto de los filtros sobre el potencial</title>
+<style>
+  :root{
+    --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;
+    --accent:#3aa0ff;--accent2:#ff9d4d;--green:#5ec5a0;--bad:#ef6a6a;--warn:#ffb74d;
+    --plotbg:#0b1322;--grid:rgba(255,255,255,0.07);--gridMajor:rgba(255,255,255,0.18);
+    --trace:#dbe7f5;--ghost:rgba(180,196,220,0.30);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 50px;
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:18px 16px 15px;border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:19px}
+  header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+  h2{margin:0 0 2px;font-size:16px}
+  h3{margin:0 0 8px;font-size:13px;color:var(--accent)}
+  .sub{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col-plot{flex:1 1 520px;min-width:320px}
+  .col-side{flex:1 1 300px;min-width:280px}
+  svg{width:100%;background:var(--plotbg);border:1px solid var(--line);border-radius:8px;display:block}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:14px}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin-bottom:4px}
+  .seg button{flex:1;appearance:none;border:0;background:transparent;color:var(--muted);
+       padding:8px 4px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;border-right:1px solid var(--line)}
+  .seg button:last-child{border-right:0}
+  .seg button[aria-pressed="true"]{background:var(--accent);color:#06223b}
+  label.ctl{display:block;font-size:12.5px;color:var(--muted);margin:12px 0 3px}
+  label.ctl b{color:var(--accent);font-variant-numeric:tabular-nums;font-family:ui-monospace,monospace}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .stat{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line)}
+  .stat:last-child{border-bottom:0}
+  .stat .lab{color:var(--muted);font-size:12px}
+  .stat .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;font-weight:700}
+  .stat .delta{font-size:11px;margin-left:8px;font-family:ui-monospace,monospace}
+  .delta.up{color:var(--accent2)} .delta.down{color:var(--accent)} .delta.zero{color:var(--muted)}
+  .badge{display:block;text-align:center;padding:8px 10px;border-radius:8px;font-size:12.5px;font-weight:600;margin-top:4px}
+  .badge.ok{background:#10331f;color:var(--green);border:1px solid var(--green)}
+  .badge.bad{background:#3a1717;color:var(--bad);border:1px solid var(--bad)}
+  .badge.warn{background:#3a2e10;color:var(--warn);border:1px solid var(--warn)}
+  .legend{font-size:11.5px;color:var(--muted);margin-top:6px;display:flex;gap:16px;flex-wrap:wrap}
+  .sw{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+  .btnrow{display:flex;gap:8px;margin-top:12px}
+  .btn{flex:1;appearance:none;border:1px solid var(--accent);background:transparent;color:var(--accent);
+       padding:8px;border-radius:8px;font:inherit;font-weight:600;font-size:12.5px;cursor:pointer}
+  details{margin-top:8px;font-size:12.5px;color:var(--muted)}
+  summary{cursor:pointer;color:var(--accent);font-weight:600}
+  footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<header>
+<h1>Efecto de los filtros sobre el potencial</h1>
+<p>Electrodiagnóstico y Ultrasonido Neuromuscular · material interactivo</p>
+</header>
+
+<div class="wrap">
+  <div class="row">
+    <div class="col-plot">
+      <h2 id="ptitle">Potencial de acción muscular compuesto (CMAP)</h2>
+      <p class="sub">El trazo gris tenue es la señal con filtros amplios (referencia). Mueva los filtros y compare. Convención de EMG: negativo hacia arriba.</p>
+      <svg id="plot" viewBox="0 0 760 360"></svg>
+      <div class="legend">
+        <span><span class="sw" style="background:var(--ghost)"></span>Filtros amplios (referencia)</span>
+        <span><span class="sw" style="background:var(--accent)"></span>Señal filtrada</span>
+        <span><span class="sw" style="background:var(--accent2)"></span>Inicio · pico · fin</span>
+      </div>
+    </div>
+
+    <div class="col-side">
+      <div class="panel">
+        <h3>Tipo de potencial</h3>
+        <div class="seg" id="scen" role="group">
+          <button data-s="cmap" aria-pressed="true">CMAP</button>
+          <button data-s="mup" aria-pressed="false">PUM (aguja)</button>
+          <button data-s="snap" aria-pressed="false">SNAP</button>
+        </div>
+
+        <label class="ctl">Filtro de baja · pasa-altas (LFF) <b id="lffV"></b></label>
+        <input type="range" id="lff" min="0" max="100" step="1">
+        <label class="ctl">Filtro de alta · pasa-bajas (HFF) <b id="hffV"></b></label>
+        <input type="range" id="hff" min="0" max="100" step="1">
+
+        <div class="btnrow"><button class="btn" id="reset">Restablecer filtros estándar</button></div>
+      </div>
+
+      <div class="panel">
+        <h3>Mediciones (Δ respecto a la referencia)</h3>
+        <div class="stat"><span class="lab">Amplitud</span><span><span class="val" id="mAmp">—</span><span class="delta" id="dAmp"></span></span></div>
+        <div class="stat"><span class="lab">Duración</span><span><span class="val" id="mDur">—</span><span class="delta" id="dDur"></span></span></div>
+        <div class="stat"><span class="lab">Latencia de inicio</span><span><span class="val" id="mOn">—</span><span class="delta" id="dOn"></span></span></div>
+        <div class="stat"><span class="lab">Latencia al pico</span><span><span class="val" id="mPk">—</span><span class="delta" id="dPk"></span></span></div>
+        <div class="stat"><span class="lab">Fases</span><span><span class="val" id="mPh">—</span><span class="delta" id="dPh"></span></span></div>
+        <div id="badge" class="badge ok">Filtros adecuados</div>
+      </div>
+    </div>
+  </div>
+
+  <details>
+    <summary>Cómo leerlo</summary>
+    <p>Toda onda se compone de «componentes lentos» (bajas frecuencias: aportan duración, amplitud y rampas suaves) y «componentes rápidos» (altas frecuencias: picos finos, transiciones y fases). <b>Subir el filtro de baja (pasa-altas)</b> retira los componentes lentos: la onda se estrecha y «apicuda», caen la amplitud y la duración y aparecen más fases; un PUM evaluado así parece falsamente <i>miopático</i>. <b>Bajar el filtro de alta (pasa-bajas)</b> retira los componentes rápidos: se prolongan la latencia de inicio y la duración y cae la amplitud; un CMAP así parece falsamente <i>desmielinizado</i>. Modelo didáctico con filtros de un polo; los valores son orientativos.</p>
+  </details>
+</div>
+
+<footer>
+Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular</i>. Esquema docente con fines ilustrativos; no representa valores de referencia de laboratorio.
+</footer>
+
+<script>
+"use strict";
+/* ---------- escenarios: señal base s(t) en mV (voltaje real) ---------- */
+const SCN={
+  cmap:{title:"Potencial de acción muscular compuesto (CMAP)",t0:0,t1:16,dt:0.02,unit:"mV",
+        // negativo grande (espiga) + fase positiva terminal
+        comps:[{a:-6.0,mu:4.6,sg:0.62},{a:1.4,mu:6.6,sg:1.05}],
+        lff:[2,10], hff:[2000,10000], lffDef:5, hffDef:10000},
+  mup:{title:"Potencial de unidad motora (aguja)",t0:0,t1:20,dt:0.02,unit:"mV",
+        // trifásico: pos - neg - pos
+        comps:[{a:0.25,mu:6.4,sg:0.5},{a:-1.05,mu:8.0,sg:0.55},{a:0.3,mu:9.8,sg:0.7}],
+        lff:[2,10], hff:[5000,10000], lffDef:3, hffDef:10000},
+  snap:{title:"Potencial de acción nervioso sensitivo (SNAP)",t0:0,t1:7,dt:0.01,unit:"µV",
+        comps:[{a:-0.026,mu:2.85,sg:0.26},{a:0.011,mu:3.35,sg:0.4}],
+        lff:[10,30], hff:[2000,5000], lffDef:20, hffDef:3000},
+};
+function baseSignal(sc){
+  const N=Math.round((sc.t1-sc.t0)/sc.dt)+1, s=new Float64Array(N), ts=new Float64Array(N);
+  for(let i=0;i<N;i++){ const t=sc.t0+i*sc.dt; ts[i]=t; let v=0;
+    for(const c of sc.comps){ const z=(t-c.mu)/c.sg; v+=c.a*Math.exp(-0.5*z*z); }
+    s[i]=v; }
+  return {ts,s,dt:sc.dt};
+}
+/* ---------- filtros de un polo ---------- */
+function highpass(x,dt,fc){ // pasa-altas (LFF)
+  const RC=1/(2*Math.PI*fc/1000); const a=RC/(RC+dt); const y=new Float64Array(x.length);
+  let px=x[0],py=0; for(let i=0;i<x.length;i++){ const out=i?a*(py+x[i]-px):0; px=x[i];py=out;y[i]=out; } return y;
+}
+function lowpass(x,dt,fc){ // pasa-bajas (HFF)
+  const RC=1/(2*Math.PI*fc/1000); const al=dt/(RC+dt); const y=new Float64Array(x.length);
+  let py=x[0]; for(let i=0;i<x.length;i++){ py=py+al*(x[i]-py); y[i]=py; } return y;
+}
+/* ---------- métricas (sobre el voltaje; convención no afecta) ---------- */
+function metrics(y,ts,dt){
+  let mx=-1e9,mn=1e9,iMx=0,iMn=0;
+  for(let i=0;i<y.length;i++){ if(y[i]>mx){mx=y[i];iMx=i;} if(y[i]<mn){mn=y[i];iMn=i;} }
+  const amp=mx-mn;
+  const thr=Math.max(amp*0.05,1e-9);
+  let a=-1,b=-1; for(let i=0;i<y.length;i++) if(Math.abs(y[i])>thr){ if(a<0)a=i; b=i; }
+  const onset=a<0?0:ts[a], dur=a<0?0:ts[b]-ts[a];
+  // pico: el de mayor |amplitud| (la espiga principal)
+  const ipk=(Math.abs(mx)>=Math.abs(mn))?iMx:iMn, peak=ts[ipk];
+  // fases: cruces por la línea base que superan un umbral
+  const ph=Math.max(amp*0.10,1e-9); let phases=0,st=0;
+  for(const v of y){ if(v>ph&&st<=0){phases++;st=1;} else if(v<-ph&&st>=0){phases++;st=-1;} }
+  return {amp,dur,onset,peak,phases:Math.max(1,phases)};
+}
+/* ---------- sliders log ---------- */
+function sliderToFreq(v,lo,hi){ const t=v/100; return lo*Math.pow(hi/lo,t); }
+function freqToSlider(f,lo,hi){ return 100*Math.log(f/lo)/Math.log(hi/lo); }
+const LFF_LO=0.5,LFF_HI=500, HFF_LO=100,HFF_HI=10000;
+function fmtHz(f){ return f>=1000?(f/1000).toFixed(f<2000?1:0).replace('.',',')+' kHz':Math.round(f)+' Hz'; }
+
+/* ---------- estado / dibujo ---------- */
+let scen='cmap', base=null, ref=null;
+const $=id=>document.getElementById(id);
+function recomputeRef(){
+  const sc=SCN[scen]; base=baseSignal(sc);
+  // referencia: filtros amplios (LFF mínimo del rango, HFF máximo)
+  let r=highpass(base.s,base.dt,sc.lff[0]); r=lowpass(r,base.dt,sc.hffDef);
+  ref={y:r,m:metrics(r,base.ts,base.dt)};
+}
+function curFreqs(){ return {lff:sliderToFreq(+$('lff').value,LFF_LO,LFF_HI),
+                             hff:sliderToFreq(+$('hff').value,HFF_LO,HFF_HI)}; }
+function draw(){
+  const sc=SCN[scen], {lff,hff}=curFreqs();
+  $('lffV').textContent=fmtHz(lff); $('hffV').textContent=fmtHz(hff);
+  let y=highpass(base.s,base.dt,lff); y=lowpass(y,base.dt,hff);
+  const m=metrics(y,base.ts,base.dt);
+  // --- SVG ---
+  const W=760,H=360,padL=46,padR=14,padT=14,padB=30, x0=padL,x1=W-padR,y0=padT,y1=H-padB,midY=(y0+y1)/2;
+  const tx=t=>x0+(t-sc.t0)/(sc.t1-sc.t0)*(x1-x0);
+  // escala vertical fija por la referencia para que el cambio de amplitud sea visible
+  const peakRef=Math.max(Math.abs(Math.max(...ref.y)),Math.abs(Math.min(...ref.y)),1e-9);
+  const vScale=(y1-y0)/2*0.86/peakRef;
+  const vy=v=>midY - v*vScale;   // convención EMG: negativo hacia arriba => -v
+  let g='';
+  // grid tiempo
+  const tstep=(sc.t1-sc.t0)>12?5:(sc.t1-sc.t0)>6?2:1;
+  for(let t=Math.ceil(sc.t0/tstep)*tstep;t<=sc.t1;t+=tstep){ const X=tx(t);
+    g+=`<line x1="${X}" y1="${y0}" x2="${X}" y2="${y1}" stroke="var(--grid)"/>`;
+    g+=`<text x="${X}" y="${y1+16}" fill="var(--muted)" font-size="10" text-anchor="middle">${t}</text>`; }
+  g+=`<line x1="${x0}" y1="${midY}" x2="${x1}" y2="${midY}" stroke="var(--gridMajor)"/>`;
+  g+=`<text x="${(x0+x1)/2}" y="${H-4}" fill="var(--muted)" font-size="10" text-anchor="middle">tiempo (ms)</text>`;
+  g+=`<text x="12" y="${midY-4}" fill="var(--muted)" font-size="10">${sc.unit}</text>`;
+  const path=arr=>{let d='';for(let i=0;i<arr.length;i++){const X=tx(base.ts[i]).toFixed(1),Y=vy(arr[i]).toFixed(1);d+=(i?'L':'M')+X+' '+Y;}return d;};
+  g+=`<path d="${path(ref.y)}" fill="none" stroke="var(--ghost)" stroke-width="1.6"/>`;
+  g+=`<path d="${path(y)}" fill="none" stroke="var(--accent)" stroke-width="2.1"/>`;
+  // marcas inicio/pico/fin
+  const thr=Math.max(m.amp*0.05,1e-9); let ia=-1,ib=-1;
+  for(let i=0;i<y.length;i++) if(Math.abs(y[i])>thr){ if(ia<0)ia=i; ib=i; }
+  if(ia>=0){ for(const ix of [ia,ib]){ const X=tx(base.ts[ix]);
+    g+=`<line x1="${X}" y1="${y0}" x2="${X}" y2="${y1}" stroke="var(--accent2)" stroke-width="1" stroke-dasharray="3 3" opacity="0.7"/>`;} }
+  $('plot').innerHTML=g;
+  // --- métricas + deltas ---
+  const u=sc.unit;
+  setStat('Amp',m.amp,ref.m.amp,2,u);
+  setStat('Dur',m.dur,ref.m.dur,1,'ms');
+  setStat('On',m.onset,ref.m.onset,2,'ms');
+  setStat('Pk',m.peak,ref.m.peak,2,'ms');
+  setStatN('Ph',m.phases,ref.m.phases);
+  // --- interpretación ---
+  let cls='ok',txt='Filtros adecuados para este potencial';
+  const dAmp=(m.amp-ref.m.amp)/ref.m.amp, dDur=(m.dur-ref.m.dur)/ref.m.dur, dOn=m.onset-ref.m.onset;
+  if(lff> (scen==='snap'?60:25)){ cls='bad'; txt='Filtro de baja demasiado alto → patrón falsamente MIOPÁTICO: baja amplitud, corta duración, más fases.'; }
+  else if(hff< (scen==='snap'?1200:2000)){ cls='bad'; txt='Filtro de alta demasiado bajo → latencia y duración prolongadas: parece falsamente DESMIELINIZADO.'; }
+  else if(Math.abs(dAmp)>0.12||Math.abs(dDur)>0.15||Math.abs(dOn)>0.15){ cls='warn'; txt='Los filtros alteran de forma apreciable la morfología y las medidas.'; }
+  const b=$('badge'); b.className='badge '+cls; b.textContent=txt;
+}
+function setStat(key,v,r,dec,u){
+  $('m'+key).textContent=v.toFixed(dec).replace('.',',')+' '+u;
+  const d=v-r, rel=r?d/r*100:0, el=$('d'+key);
+  if(Math.abs(rel)<1.5){ el.className='delta zero'; el.textContent='—'; }
+  else { el.className='delta '+(d>0?'up':'down'); el.textContent=(d>0?'+':'')+rel.toFixed(0)+'%'; }
+}
+function setStatN(key,v,r){
+  $('m'+key).textContent=v; const d=v-r, el=$('d'+key);
+  if(d===0){ el.className='delta zero'; el.textContent='—'; }
+  else { el.className='delta '+(d>0?'up':'down'); el.textContent=(d>0?'+':'')+d; }
+}
+function setScenario(s){
+  scen=s;
+  document.querySelectorAll('#scen button').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.s===s)));
+  $('ptitle').textContent=SCN[s].title;
+  resetFilters(); recomputeRef(); draw();
+}
+function resetFilters(){
+  const sc=SCN[scen];
+  $('lff').value=Math.round(freqToSlider(sc.lffDef,LFF_LO,LFF_HI));
+  $('hff').value=Math.round(freqToSlider(Math.min(sc.hffDef,HFF_HI),HFF_LO,HFF_HI));
+}
+document.querySelectorAll('#scen button').forEach(b=>b.addEventListener('click',()=>setScenario(b.dataset.s)));
+$('lff').addEventListener('input',draw);
+$('hff').addEventListener('input',draw);
+$('reset').addEventListener('click',()=>{ resetFilters(); draw(); });
+setScenario('cmap');
+</script>
+</body>
+</html>

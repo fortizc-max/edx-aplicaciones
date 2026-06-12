@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Muestreo y aliasing</title>
+<style>
+  :root{
+    --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;
+    --accent:#3aa0ff;--accent2:#ff9d4d;--green:#5ec5a0;--bad:#ef6a6a;--warn:#ffb74d;
+    --plotbg:#0b1322;--grid:rgba(255,255,255,0.07);--gridMajor:rgba(255,255,255,0.18);
+    --true:rgba(180,196,220,0.34);--samp:#5ec5a0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 50px;
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:18px 16px 15px;border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:19px}
+  header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+  h2{margin:0 0 2px;font-size:16px}
+  h3{margin:0 0 8px;font-size:13px;color:var(--accent)}
+  .sub{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col-plot{flex:1 1 520px;min-width:320px}
+  .col-side{flex:1 1 300px;min-width:280px}
+  svg{width:100%;background:var(--plotbg);border:1px solid var(--line);border-radius:8px;display:block}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:14px}
+  label.ctl{display:block;font-size:12.5px;color:var(--muted);margin:12px 0 3px}
+  label.ctl:first-of-type{margin-top:2px}
+  label.ctl b{color:var(--accent);font-variant-numeric:tabular-nums;font-family:ui-monospace,monospace}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .stat{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line)}
+  .stat:last-child{border-bottom:0}
+  .stat .lab{color:var(--muted);font-size:12px}
+  .stat .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;font-weight:700}
+  .badge{display:block;text-align:center;padding:8px 10px;border-radius:8px;font-size:12.5px;font-weight:600;margin-top:4px}
+  .badge.ok{background:#10331f;color:var(--green);border:1px solid var(--green)}
+  .badge.bad{background:#3a1717;color:var(--bad);border:1px solid var(--bad)}
+  .legend{font-size:11.5px;color:var(--muted);margin-top:6px;display:flex;gap:16px;flex-wrap:wrap}
+  .sw{display:inline-block;width:18px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+  .dot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:middle;margin-right:5px}
+  details{margin-top:8px;font-size:12.5px;color:var(--muted)}
+  summary{cursor:pointer;color:var(--accent);font-weight:600}
+  footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<header>
+<h1>Muestreo y aliasing</h1>
+<p>Electrodiagnóstico y Ultrasonido Neuromuscular · material interactivo</p>
+</header>
+
+<div class="wrap">
+  <div class="row">
+    <div class="col-plot">
+      <h2>Teorema de Nyquist</h2>
+      <p class="sub">La onda gris es la señal real; los puntos verdes son las muestras del convertidor A/D. Si se muestrea por debajo del doble de la frecuencia, los puntos trazan una onda lenta falsa (aliasing).</p>
+      <svg id="plot" viewBox="0 0 760 340"></svg>
+      <div class="legend">
+        <span><span class="sw" style="background:var(--true)"></span>Señal real</span>
+        <span><span class="dot" style="background:var(--samp)"></span>Muestras (A/D)</span>
+        <span><span class="sw" style="background:var(--accent2)"></span>Onda reconstruida (alias)</span>
+      </div>
+    </div>
+
+    <div class="col-side">
+      <div class="panel">
+        <h3>Parámetros</h3>
+        <label class="ctl">Frecuencia de la señal <b id="fsigV"></b></label>
+        <input type="range" id="fsig" min="100" max="6000" step="50">
+        <label class="ctl">Frecuencia de muestreo <b id="fsV"></b></label>
+        <input type="range" id="fs" min="500" max="24000" step="100">
+        <label class="ctl">Resolución del A/D <b id="bitsV"></b></label>
+        <input type="range" id="bits" min="2" max="16" step="1" value="16">
+      </div>
+      <div class="panel">
+        <h3>Lectura</h3>
+        <div class="stat"><span class="lab">Frecuencia de la señal</span><span class="val" id="oSig">—</span></div>
+        <div class="stat"><span class="lab">Frecuencia de muestreo</span><span class="val" id="oFs">—</span></div>
+        <div class="stat"><span class="lab">Límite de Nyquist (fs/2)</span><span class="val" id="oNyq">—</span></div>
+        <div class="stat"><span class="lab">Frecuencia aparente</span><span class="val" id="oAlias">—</span></div>
+        <div class="stat"><span class="lab">Niveles de cuantificación</span><span class="val" id="oLev">—</span></div>
+        <div id="badge" class="badge ok">—</div>
+      </div>
+    </div>
+  </div>
+
+  <details>
+    <summary>Cómo leerlo</summary>
+    <p>Para reconstruir fielmente una onda que sube y baja hay que tomar al menos dos muestras por ciclo (teorema de Nyquist-Shannon): la frecuencia de muestreo debe ser ≥ 2× la frecuencia más alta de la señal. Si no, las muestras «se saltan» ciclos y, al unirlas, aparece una onda de frecuencia más baja que no existía: es el <i>aliasing</i> (el mismo efecto de la rueda de carreta que parece girar al revés en el cine). Por eso los equipos incluyen un filtro pasa-bajas <i>anti-aliasing</i> antes del A/D y muestrean 4–5 veces por encima del filtro de alta. La resolución en bits, en cambio, fija cuántos escalones de voltaje se distinguen: pocos bits «escalonan» la onda. Modelo didáctico.</p>
+  </details>
+</div>
+
+<footer>
+Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular</i>. Esquema docente con fines ilustrativos; no representa valores de referencia de laboratorio.
+</footer>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const NS=24;                       // número de muestras mostradas
+function fmtHz(f){ return f>=1000?(f/1000).toFixed(f%1000===0?0:1).replace('.',',')+' kHz':Math.round(f)+' Hz'; }
+function aliasFreq(fsig,fs){ const k=Math.round(fsig/fs); return Math.abs(fsig-k*fs); }
+function quant(v,bits){ const L=Math.pow(2,bits); return Math.round((v*0.5+0.5)*(L-1))/(L-1)*2-1; }
+
+function draw(){
+  const fsig=+$('fsig').value, fs=+$('fs').value, bits=+$('bits').value;
+  const T=NS/fs;                    // ventana temporal (s) -> NS muestras exactas
+  const W=760,H=340,padL=14,padR=14,padT=16,padB=26,x0=padL,x1=W-padR,y0=padT,y1=H-padB,midY=(y0+y1)/2;
+  const tx=t=>x0+(t/T)*(x1-x0), vy=v=>midY - v*((y1-y0)/2*0.86);
+  let g='';
+  g+=`<line x1="${x0}" y1="${midY}" x2="${x1}" y2="${midY}" stroke="var(--gridMajor)"/>`;
+  // señal real (densa)
+  let d='';for(let i=0;i<=600;i++){const t=T*i/600,X=tx(t).toFixed(1),Y=vy(Math.sin(2*Math.PI*fsig*t)).toFixed(1);d+=(i?'L':'M')+X+' '+Y;}
+  g+=`<path d="${d}" fill="none" stroke="var(--true)" stroke-width="1.6"/>`;
+  // onda alias reconstruida (frecuencia aparente, fase ajustada a las muestras)
+  const fa=aliasFreq(fsig,fs);
+  if(fa>1 && fs<2*fsig){
+    // dibujar alias usando interpolación por las muestras
+    let dpts=[];for(let k=0;k<=NS;k++){const t=k/fs; dpts.push([tx(t),vy(quant(Math.sin(2*Math.PI*fsig*t),bits))]);}
+    let dl='M'+dpts.map(p=>p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' L ');
+    g+=`<path d="${dl}" fill="none" stroke="var(--accent2)" stroke-width="2" opacity="0.9"/>`;
+  }
+  // muestras (puntos), cuantizadas
+  for(let k=0;k<=NS;k++){ const t=k/fs; if(t>T+1e-9)break; const X=tx(t),Y=vy(quant(Math.sin(2*Math.PI*fsig*t),bits));
+    g+=`<line x1="${X}" y1="${midY}" x2="${X}" y2="${Y}" stroke="var(--samp)" stroke-width="1" opacity="0.5"/>`;
+    g+=`<circle cx="${X.toFixed(1)}" cy="${Y.toFixed(1)}" r="3.4" fill="var(--samp)"/>`; }
+  $('plot').innerHTML=g;
+  // lectura
+  $('fsigV').textContent=fmtHz(fsig); $('fsV').textContent=fmtHz(fs); $('bitsV').textContent=bits+' bits';
+  $('oSig').textContent=fmtHz(fsig); $('oFs').textContent=fmtHz(fs); $('oNyq').textContent=fmtHz(fs/2);
+  $('oAlias').textContent=(fs>=2*fsig)?'sin alias':fmtHz(fa);
+  const lev=Math.pow(2,bits); $('oLev').textContent=lev.toLocaleString('es');
+  const b=$('badge');
+  if(fs>=2*fsig){ b.className='badge ok'; b.textContent='Muestreo correcto: fs ≥ 2× la frecuencia de la señal.'; }
+  else { b.className='badge bad'; b.textContent='Aliasing: la señal de '+fmtHz(fsig)+' aparece como una onda falsa de '+fmtHz(fa)+'.'; }
+}
+['fsig','fs','bits'].forEach(id=>$(id).addEventListener('input',draw));
+$('fsig').value=1500; $('fs').value=20000; $('bits').value=16;
+draw();
+</script>
+</body>
+</html>

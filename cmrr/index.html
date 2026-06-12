@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Rechazo de modo común (CMRR)</title>
+<style>
+  :root{
+    --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;
+    --accent:#3aa0ff;--accent2:#ff9d4d;--green:#5ec5a0;--bad:#ef6a6a;--warn:#ffb74d;
+    --plotbg:#0b1322;--gridMajor:rgba(255,255,255,0.16);--noise:#ff9d4d;--sig:#3aa0ff;--out:#5ec5a0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 50px;
+       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:18px 16px 15px;border-bottom:1px solid var(--line)}
+  header h1{margin:0;font-size:19px}
+  header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+  .wrap{max-width:1080px;margin:0 auto;padding:16px}
+  h2{margin:0 0 2px;font-size:16px}
+  h3{margin:0 0 8px;font-size:13px;color:var(--accent)}
+  .sub{margin:0 0 10px;font-size:12.5px;color:var(--muted)}
+  .row{display:flex;gap:18px;flex-wrap:wrap}
+  .col-plot{flex:1 1 520px;min-width:320px}
+  .col-side{flex:1 1 300px;min-width:280px}
+  svg{width:100%;background:var(--plotbg);border:1px solid var(--line);border-radius:8px;display:block}
+  .panel{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px;margin-bottom:14px}
+  label.ctl{display:block;font-size:12.5px;color:var(--muted);margin:12px 0 3px}
+  label.ctl:first-of-type{margin-top:2px}
+  label.ctl b{color:var(--accent);font-variant-numeric:tabular-nums;font-family:ui-monospace,monospace}
+  input[type=range]{width:100%;accent-color:var(--accent)}
+  .stat{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line)}
+  .stat:last-child{border-bottom:0}
+  .stat .lab{color:var(--muted);font-size:12px}
+  .stat .val{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;font-weight:700}
+  .badge{display:block;text-align:center;padding:8px 10px;border-radius:8px;font-size:12.5px;font-weight:600;margin-top:4px}
+  .badge.ok{background:#10331f;color:var(--green);border:1px solid var(--green)}
+  .badge.bad{background:#3a1717;color:var(--bad);border:1px solid var(--bad)}
+  .badge.warn{background:#3a2e10;color:var(--warn);border:1px solid var(--warn)}
+  details{margin-top:8px;font-size:12.5px;color:var(--muted)}
+  summary{cursor:pointer;color:var(--accent);font-weight:600}
+  footer{max-width:1080px;margin:18px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
+</style>
+</head>
+<body>
+<header>
+<h1>Rechazo de modo común (CMRR)</h1>
+<p>Electrodiagnóstico y Ultrasonido Neuromuscular · material interactivo</p>
+</header>
+
+<div class="wrap">
+  <div class="row">
+    <div class="col-plot">
+      <h2>Amplificación diferencial</h2>
+      <p class="sub">El amplificador resta E-1 − E-2. El ruido de la red (naranja) es común a ambos y debería cancelarse, dejando solo la señal biológica (azul). La salida diferencial (verde) muestra cuánto ruido sobrevive.</p>
+      <svg id="plot" viewBox="0 0 760 380"></svg>
+    </div>
+
+    <div class="col-side">
+      <div class="panel">
+        <h3>Parámetros</h3>
+        <label class="ctl">CMRR del amplificador <b id="cmrrV"></b></label>
+        <input type="range" id="cmrr" min="60" max="120" step="1" value="100">
+        <label class="ctl">Desbalance de impedancia E-1/E-2 <b id="imbV"></b></label>
+        <input type="range" id="imb" min="0" max="40" step="1" value="0">
+        <label class="ctl">Amplitud del ruido de red <b id="noiseV"></b></label>
+        <input type="range" id="noise" min="0" max="2000" step="50" value="800">
+      </div>
+      <div class="panel">
+        <h3>Lectura</h3>
+        <div class="stat"><span class="lab">Señal biológica</span><span class="val" id="oSig">—</span></div>
+        <div class="stat"><span class="lab">Ruido común (entrada)</span><span class="val" id="oNoise">—</span></div>
+        <div class="stat"><span class="lab">Ruido residual (salida)</span><span class="val" id="oRes">—</span></div>
+        <div class="stat"><span class="lab">Relación señal/ruido</span><span class="val" id="oSNR">—</span></div>
+        <div id="badge" class="badge ok">—</div>
+      </div>
+    </div>
+  </div>
+
+  <details>
+    <summary>Cómo leerlo</summary>
+    <p>El amplificador diferencial calcula (E-1 − E-0) − (E-2 − E-0) = E-1 − E-2. Si el ruido ambiental es idéntico en E-1 y E-2 (modo común), al restar se cancela y solo queda la señal local del electrodo activo. Dos cosas limitan esa cancelación: el <b>CMRR</b> finito del amplificador (un CMRR de 100 dB deja pasar el ruido común con una ganancia 100 000 veces menor que la de la señal) y, sobre todo, el <b>desbalance de impedancia</b> entre E-1 y E-2: si las impedancias difieren, el ruido ya no llega igual a ambas entradas y una parte se cuela como señal diferencial que el amplificador no puede distinguir de la señal real. Por eso se buscan impedancias bajas y, sobre todo, <i>balanceadas</i>. Modelo didáctico.</p>
+  </details>
+</div>
+
+<footer>
+Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular</i>. Esquema docente con fines ilustrativos; no representa valores de referencia de laboratorio.
+</footer>
+
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+const ASIG=300;          // amplitud de la señal biológica (µV) — un "blip" tipo SNAP
+const FNOISE=60;         // Hz de la red
+const T=0.05;            // ventana 50 ms (3 ciclos de 60 Hz)
+function sig(t){ const mu=0.028, sg=0.0022; const z=(t-mu)/sg; return -ASIG*Math.exp(-0.5*z*z); }
+function noise(amp,t){ return amp*Math.sin(2*Math.PI*FNOISE*t); }
+
+function draw(){
+  const cmrr=+$('cmrr').value, imb=+$('imb').value/100, An=+$('noise').value;
+  const gcm=Math.pow(10,-cmrr/20);                 // ganancia de modo común relativa
+  const resFrac=imb+gcm;                            // fracción del ruido que sobrevive
+  const N=600, ts=[];for(let i=0;i<=N;i++)ts.push(T*i/N);
+  const e1=ts.map(t=>sig(t)+noise(An,t));
+  const e2=ts.map(t=>noise(An,t));
+  const out=ts.map(t=>sig(t)+noise(An,t)*resFrac);
+  // --- SVG: tres bandas ---
+  const W=760,H=380,padL=58,padR=12,x0=padL,x1=W-padR;
+  const bands=[
+    {y0:14, y1:130, data:e1, col:'var(--sig)', lab:'E-1 (señal + ruido)'},
+    {y0:140,y1:248, data:e2, col:'var(--noise)', lab:'E-2 (ruido común)'},
+    {y0:258,y1:372, data:out,col:'var(--out)', lab:'Diferencial (salida)'},
+  ];
+  const fullScale=ASIG+Math.max(An,1);
+  let g='';
+  for(const b of bands){
+    const mid=(b.y0+b.y1)/2, vScale=(b.y1-b.y0)/2*0.82/fullScale;
+    const tx=t=>x0+(t/T)*(x1-x0), vy=v=>mid - v*vScale;
+    g+=`<line x1="${x0}" y1="${mid}" x2="${x1}" y2="${mid}" stroke="var(--gridMajor)"/>`;
+    g+=`<text x="6" y="${mid-2}" fill="var(--muted)" font-size="10.5">${b.lab}</text>`;
+    let d='';for(let i=0;i<b.data.length;i++){const X=tx(ts[i]).toFixed(1),Y=vy(b.data[i]).toFixed(1);d+=(i?'L':'M')+X+' '+Y;}
+    g+=`<path d="${d}" fill="none" stroke="${b.col}" stroke-width="1.9"/>`;
+  }
+  $('plot').innerHTML=g;
+  // --- lectura ---
+  const res=An*resFrac, snr=res>0.5?ASIG/res:Infinity;
+  $('cmrrV').textContent=cmrr+' dB'; $('imbV').textContent=(imb*100).toFixed(0)+' %'; $('noiseV').textContent=An+' µV';
+  $('oSig').textContent=ASIG+' µV'; $('oNoise').textContent=An+' µV';
+  $('oRes').textContent=res<1?'<1 µV':Math.round(res)+' µV';
+  $('oSNR').textContent=isFinite(snr)?(snr>=10?Math.round(snr)+'×':snr.toFixed(1)+'×'):'∞';
+  const b=$('badge');
+  if(res<ASIG*0.1){ b.className='badge ok'; b.textContent='Cancelación efectiva: la señal domina sobre el ruido residual.'; }
+  else if(res<ASIG){ b.className='badge warn'; b.textContent='El ruido residual ya es apreciable y ensucia el trazo.'; }
+  else { b.className='badge bad'; b.textContent='Ruido residual ≥ señal: el desbalance de impedancia anula el rechazo de modo común.'; }
+}
+['cmrr','imb','noise'].forEach(id=>$(id).addEventListener('input',draw));
+draw();
+</script>
+</body>
+</html>
