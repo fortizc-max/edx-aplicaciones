@@ -26,6 +26,7 @@ GitHub Pages: **https://fortizc-max.github.io/edx-aplicaciones/**
 | MUNE · número de unidades motoras | [`mune/`](mune/) | Simulador de la estimación del número de unidades motoras (incremental y multipunto): escalones cuantales / SMUP individuales, SMUP promedio y MUNE = CMAP máx ÷ SMUP; escenario normal y neurogénico |
 | Temperatura y neuroconducción | [`temperatura/`](temperatura/) | Efecto de la temperatura sobre el estudio de conducción: latencia, amplitud, duración y velocidad cambian con la temperatura (frío → más lento, más grande, más ancho); recomendación 32–36 °C |
 | Bloqueo de conducción y dispersión temporal | [`bloqueo-dispersion/`](bloqueo-dispersion/) | CMAP distal vs proximal: distingue bloqueo (cae amplitud y área) de dispersión temporal (aumenta duración, área conservada); escenarios e interpretación (desmielinizante vs axonal) |
+| Potencial de unidad motora · sumación de fibras | [`potencial-unidad-motora/`](potencial-unidad-motora/) | Modelo biofísico del MUAP de aguja por suma de potenciales de fibra única (corriente de membrana → conductor de volumen 1/√(r²+z²) → propagación a velocidad v): cadena paso a paso, comparación normal/neurogénico/miopático y laboratorio interactivo con métricas (amplitud, duración, fases, giros). No es el CMAP |
 
 ## Cómo añadir una app nueva
 

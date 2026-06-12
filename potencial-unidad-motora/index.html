@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Potencial de unidad motora — Simulador de sumación de fibras</title>
+<style>
+  :root{
+    --ink:#15212b; --ink-2:#3a4a57; --muted:#6b7c89;
+    --bench:#eef1f3; --panel:#ffffff; --line:#d9dfe4;
+    --ro:#1F4E79; --ro-dk:#0F2A47; --ro-lt:#D6E4F0;
+    --scope:#091317; --scope-grid:#13343b; --scope-grid2:#0e252b;
+    --phos:#3FE0C5; --phos-dim:#1f8d80; --fiber:#2f6f6a; --sat:#E8A23D;
+    --ok:#1f7a4d; --warn:#b26a00; --abn:#b23a48;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{background:var(--bench);color:var(--ink);font-family:var(--sans);line-height:1.5;
+       -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 64px}
+
+  header.masthead{border-bottom:2px solid var(--ro);padding-bottom:14px;margin-bottom:8px}
+  .eyebrow{font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--ro);
+           font-weight:600;margin:0 0 6px}
+  h1{font-size:clamp(22px,3.4vw,32px);line-height:1.12;margin:0;font-weight:680;
+     letter-spacing:-.01em;color:var(--ink)}
+  .sub{color:var(--ink-2);max-width:64ch;margin:10px 0 0;font-size:15px}
+
+  .note{background:var(--ro-lt);border-left:3px solid var(--ro);border-radius:0 6px 6px 0;
+        padding:11px 14px;margin:18px 0 24px;font-size:13.5px;color:var(--ro-dk)}
+  .note b{color:var(--ro)}
+
+  .sectlabel{font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+             font-weight:600;margin:30px 0 12px;display:flex;align-items:center;gap:12px}
+  .sectlabel::after{content:"";flex:1;height:1px;background:var(--line)}
+
+  /* ---- comparison strip ---- */
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:860px){.grid3{grid-template-columns:1fr}}
+  .pdgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  @media(max-width:760px){.pdgrid{grid-template-columns:1fr}}
+  .pdpanel{background:var(--scope);border:1px solid var(--scope-grid);border-radius:8px;padding:8px 8px 4px}
+  .pdtitle{font:600 12px/1.3 var(--sans);color:#cfe9e4;margin:2px 2px 6px}
+  .pdtitle span{font:400 11px/1 var(--mono);color:var(--phos-dim)}
+  .pdpanel canvas{width:100%;height:auto;display:block}
+  .pdctrl{display:grid;grid-template-columns:1fr 1fr auto;gap:14px 22px;align-items:center;margin-top:14px}
+  @media(max-width:760px){.pdctrl{grid-template-columns:1fr}}
+  .pdslider label{display:block;font-size:13px;color:var(--ink-2);margin-bottom:4px}
+  .pdslider label b{color:var(--ro);font-variant-numeric:tabular-nums}
+  .pdslider input{width:100%}
+  .pdread{display:flex;gap:18px;font-size:13px;color:var(--ink-2);white-space:nowrap}
+  .pdread b{display:block;color:var(--ro);font-size:17px;font-variant-numeric:tabular-nums}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .card .head{display:flex;align-items:baseline;justify-content:space-between;
+              padding:12px 14px 10px;border-bottom:1px solid var(--line)}
+  .card .head .t{font-weight:650;font-size:15px}
+  .card .head .tag{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+                   padding:2px 7px;border-radius:99px}
+  .tag.n{background:#e7f1ec;color:var(--ok)}
+  .tag.g{background:#f3e9da;color:var(--warn)}
+  .tag.m{background:#f3e4e6;color:var(--abn)}
+  .scopewell{position:relative;background:var(--scope);padding:8px}
+  canvas.scope{display:block;width:100%;height:auto;border-radius:5px}
+  .xsec-row{display:flex;gap:10px;padding:10px 12px 4px;align-items:center}
+  canvas.xsec{background:#0c171c;border-radius:6px;flex:0 0 auto}
+  .xsec-cap{font-size:11.5px;color:var(--muted);line-height:1.4}
+  .metrics{padding:6px 12px 14px}
+  .mrow{display:grid;grid-template-columns:1fr auto;gap:8px;padding:5px 0;
+        border-bottom:1px dotted var(--line);font-size:13px}
+  .mrow:last-child{border-bottom:0}
+  .mrow .k{color:var(--ink-2)}
+  .mrow .v{font-family:var(--mono);font-weight:600}
+  .v.ok{color:var(--ok)} .v.warn{color:var(--warn)} .v.abn{color:var(--abn)}
+
+  /* ---- interactive lab ---- */
+  .lab{background:var(--panel);border:1px solid var(--line);border-radius:12px;
+       display:grid;grid-template-columns:1fr 300px;overflow:hidden}
+  @media(max-width:860px){.lab{grid-template-columns:1fr}}
+  .lab .stage{padding:14px}
+  .lab .stagehead{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{appearance:none;border:0;background:var(--panel);padding:7px 12px;font:inherit;
+              font-size:13px;font-weight:600;color:var(--ink-2);cursor:pointer;border-right:1px solid var(--line)}
+  .seg button:last-child{border-right:0}
+  .seg button[aria-pressed="true"]{background:var(--ro);color:#fff}
+  .stage .bigwell{background:var(--scope);border-radius:8px;padding:10px;position:relative}
+  canvas#bigscope{display:block;width:100%;height:auto;border-radius:5px}
+  .stage .underrow{display:flex;gap:14px;margin-top:12px;align-items:flex-start;flex-wrap:wrap}
+  canvas#bigxsec{background:#0c171c;border-radius:8px;flex:0 0 auto}
+  .readout{flex:1;min-width:200px;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;
+           font-size:13px;align-content:start}
+  .readout .k{color:var(--ink-2)}
+  .readout .pair{display:flex;justify-content:space-between;border-bottom:1px dotted var(--line);padding:4px 0}
+  .readout .pair .v{font-family:var(--mono);font-weight:600}
+
+  .panel-ctrl{background:#f7f9fa;border-left:1px solid var(--line);padding:16px 16px 20px}
+  .panel-ctrl h3{margin:0 0 4px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+  .ctrl{margin:14px 0 0}
+  .ctrl label{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2);margin-bottom:4px}
+  .ctrl label .val{font-family:var(--mono);color:var(--ro);font-weight:600}
+  input[type=range]{width:100%;accent-color:var(--ro);height:18px}
+  .ctrl.disabled{opacity:.38;pointer-events:none}
+  .toggles{display:flex;flex-direction:column;gap:8px;margin-top:16px;font-size:13px}
+  .toggles label{display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink-2)}
+  .btnrow{display:flex;gap:8px;margin-top:18px;flex-wrap:wrap;align-items:center}
+  .btn{flex:1;appearance:none;border:1px solid var(--ro);background:var(--ro);color:#fff;
+       padding:9px;border-radius:8px;font:inherit;font-weight:600;font-size:13px;cursor:pointer}
+  .btn.ghost{background:#fff;color:var(--ro)}
+  .btn:active{transform:translateY(1px)}
+  .speedsel{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2)}
+  .speedsel select{font:inherit;font-size:12px;padding:6px 8px;border-radius:7px;
+       border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+
+  footer.legend{margin-top:14px;font-size:12px;color:var(--muted);display:flex;gap:18px;flex-wrap:wrap;align-items:center}
+  .swatch{display:inline-block;width:22px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+  details.method{margin-top:30px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+  details.method summary{cursor:pointer;padding:14px 16px;font-weight:650;font-size:14px;color:var(--ro-dk)}
+  details.method .body{padding:0 18px 18px;font-size:13.5px;color:var(--ink-2);max-width:78ch}
+  details.method code{font-family:var(--mono);background:#f1f4f6;padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .small{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Electrodiagnóstico · Modelo de sumación</p>
+    <h1>Potencial de unidad motora por sumación de fibras</h1>
+    <p class="sub">Simulación biofísica del registro con aguja: cada fibra aporta un
+      potencial de fibra única (fuente lineal sobre el conductor de volumen) y su suma temporal
+      forma el potencial de unidad motora (MUAP). Compara un patrón normal, uno neurogénico por reinervación y
+      uno miopático.</p>
+  </header>
+
+  <div class="note">
+    <b>Sobre el término.</b> Lo que registra una aguja desde un grupo de fibras de una misma unidad
+    es, en rigor, un <b>potencial de unidad motora (MUAP)</b>; el <b>CMAP</b> clásico es la respuesta
+    de todo el músculo a estimulación supramáxima, captada con electrodos de superficie. La física de
+    fondo —sumación de potenciales de fibra única— es la misma, y es la que se modela aquí. Los
+    valores de referencia mostrados corresponden a MUAP de aguja en adulto y dependen de músculo y edad.
+  </div>
+
+  <!-- ============ PROBLEMA DIRECTO ============ -->
+  <div class="sectlabel">El problema directo, paso a paso</div>
+  <div class="card" style="padding:16px 16px 18px">
+    <p class="small" style="margin:0 0 14px;max-width:80ch;color:var(--ink-2)">
+      La cadena de la simulación es física, no estadística: del PA intracelular se obtiene la
+      corriente de membrana (su 2.ª derivada), esa corriente se filtra por el conductor de volumen
+      (peso <code>1/√(r²+z²)</code>) mientras se propaga a velocidad <code>v</code>, dando el SFAP de
+      una fibra; la suma de las fibras de la unidad da el MUAP. Mueve la distancia y la velocidad y
+      observa cómo cambian la amplitud y la duración <b>según las fórmulas</b>.
+    </p>
+    <div class="pdgrid">
+      <div class="pdpanel"><div class="pdtitle">① PA intracelular &nbsp;<span>Vm(ξ)</span></div>
+        <canvas id="pdIap" width="600" height="180"></canvas></div>
+      <div class="pdpanel"><div class="pdtitle">② Corriente de membrana &nbsp;<span>∂²Vm/∂ξ²</span></div>
+        <canvas id="pdCur" width="600" height="180"></canvas></div>
+      <div class="pdpanel"><div class="pdtitle">③ SFAP — una fibra &nbsp;<span>φ(t) = ∫ I(z−v·t)/√(r²+z²) dz</span></div>
+        <canvas id="pdSfap" width="600" height="180"></canvas></div>
+      <div class="pdpanel"><div class="pdtitle">④ MUAP — suma de la unidad &nbsp;<span>Σ φᵢ(t)</span></div>
+        <canvas id="pdMuap" width="600" height="180"></canvas></div>
+    </div>
+    <div class="pdctrl">
+      <div class="pdslider">
+        <label>Distancia aguja–fibra <b id="pdrVal">0,30 mm</b></label>
+        <input type="range" id="pdr" min="0.1" max="2.0" step="0.02" value="0.3">
+      </div>
+      <div class="pdslider">
+        <label>Velocidad de conducción <b id="pdvVal">3,7 m/s</b></label>
+        <input type="range" id="pdv" min="1.5" max="5.0" step="0.1" value="3.7">
+      </div>
+      <div class="pdread" id="pdread"></div>
+    </div>
+    <p class="small" style="margin:12px 0 0;color:var(--muted)">
+      La amplitud del SFAP cae con la distancia (≈ <code>1/r</code>: a 300–400 µm ya es &lt;10 % del valor
+      junto a la fibra, Nandedkar 2002) y su anchura crece al bajar la velocidad (≈ <code>1/v</code>,
+      Dumitru 1999). El MUAP hereda ambas: por eso la espiga la fijan una o dos fibras cercanas y la
+      duración, el conjunto de la unidad.
+    </p>
+  </div>
+
+  <!-- ============ COMPARISON ============ -->
+  <div class="sectlabel">Comparación de patrones</div>
+  <div class="grid3" id="grid3"></div>
+
+  <footer class="legend">
+    <span><span class="swatch" style="background:var(--phos)"></span>Potencial de unidad motora (suma)</span>
+    <span><span class="swatch" style="background:var(--fiber)"></span>Fibras individuales</span>
+    <span><span class="swatch" style="background:var(--sat)"></span>Fibras reinervadas / satélites</span>
+    <span class="small">Calibración: 5&nbsp;ms · 1&nbsp;mV</span>
+  </footer>
+
+  <!-- ============ INTERACTIVE LAB ============ -->
+  <div class="sectlabel">Laboratorio interactivo</div>
+  <div class="lab">
+    <div class="stage">
+      <div class="stagehead">
+        <div class="seg" id="scenSeg" role="group" aria-label="Escenario">
+          <button data-scen="normal" aria-pressed="true">Normal</button>
+          <button data-scen="neuro" aria-pressed="false">Neurogénica</button>
+          <button data-scen="myo" aria-pressed="false">Miopática</button>
+        </div>
+        <span class="small" id="scenHint"></span>
+      </div>
+      <div class="bigwell"><canvas id="bigscope" width="1300" height="430"></canvas></div>
+      <div class="underrow">
+        <canvas id="bigxsec" width="200" height="200"></canvas>
+        <div class="readout" id="readout"></div>
+      </div>
+    </div>
+
+    <div class="panel-ctrl">
+      <h3>Parámetros clínicos</h3>
+      <div id="ctrlHost"></div>
+
+      <div class="ctrl" data-c="gain" id="gainCtrl">
+        <label>Escala vertical (px/mV) <span class="val"></span></label>
+        <input type="range" min="15" max="200" step="1" id="gainInput">
+      </div>
+
+      <div class="ctrl" data-c="tbase">
+        <label>Base de tiempo (ventana) <span class="val" id="tbaseVal"></span></label>
+        <input type="range" min="8" max="60" step="2" id="tbaseInput" value="24">
+        <div class="small" style="color:var(--muted);margin-top:2px">Más ancha → la espiga se ve fina, como en el equipo</div>
+      </div>
+
+      <div class="toggles">
+        <label><input type="checkbox" id="tAuto" checked> Autoescala vertical</label>
+        <label><input type="checkbox" id="tShowFib" checked> Mostrar fibras individuales</label>
+        <label><input type="checkbox" id="tShowMarks" checked> Marcar duración y picos</label>
+        <label><input type="checkbox" id="tShowUptake" checked> Círculo de captación</label>
+      </div>
+      <div class="btnrow">
+        <button class="btn" id="btnPlay">⏸ Pausar</button>
+        <label class="speedsel">Velocidad
+          <select id="selSpeed">
+            <option value="0.5">0.5×</option>
+            <option value="1" selected>1×</option>
+            <option value="2">2×</option>
+          </select>
+        </label>
+        <button class="btn ghost" id="btnRegen">Regenerar</button>
+        <button class="btn" id="btnReset">Restablecer</button>
+      </div>
+    </div>
+  </div>
+
+  <details class="method">
+    <summary>Modelo y supuestos</summary>
+    <div class="body">
+      <p><b>Potencial de fibra única (SFAP).</b> La corriente transmembrana se modela como la segunda
+      derivada espacial del potencial de acción intracelular de Rosenfalck,
+      <code>f(u)=96·u³·e⁻ᵘ−90</code>, es decir <code>f''(u)=96·e⁻ᵘ·(u³−6u²+6u)</code>. El potencial
+      extracelular registrado por un electrodo puntual a distancia radial <code>r</code> es la
+      integral de esa fuente lineal pesada por <code>1/√(r²+z²)</code> mientras la despolarización se
+      propaga a velocidad <code>v</code>. Así, las fibras cercanas aportan la espiga rápida de gran
+      amplitud y las lejanas, componentes lentos de baja amplitud (filtrado del conductor de volumen).</p>
+      <p><b>Sumación.</b> El compuesto es la suma de los SFAP, desfasados por la posición de la placa
+      motora, las diferencias de velocidad de conducción y el jitter de la transmisión neuromuscular.</p>
+      <p><b>Normal:</b> ~20 fibras, placas alineadas → espiga sincrónica, 2–4 fases, ~8–13 ms.
+      <b>Neurogénica:</b> reinervación colateral → mayor densidad de fibras y brotes inmaduros de
+      conducción lenta → potencial grande, prolongado, polifásico, con potenciales satélite.
+      <b>Miopática:</b> pérdida y atrofia de fibras con gran variabilidad de tamaño → baja amplitud,
+      corta duración y aspecto serrado/polifásico.</p>
+      <p class="small">Amplitud calibrada a mV; los SFAP se integran con <code>du=0.1 mm</code> sobre
+      <code>u∈[0,8] mm</code>. La traza se muestra con la <b>convención de EMG (negativo hacia arriba)</b> y se
+      filtra con un <b>pasa-altos de un polo (~65 Hz)</b> que mimetiza el corte de baja frecuencia del
+      amplificador: aplana la línea de base y afila las fases. Es un modelo didáctico de fuente lineal en
+      medio homogéneo: no incluye anisotropía, geometría real del electrodo concéntrico ni recuperación tras
+      la espiga. Ajusta los parámetros para reproducir patrones específicos.</p>
+      <p class="small"><b>Sobre la duración y la forma (Dumitru, King &amp; Zwarts, <i>Clin Neurophysiol</i> 1999;
+      Nandedkar 2002).</b> Cada SFAP es la integral de campo cercano de una fuente lineal; su <b>anchura</b> depende de
+      la velocidad de conducción (≈ 1/CV) y su <b>amplitud</b> del diámetro de fibra (∝ d²) y la distancia (≈ 1/r). La
+      duración del MUAP se mide donde el trazo sale de la línea base. Así emergen, sin imponerlas, las duraciones y
+      formas clínicas: <b>normal</b> ≈ 8–12 ms, trifásica; <b>neurogénica</b> &gt; 15–20 ms, grande y polifásica por
+      reinervación + brotes inmaduros lentos (satélites); <b>miopática</b> &lt; 5 ms, de baja amplitud (atrofia → menos
+      d²) pero <b>picuda</b>, porque la atrofia reduce la amplitud, no tanto la velocidad de conducción —las espigas
+      siguen angostas (clave para que se vea como en el equipo, no como una onda roma)—. El control de <b>velocidad de
+      conducción</b> reproduce la relación inversa CV→duración. En el laboratorio, la <b>autoescala</b> ajusta la
+      ganancia a cada potencial (como subir la ganancia en el equipo para uno pequeño).</p>
+    </div>
+  </details>
+</div>
+
+<script>
+"use strict";
+/* ---------------- RNG con semilla ---------------- */
+function rng(seed){let a=seed>>>0;return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function gaussF(r){let s=null;return function(){if(s!==null){const x=s;s=null;return x;}let u=r(),v=r();const R=Math.sqrt(-2*Math.log(u+1e-12));s=R*Math.sin(2*Math.PI*v);return R*Math.cos(2*Math.PI*v);};}
+
+/* ---------------- Física del SFAP ---------------- */
+function currentSource(u){ if(u<0) return 0; return Math.exp(-u)*(u*u*u-6*u*u+6*u); }
+const GAIN=0.22, DU=0.1, ULEN=8;
+// SFAP de una fibra a tiempo t (ms), distancia r (mm) ya calculada respecto a la aguja
+function sfap(t,f,r){
+  const P=f.v*(t-f.tact); let s=0;
+  for(let u=0;u<=ULEN;u+=DU){ const dz=P-u; s+=currentSource(u)/Math.sqrt(r*r+dz*dz); }
+  return f.K*s*DU;
+}
+
+/* ---------------- Construcción de la unidad ---------------- */
+// Cada fibra: posición (x,y) en mm, diámetro d, velocidad v, instante de activación tact, K (∝ d²)
+function buildUnit(scen,p,seed){
+  const r=rng(seed), g=gaussF(r), F=[];
+  const cvf=(p.cv||3.7)/3.7;        // velocidad de conducción relativa (3.7 m/s ≈ normal, Stålberg 1966)
+  const add=(rho,d,v,tact,kind)=>{
+    const th=2*Math.PI*r();
+    F.push({x:rho*Math.cos(th), y:rho*Math.sin(th), d, v:Math.max(0.8, v*cvf),
+            tact, K:GAIN*Math.pow(d/50,2), kind});
+  };
+  const dM=p.atro;                 // diámetro medio (µm)
+  if(scen==='normal'){
+    // fibras sanas, placas relativamente alineadas → espiga sincrónica
+    for(let i=0;i<p.nfib;i++){
+      const rho=p.terr*Math.sqrt(r());
+      const d=dM+8*g();
+      add(rho, d, (4.0+0.3*g())*(d/50), (r()-0.5)*p.sync + 0.1*g(), 'm');
+    }
+  }
+  if(scen==='neuro'){
+    // Reinervación colateral. La "eficiencia" e va de 0 (brotes inmaduros, conducción
+    // lenta y dispersa) a 1 (reinervación madura, sincronizada).
+    const e=Math.max(0,Math.min(1,p.efic));
+    const n=p.reinerv;
+    const disp=p.disp;                 // dispersión temporal del grueso de fibras (ms)
+    const cvd=1.0*(1-e)+0.35;          // dispersión de velocidad de conducción
+    // núcleo grande y sincronizado, cercano a la aguja → espiga de alta amplitud (unidad "gigante")
+    const nCore=Math.round(n*(0.22+0.18*e));
+    for(let i=0;i<nCore;i++){
+      const rho=p.terr*0.45*Math.sqrt(r());
+      const d=dM+8+7*g();
+      add(rho, d, (4.0+cvd*g())*(d/50), (r()-0.5)*(0.6+0.5*(1-e)), 'm');
+    }
+    // resto de fibras reinervadas, dispersas → potencial largo y polifásico
+    const nBulk=n-nCore;
+    for(let i=0;i<nBulk;i++){
+      const rho=p.terr*Math.sqrt(r());
+      const d=dM+4+9*g();
+      add(rho, d, (3.6+cvd*g())*(d/50), (r()-0.5)*disp, 'm');
+    }
+    // brotes colaterales inmaduros: satélites tardíos discretos, escalonados hasta satdelay
+    const nSat=Math.round(2+3*(1-e));
+    for(let i=0;i<nSat;i++){
+      const rho=p.terr*0.6*Math.sqrt(r());
+      const d=dM+2+5*g();
+      add(rho, d, (1.8+0.4*g())*(d/50), p.satdelay*(0.55+0.5*i/Math.max(1,nSat-1)) + 0.4*g(), 's');
+    }
+  }
+  if(scen==='myo'){
+    // Pérdida de fibras (loss) y variabilidad de tamaño (sizevar). Dos subgrupos temporales →
+    // surcos separados que con los lóbulos positivos intermedios dan un potencial bajo, polifásico y serrado.
+    const loss=Math.max(0,Math.min(0.9,p.loss));
+    const sv=Math.max(0,Math.min(1,p.sizevar));
+    const spread=p.spread, gsep=p.gsep;
+    const n=Math.max(4, Math.round(p.nfibBase*(1-loss)));   // fibras sobrevivientes
+    const G=[-gsep, gsep];
+    // CV alta y variable, NO ligada al diámetro: la atrofia baja la amplitud (K∝d²), pero las
+    // espigas siguen angostas → aspecto picudo; la variabilidad de CV + el desfase dan el serrado.
+    for(let i=0;i<n;i++){
+      const rho=p.terr*0.35*Math.sqrt(r());                 // fibras cercanas → espigas nítidas
+      const d=Math.max(14, Math.min(dM+4, dM + (2+sv*9)*g()));   // atróficas; más variabilidad con sizevar
+      add(rho, d, (3.5+sv*1.0*g()), G[i%2]*spread + (r()-0.5)*(0.25+sv*0.3), 'm');
+    }
+    const nSplit=Math.round(n*0.4)+1;                        // fibras escindidas (splitting) → muesca de polifasia
+    for(let i=0;i<nSplit;i++){
+      const rho=p.terr*0.3*Math.sqrt(r());
+      const d=Math.max(13, dM*0.8 + (2+sv*4)*g());
+      add(rho, d, (3.2+sv*0.9*g()), G[(i+1)%2]*spread + (r()-0.5)*(0.25+sv*0.3), 'm');
+    }
+  }
+  return F;
+}
+
+/* ---------------- Cálculo del compuesto ---------------- */
+function computeTraces(F, needle, t0, t1, dt){
+  const N=Math.round((t1-t0)/dt)+1;
+  const ts=new Float64Array(N), sum=new Float64Array(N);
+  const indiv=[];
+  for(const f of F){
+    const r=Math.max(0.12, Math.hypot(f.x-needle.x, f.y-needle.y));
+    const y=new Float64Array(N); let am=0, ipk=0;
+    for(let i=0;i<N;i++){ const t=t0+i*dt; const v=sfap(t,f,r); y[i]=v; sum[i]+=v;
+      const a=Math.abs(v); if(a>am){am=a;ipk=i;} }
+    f.tpk=t0+ipk*dt; f.apk=am;            // instante y magnitud del pico de esta fibra
+    indiv.push({y, kind:f.kind, r});
+  }
+  for(let i=0;i<N;i++) ts[i]=t0+i*dt;
+  // filtro pasa-altos de 1 polo: mimetiza el corte de baja frecuencia del amplificador de EMG
+  // → aplana la línea de base y afila las fases (la EMG real mide la señal filtrada)
+  highpassInPlace(sum, dt, HP_HZ);
+  for(const it of indiv) highpassInPlace(it.y, dt, HP_HZ);
+  return {ts, sum, indiv, dt};
+}
+const HP_HZ=65;   // corte de baja frecuencia (Hz) del "amplificador"
+function highpassInPlace(y, dt, fc){
+  const RC=1/(2*Math.PI*fc/1000);        // fc en Hz → constante en ms
+  const a=RC/(RC+dt); let prevX=y[0], prevY=0;
+  for(let i=0;i<y.length;i++){ const x=y[i]; const out=i? a*(prevY + x - prevX) : 0;
+    prevX=x; prevY=out; y[i]=out; }
+}
+
+/* ---------------- Métricas EMG cuantitativas ---------------- */
+function metrics(tr){
+  const y=tr.sum, ts=tr.ts; let mx=-1e9, mn=1e9, iMx=0, iMn=0;
+  for(let i=0;i<y.length;i++){ if(y[i]>mx){mx=y[i];iMx=i;} if(y[i]<mn){mn=y[i];iMn=i;} }
+  const amp=mx-mn;
+  const thrDur=Math.max(0.03, amp*0.015);    // umbral: marca donde el trazo sale de la línea base (piso ~30 µV)
+  let a=-1,b=-1; for(let i=0;i<y.length;i++) if(Math.abs(y[i])>thrDur){ if(a<0)a=i; b=i; }
+  const dur=a<0?0:ts[b]-ts[a];
+  const thrPh=Math.max(0.025, amp*0.10);
+  let phases=0, st=0;
+  for(const v of y){ if(v>thrPh&&st<=0){phases++;st=1;} else if(v<-thrPh&&st>=0){phases++;st=-1;} }
+  // turns: reversiones de dirección que superan dmin
+  const dmin=amp*0.10; let turns=0, dir=0, prevExt=y[0];
+  for(let i=1;i<y.length;i++){ const d=y[i]-y[i-1]; const nd=d>0?1:(d<0?-1:dir);
+    if(nd!==dir&&dir!==0){ if(Math.abs(y[i-1]-prevExt)>dmin){turns++;prevExt=y[i-1];} } if(nd!==0)dir=nd; }
+  let area=0; for(let i=0;i<y.length;i++) area+=Math.abs(y[i])*tr.dt;  // mV·ms
+  return {amp,dur,phases:Math.max(1,phases),turns,area,iMx,iMn,onset:a,offset:b};
+}
+
+/* ---------------- Dibujo del osciloscopio ---------------- */
+const T0=-2, T1=22;
+function drawScope(cv, tr, opts){
+  const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+  const padL=10, padR=10, padT=10, padB=10;
+  const x0=padL, x1=W-padR, y0=padT, y1=H-padB, midY=(y0+y1)/2;
+  ctx.clearRect(0,0,W,H); ctx.fillStyle='#091317'; ctx.fillRect(0,0,W,H);
+  const vT0=(opts.viewT0!=null)?opts.viewT0:T0, vT1=(opts.viewT1!=null)?opts.viewT1:T1;
+  const tx=t=>x0+(t-vT0)/(vT1-vT0)*(x1-x0);
+  const vScale=opts.vScale; // px por mV
+  const vy=v=>midY + v*vScale;   // convención EMG: negativo hacia arriba
+  // graticule: divisiones de tiempo (5 ms, o 10 ms si la ventana es ancha) y 1 mV
+  ctx.lineWidth=1;
+  const gstep=(vT1-vT0)>34?10:5;
+  for(let t=Math.ceil(vT0/gstep)*gstep;t<=vT1;t+=gstep){ const X=tx(t);
+    ctx.strokeStyle = (Math.abs(t)<1e-6)?'#1d4a52':'#0e252b'; ctx.beginPath(); ctx.moveTo(X,y0); ctx.lineTo(X,y1); ctx.stroke(); }
+  for(let mv=-6;mv<=6;mv++){ const Y=vy(mv); if(Y<y0||Y>y1)continue;
+    ctx.strokeStyle=(mv===0)?'#1d4a52':'#0e252b'; ctx.beginPath(); ctx.moveTo(x0,Y); ctx.lineTo(x1,Y); ctx.stroke(); }
+  // fibras individuales
+  if(opts.showFib){
+    for(const f of tr.indiv){
+      ctx.strokeStyle = f.kind==='s' ? 'rgba(232,162,61,.45)' : 'rgba(63,224,197,.16)';
+      ctx.lineWidth = f.kind==='s'?1.1:1; ctx.beginPath();
+      for(let i=0;i<f.y.length;i++){ const X=tx(tr.ts[i]),Y=vy(f.y[i]); i?ctx.lineTo(X,Y):ctx.moveTo(X,Y); }
+      ctx.stroke();
+    }
+  }
+  // marcas de duración / picos
+  if(opts.marks){
+    const m=opts.met;
+    ctx.setLineDash([3,3]); ctx.lineWidth=1; ctx.strokeStyle='rgba(180,200,210,.5)';
+    if(m.onset>=0){ for(const ix of [m.onset,m.offset]){ const X=tx(tr.ts[ix]);
+      ctx.beginPath(); ctx.moveTo(X,y0+4); ctx.lineTo(X,y1-4); ctx.stroke(); } }
+    ctx.setLineDash([]);
+    ctx.fillStyle='#cfe9e4';
+    for(const ix of [m.iMx,m.iMn]){ const X=tx(tr.ts[ix]),Y=vy(tr.sum[ix]);
+      ctx.beginPath(); ctx.arc(X,Y,2.6,0,7); ctx.fill(); }
+  }
+  // potencial compuesto
+  const col=opts.color||'#3FE0C5';
+  const sweepT=opts.sweepT;
+  if(sweepT==null){
+    // trazo completo (estado estático)
+    ctx.strokeStyle=col; ctx.lineWidth=2.1; ctx.lineJoin='round';
+    ctx.shadowColor='rgba(63,224,197,.55)'; ctx.shadowBlur=6; ctx.beginPath();
+    for(let i=0;i<tr.sum.length;i++){ const X=tx(tr.ts[i]),Y=vy(tr.sum[i]); i?ctx.lineTo(X,Y):ctx.moveTo(X,Y); }
+    ctx.stroke(); ctx.shadowBlur=0;
+  } else {
+    // fantasma del trazo completo (tenue)
+    ctx.strokeStyle='rgba(63,224,197,.14)'; ctx.lineWidth=1.4; ctx.lineJoin='round'; ctx.beginPath();
+    for(let i=0;i<tr.sum.length;i++){ const X=tx(tr.ts[i]),Y=vy(tr.sum[i]); i?ctx.lineTo(X,Y):ctx.moveTo(X,Y); }
+    ctx.stroke();
+    // porción revelada hasta el barrido
+    let iCur=Math.max(0,Math.min(tr.ts.length-1, Math.round((sweepT-tr.ts[0])/tr.dt)));
+    ctx.strokeStyle=col; ctx.lineWidth=2.2; ctx.lineJoin='round';
+    ctx.shadowColor='rgba(63,224,197,.6)'; ctx.shadowBlur=7; ctx.beginPath();
+    for(let i=0;i<=iCur;i++){ const X=tx(tr.ts[i]),Y=vy(tr.sum[i]); i?ctx.lineTo(X,Y):ctx.moveTo(X,Y); }
+    ctx.stroke(); ctx.shadowBlur=0;
+    // línea de barrido + punto guía luminoso
+    const Xc=tx(sweepT), Yc=vy(tr.sum[iCur]);
+    ctx.strokeStyle='rgba(63,224,197,.18)'; ctx.lineWidth=1; ctx.beginPath();
+    ctx.moveTo(Xc,y0); ctx.lineTo(Xc,y1); ctx.stroke();
+    ctx.shadowColor='rgba(159,247,230,.95)'; ctx.shadowBlur=12;
+    ctx.fillStyle='#eafff9'; ctx.beginPath(); ctx.arc(Xc,Yc,3.1,0,7); ctx.fill(); ctx.shadowBlur=0;
+  }
+  // barra de calibración
+  ctx.strokeStyle='#5b8e96'; ctx.lineWidth=2;
+  const cx=x1-tx(5)+tx(0)-6, cyb=y1-8, calW=tx(5)-tx(0), calH=1*vScale;
+  ctx.beginPath(); ctx.moveTo(x1-10-calW, cyb); ctx.lineTo(x1-10, cyb); ctx.lineTo(x1-10, cyb-calH); ctx.stroke();
+  ctx.fillStyle='#6fa3ab'; ctx.font='11px ui-monospace,monospace';
+  ctx.textAlign='left';  ctx.fillText('5 ms', x1-10-calW, cyb-4);
+  ctx.textAlign='right'; ctx.fillText('1 mV', x1-12, cyb-calH+3);
+  ctx.textAlign='left';
+}
+
+/* ---------------- Dibujo de la sección transversal ---------------- */
+function drawXsec(cv, F, needle, terr, showUptake, sweepT){
+  const ctx=cv.getContext('2d'), W=cv.width, H=cv.height, cx=W/2, cy=H/2;
+  ctx.clearRect(0,0,W,H); ctx.fillStyle='#0c171c'; ctx.fillRect(0,0,W,H);
+  const R=Math.min(W,H)/2-10; const scale=R/ (Math.max(terr,2.6)+0.4);
+  const px=x=>cx+x*scale, py=y=>cy+y*scale;
+  // músculo
+  ctx.fillStyle='#0f2129'; ctx.beginPath(); ctx.arc(cx,cy,R,0,7); ctx.fill();
+  ctx.strokeStyle='#1d3b43'; ctx.lineWidth=1; ctx.stroke();
+  // círculo de captación (~2.5 mm radio efectivo)
+  if(showUptake){ ctx.strokeStyle='rgba(63,224,197,.35)'; ctx.setLineDash([4,3]);
+    ctx.beginPath(); ctx.arc(px(needle.x),py(needle.y), 2.5*scale, 0,7); ctx.stroke(); ctx.setLineDash([]); }
+  // fibras (con destello cuando el barrido cruza su pico)
+  const sw=(typeof sweepT==='number')?sweepT:null;
+  for(const f of F){ const rr=Math.max(1.4, f.d/50*3.0);
+    let glow=0;
+    if(sw!=null && typeof f.tpk==='number'){ const dtp=(sw-f.tpk)/0.9; glow=Math.exp(-dtp*dtp); }
+    const base = f.kind==='s'?'#E8A23D':'#3FE0C5';
+    ctx.fillStyle = base;
+    ctx.globalAlpha = (f.kind==='s'?.9:.78)*(sw!=null?(0.45+0.55*glow):1);
+    if(glow>0.05){ ctx.shadowColor = f.kind==='s'?'rgba(255,200,120,.95)':'rgba(159,247,230,.95)';
+      ctx.shadowBlur = 10*glow; }
+    ctx.beginPath(); ctx.arc(px(f.x),py(f.y),rr*(1+0.35*glow),0,7); ctx.fill(); ctx.shadowBlur=0; }
+  ctx.globalAlpha=1;
+  // aguja
+  ctx.strokeStyle='#c9d6db'; ctx.lineWidth=2.4; ctx.beginPath();
+  ctx.moveTo(px(needle.x), py(needle.y)-R-2); ctx.lineTo(px(needle.x),py(needle.y)); ctx.stroke();
+  ctx.fillStyle='#eef3f5'; ctx.beginPath(); ctx.arc(px(needle.x),py(needle.y),2.6,0,7); ctx.fill();
+}
+
+/* ---------------- Defaults por escenario (parámetros clínicos) ---------------- */
+const DEFAULTS={
+  normal:{nfib:20, terr:2.5, dist:0.4, sync:0.5, atro:50, cv:3.7},
+  neuro: {terr:1.8, dist:0.5, reinerv:28, efic:0.35, disp:5.5, satdelay:13, atro:56, cv:3.7},
+  myo:   {terr:2.4, dist:0.3, nfibBase:26, loss:0.6, sizevar:0.8, spread:0.4, gsep:0.5, atro:25, cv:3.7},
+};
+const HINTS={
+  normal:'Espiga sincrónica · 2–4 fases · 8–13 ms',
+  neuro:'Reinervación colateral · grande, larga, polifásica, con satélites',
+  myo:'Pérdida y atrofia de fibras · baja, polifásica, serrada',
+};
+// Definición de cada control clínico: rango, paso, unidad, formato
+const CTRLDEF={
+  dist:    {label:'Distancia de la aguja',            min:0.05, max:2.0, step:0.02, unit:' mm', dec:2},
+  nfib:    {label:'N.º de fibras de la unidad',        min:6,    max:30,  step:1,    unit:'',    dec:0},
+  sync:    {label:'Dispersión temporal (sincronía)',   min:0.3,  max:3.0, step:0.05, unit:' ms', dec:2},
+  atro:    {label:'Diámetro medio de fibra',           min:15,   max:60,  step:1,    unit:' µm', dec:0},
+  reinerv: {label:'Fibras reinervadas (densidad)',     min:10,   max:48,  step:1,    unit:'',    dec:0},
+  efic:    {label:'Eficiencia de reinervación',        min:0,    max:1,   step:0.02, unit:'',    dec:2, ends:['inmadura','madura']},
+  disp:    {label:'Dispersión temporal del grueso',    min:1.0,  max:8.0, step:0.1,  unit:' ms', dec:1},
+  satdelay:{label:'Retardo de satélites',              min:0,    max:16,  step:0.2,  unit:' ms', dec:1},
+  loss:    {label:'Fibras perdidas',                   min:0.05, max:0.85,step:0.01, unit:'',    dec:0, pct:true},
+  sizevar: {label:'Variabilidad de tamaño de fibra',   min:0,    max:1,   step:0.02, unit:'',    dec:2},
+  spread:  {label:'Separación de subgrupos (splitting)',min:0.1, max:1.0, step:0.05, unit:'',    dec:2},
+  cv:      {label:'Velocidad de conducción',           min:1.5,  max:5.0, step:0.1,  unit:' m/s', dec:1},
+};
+// qué controles se muestran en cada escenario (en orden)
+const SCEN_CTRLS={
+  normal:['dist','nfib','sync','atro','cv'],
+  neuro: ['dist','reinerv','efic','disp','satdelay','atro','cv'],
+  myo:   ['dist','loss','sizevar','spread','atro','cv'],
+};
+// rangos de referencia (MUAP de aguja, adulto)
+const REF={amp:[0.5,3.0], dur:[8,14], phases:[1,4], turns:[1,4]};
+function grade(val,[lo,hi]){ if(val<lo*0.9) return 'warn'; if(val>hi) return 'abn'; return 'ok'; }
+// ganancia vertical del laboratorio (px/mV); autoescala desactivada por defecto para que la amplitud sea visible
+let labGain=48, labAuto=true;
+let labSpan=24;   // base de tiempo: ms visibles en el laboratorio (ancho = espiga fina como en el equipo)
+
+/* ---------------- Motor de animación (barrido tipo osciloscopio) ---------------- */
+const T_WIN=[T0,T1];
+let animTargets=[];          // {kind:'card'|'lab', draw:(sweepT)=>void}
+let cardTargets=[];          // subconjunto de tarjetas (se reconstruye con la comparación)
+let animOn=true, animSpeed=1, animClock=0, lastTS=null, rafId=null;
+const SWEEP_MS=2600, HOLD_MS=650;   // barrido + retención a 1×
+function currentSweepT(){
+  const cyc=(SWEEP_MS+HOLD_MS);
+  const ph=(animClock % cyc);
+  if(ph>=SWEEP_MS) return null;     // retención: trazo completo
+  const frac=ph/SWEEP_MS;
+  return T_WIN[0]+frac*(T_WIN[1]-T_WIN[0]);
+}
+function drawAllAnim(){
+  const sweepT = animOn ? currentSweepT() : null;
+  for(const t of animTargets) t.draw(sweepT);
+}
+function animFrame(ts){
+  if(lastTS==null) lastTS=ts;
+  const d=ts-lastTS; lastTS=ts;
+  if(animOn){ animClock+=d*animSpeed; drawAllAnim(); }
+  rafId=requestAnimationFrame(animFrame);
+}
+function startAnim(){ if(rafId==null){ lastTS=null; rafId=requestAnimationFrame(animFrame);} }
+function setAnimOn(on){
+  animOn=on;
+  const btn=document.getElementById('btnPlay');
+  if(btn) btn.textContent = on ? '⏸ Pausar' : '▶ Animar';
+  if(!on) drawAllAnim();          // dibuja trazo completo estático al pausar
+}
+
+/* ---------------- Estado y render comparación ---------------- */
+const SCOPE_VSCALE=32; // px/mV en las tarjetas (escala común → contraste de amplitud entre las tres)
+function makeCard(scen, title, tagcls, tagtxt, seed){
+  const p=DEFAULTS[scen];
+  const F=buildUnit(scen,p,seed);
+  const needle={x:p.dist,y:0};
+  const tr=computeTraces(F,needle,T0,T1,0.03);
+  const met=metrics(tr);
+  const card=document.createElement('div'); card.className='card';
+  card.innerHTML=`
+    <div class="head"><span class="t">${title}</span><span class="tag ${tagcls}">${tagtxt}</span></div>
+    <div class="scopewell"><canvas class="scope" width="520" height="230"></canvas></div>
+    <div class="xsec-row">
+      <canvas class="xsec" width="116" height="116"></canvas>
+      <div class="xsec-cap">${HINTS[scen]}</div>
+    </div>
+    <div class="metrics"></div>`;
+  const scope=card.querySelector('canvas.scope');
+  const xsec=card.querySelector('canvas.xsec');
+  const drawCard=(sweepT)=>{
+    drawScope(scope, tr, {vScale:SCOPE_VSCALE, showFib:true, marks:false, met, sweepT});
+    drawXsec(xsec, F, needle, p.terr, false, sweepT);
+  };
+  drawCard(null);
+  cardTargets.push({kind:'card', draw:drawCard});
+  const mEl=card.querySelector('.metrics');
+  const rows=[
+    ['Amplitud pico–pico', met.amp.toFixed(2)+' mV', grade(met.amp,REF.amp)],
+    ['Duración', met.dur.toFixed(1)+' ms', grade(met.dur,REF.dur)],
+    ['Fases', String(met.phases), grade(met.phases,REF.phases)],
+    ['Giros (turns)', String(met.turns), grade(met.turns,REF.turns)],
+    ['Fibras', String(F.length), ''],
+  ];
+  mEl.innerHTML=rows.map(([k,v,g])=>`<div class="mrow"><span class="k">${k}</span><span class="v ${g}">${v}</span></div>`).join('');
+  return card;
+}
+function buildComparison(seed){
+  const g=document.getElementById('grid3'); g.innerHTML=''; cardTargets=[];
+  g.appendChild(makeCard('normal','Normal','n','20 fibras', seed+1));
+  g.appendChild(makeCard('neuro','Neurogénica','g','Reinervación', seed+2));
+  g.appendChild(makeCard('myo','Miopática','m','Miopatía', seed+3));
+}
+
+/* ---------------- Laboratorio interactivo ---------------- */
+let scen='normal';
+let params=Object.assign({},DEFAULTS.normal);
+let seedLab=12345;
+const bigscope=document.getElementById('bigscope');
+const bigxsec=document.getElementById('bigxsec');
+const readout=document.getElementById('readout');
+const ctrlHost=document.getElementById('ctrlHost');
+
+function fmtVal(key){
+  const def=CTRLDEF[key]; const v=params[key];
+  if(def.pct) return Math.round(v*100)+'%';
+  let t=Number(v).toFixed(def.dec)+def.unit;
+  if(def.ends){ const lab = v<=0.34?def.ends[0] : (v>=0.66?def.ends[1]:'intermedia'); t+=' · '+lab; }
+  return t;
+}
+function renderControls(){
+  ctrlHost.innerHTML='';
+  for(const key of SCEN_CTRLS[scen]){
+    const def=CTRLDEF[key];
+    const div=document.createElement('div'); div.className='ctrl'; div.dataset.c=key;
+    div.innerHTML='<label>'+def.label+' <span class="val"></span></label>'+
+      '<input type="range" min="'+def.min+'" max="'+def.max+'" step="'+def.step+'">';
+    const inp=div.querySelector('input'); inp.value=params[key];
+    inp.addEventListener('input',e=>{ params[key]=parseFloat(e.target.value);
+      div.querySelector('.val').textContent=fmtVal(key); renderLab(); });
+    ctrlHost.appendChild(div);
+  }
+  syncControls();
+}
+function syncControls(){
+  for(const key of SCEN_CTRLS[scen]){
+    const div=ctrlHost.querySelector('.ctrl[data-c="'+key+'"]'); if(!div) continue;
+    div.querySelector('input').value=params[key];
+    div.querySelector('.val').textContent=fmtVal(key);
+  }
+  const gc=document.getElementById('gainCtrl');
+  document.getElementById('gainInput').value=labGain;
+  gc.querySelector('.val').textContent=labGain+' px/mV';
+  gc.classList.toggle('disabled', labAuto);
+  document.getElementById('tbaseInput').value=labSpan;
+  document.getElementById('tbaseVal').textContent=labSpan+' ms';
+}
+let labState=null;
+function labDraw(sweepT){
+  if(!labState) return;
+  const s=labState;
+  let sw=sweepT;
+  if(sw!=null){ const frac=(sweepT-T0)/(T1-T0); sw=s.vT0+frac*(s.vT1-s.vT0); }
+  drawScope(bigscope, s.tr, {vScale:s.vScale, viewT0:s.vT0, viewT1:s.vT1, showFib:document.getElementById('tShowFib').checked,
+    marks:document.getElementById('tShowMarks').checked, met:s.met, sweepT:sw});
+  drawXsec(bigxsec, s.F, s.needle, s.terr, document.getElementById('tShowUptake').checked, sw);
+}
+function renderLab(){
+  const F=buildUnit(scen,params,seedLab);
+  const needle={x:params.dist,y:0};
+  const vT0=T0, vT1=T0+labSpan;
+  const tr=computeTraces(F,needle,vT0,vT1,0.025);
+  const met=metrics(tr);
+  // escala vertical: fija (ganancia) por defecto para que la amplitud sea visible; autoescala opcional
+  let vScale=labGain;
+  if(labAuto){ let peak=0; for(let i=0;i<tr.sum.length;i++) peak=Math.max(peak,Math.abs(tr.sum[i]));
+    vScale=Math.min(180, Math.max(20, (bigscope.height/2-20)/(peak*1.12||1))); }
+  labState={F,needle,tr,met,vScale,terr:params.terr,vT0,vT1};
+  labDraw(animOn?currentSweepT():null);
+  const pairs=[
+    ['Amplitud p–p', met.amp.toFixed(2)+' mV', grade(met.amp,REF.amp)],
+    ['Duración', met.dur.toFixed(1)+' ms', grade(met.dur,REF.dur)],
+    ['Fases', String(met.phases), grade(met.phases,REF.phases)],
+    ['Giros (turns)', String(met.turns), grade(met.turns,REF.turns)],
+    ['Área', met.area.toFixed(2)+' mV·ms',''],
+    ['Fibras', String(F.length),''],
+  ];
+  readout.innerHTML=pairs.map(([k,v,g])=>`<div class="pair"><span class="k">${k}</span><span class="v ${g||''}">${v}</span></div>`).join('');
+}
+function setScenario(s){
+  scen=s;
+  document.querySelectorAll('#scenSeg button').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.scen===s)));
+  document.getElementById('scenHint').textContent=HINTS[s];
+  params=Object.assign({},DEFAULTS[s]);
+  renderControls(); renderLab();
+}
+// listeners
+document.querySelectorAll('#scenSeg button').forEach(b=>b.addEventListener('click',()=>setScenario(b.dataset.scen)));
+['tShowFib','tShowMarks','tShowUptake'].forEach(id=>document.getElementById(id).addEventListener('change',renderLab));
+document.getElementById('tAuto').addEventListener('change',e=>{ labAuto=e.target.checked; syncControls(); renderLab(); });
+document.getElementById('gainInput').addEventListener('input',e=>{ labGain=parseFloat(e.target.value); syncControls(); renderLab(); });
+document.getElementById('tbaseInput').addEventListener('input',e=>{ labSpan=parseFloat(e.target.value); document.getElementById('tbaseVal').textContent=labSpan+' ms'; renderLab(); });
+document.getElementById('btnRegen').addEventListener('click',()=>{ seedLab=(Math.random()*1e9)|0; renderLab(); });
+document.getElementById('btnReset').addEventListener('click',()=>{ params=Object.assign({},DEFAULTS[scen]); seedLab=12345; syncControls(); renderLab(); });
+document.getElementById('btnPlay').addEventListener('click',()=>setAnimOn(!animOn));
+document.getElementById('selSpeed').addEventListener('change',e=>{ animSpeed=parseFloat(e.target.value); });
+
+/* ---------------- Problema directo: la cadena paso a paso ---------------- */
+function initProblemaDirecto(){
+  const cIap=document.getElementById('pdIap'), cCur=document.getElementById('pdCur'),
+        cSf=document.getElementById('pdSfap'), cMu=document.getElementById('pdMuap');
+  if(!cIap) return;
+  const sR=document.getElementById('pdr'), sV=document.getElementById('pdv'),
+        rVal=document.getElementById('pdrVal'), vVal=document.getElementById('pdvVal'),
+        readEl=document.getElementById('pdread');
+  const iapF=u=> u<0?0: Math.pow(u,3)*Math.exp(-u);   // PA intracelular (Rosenfalck); su 2.ª deriv = currentSource
+  const UNIT=[]; { let a=987654321>>>0; const rr=()=>{a=(Math.imul(a,1664525)+1013904223)>>>0; return a/4294967296;};
+    for(let i=0;i<8;i++) UNIT.push({rho:0.25+1.5*Math.sqrt(rr()), tact:(rr()-0.5)*1.4, dsc:0.8+0.45*rr()}); }
+  const fmt=(x,d)=>x.toFixed(d).replace('.',',');
+  function plot(ctx,opt){
+    const W=ctx.canvas.width,H=ctx.canvas.height,pad=8,x0=pad+24,x1=W-pad,y0=pad,y1=H-16,midY=(y0+y1)/2;
+    ctx.clearRect(0,0,W,H); ctx.fillStyle='#091317'; ctx.fillRect(0,0,W,H);
+    const tx=x=>x0+(x-opt.xmin)/(opt.xmax-opt.xmin)*(x1-x0), sc=opt.yscale;
+    const vy=v=> opt.negUp? midY+v*sc : midY-v*sc;   // EMG: negativo hacia arriba en SFAP/MUAP
+    ctx.lineWidth=1;
+    for(let t=Math.ceil(opt.xmin/opt.xstep)*opt.xstep;t<=opt.xmax+1e-9;t+=opt.xstep){const X=tx(t);
+      ctx.strokeStyle=(Math.abs(t)<1e-6)?'#1d4a52':'#0e252b';ctx.beginPath();ctx.moveTo(X,y0);ctx.lineTo(X,y1);ctx.stroke();}
+    ctx.strokeStyle='#1d4a52';ctx.beginPath();ctx.moveTo(x0,midY);ctx.lineTo(x1,midY);ctx.stroke();
+    if(opt.indiv) for(const seg of opt.indiv){ ctx.strokeStyle='rgba(63,224,197,.15)';ctx.lineWidth=1;ctx.beginPath();
+      for(let i=0;i<seg.length;i++){const X=tx(seg[i][0]),Y=vy(seg[i][1]);i?ctx.lineTo(X,Y):ctx.moveTo(X,Y);}ctx.stroke(); }
+    ctx.strokeStyle=opt.color; ctx.lineWidth=2; ctx.lineJoin='round';
+    ctx.shadowColor='rgba(63,224,197,.5)'; ctx.shadowBlur=opt.glow?5:0; ctx.beginPath();
+    for(let i=0;i<opt.data.length;i++){const X=tx(opt.data[i][0]),Y=vy(opt.data[i][1]);i?ctx.lineTo(X,Y):ctx.moveTo(X,Y);}
+    ctx.stroke(); ctx.shadowBlur=0;
+    ctx.fillStyle='#6fa3ab'; ctx.font='10px ui-monospace,monospace';
+    ctx.textAlign='left'; ctx.fillText(opt.ylabel,3,y0+10);
+    ctx.textAlign='right'; ctx.fillText(opt.xlabel,x1,y1+12); ctx.textAlign='left';
+    if(opt.cal){ const calH=1*sc; ctx.strokeStyle='#5b8e96'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(x0+6,midY); ctx.lineTo(x0+6,midY-calH); ctx.stroke();
+      ctx.fillText('1 mV',x0+10,midY-calH+9); }
+  }
+  function redraw(){
+    const r=parseFloat(sR.value), v=parseFloat(sV.value);
+    rVal.textContent=fmt(r,2)+' mm'; vVal.textContent=fmt(v,1)+' m/s';
+    const iap=[],cur=[]; let iMax=1e-9,cMax=1e-9;
+    for(let u=0;u<=10;u+=0.05){const a=iapF(u),b=currentSource(u);iap.push([u,a]);cur.push([u,b]);iMax=Math.max(iMax,a);cMax=Math.max(cMax,Math.abs(b));}
+    plot(cIap.getContext('2d'),{data:iap,xmin:0,xmax:10,xstep:2,xlabel:'ξ (mm)',ylabel:'u.a.',yscale:55/iMax,color:'#7FB6FF'});
+    plot(cCur.getContext('2d'),{data:cur,xmin:0,xmax:10,xstep:2,xlabel:'ξ (mm)',ylabel:'u.a.',yscale:48/cMax,color:'#7FB6FF'});
+    const f={v:v,tact:0,K:GAIN,kind:'m'}; const sf=[]; let lo=1e9,hi=-1e9;
+    for(let t=-1;t<=8;t+=0.02){const y=sfap(t,f,r);sf.push([t,y]);if(y<lo)lo=y;if(y>hi)hi=y;}
+    const ampS=hi-lo; const th=Math.max(0.02,ampS*0.1); let a=-1,b=-1;
+    for(let i=0;i<sf.length;i++) if(Math.abs(sf[i][1])>th){if(a<0)a=i;b=i;}
+    const durS=a<0?0:(sf[b][0]-sf[a][0]);
+    plot(cSf.getContext('2d'),{data:sf,xmin:-1,xmax:8,xstep:2,xlabel:'t (ms)',ylabel:'mV',yscale:55,negUp:true,color:'#3FE0C5',glow:true,cal:true});
+    const T0p=-1,T1p=12,dtp=0.03,Np=Math.round((T1p-T0p)/dtp)+1; const sum=new Array(Np).fill(0),indiv=[];
+    for(const fb of UNIT){const di=Math.max(0.12,fb.rho*(r/0.3));const ff={v:v,tact:fb.tact,K:GAIN*fb.dsc*fb.dsc,kind:'m'};
+      const seg=[];for(let i=0;i<Np;i++){const t=T0p+i*dtp;const y=sfap(t,ff,di);sum[i]+=y;seg.push([t,y]);}indiv.push(seg);}
+    const md=[];let ml=1e9,mh=-1e9;for(let i=0;i<Np;i++){const t=T0p+i*dtp;md.push([t,sum[i]]);if(sum[i]<ml)ml=sum[i];if(sum[i]>mh)mh=sum[i];}
+    plot(cMu.getContext('2d'),{data:md,indiv,xmin:T0p,xmax:T1p,xstep:2,xlabel:'t (ms)',ylabel:'mV',yscale:30,negUp:true,color:'#3FE0C5',glow:true,cal:true});
+    readEl.innerHTML='<div>SFAP amplitud<b>'+fmt(ampS,2)+' mV</b></div>'+
+                     '<div>SFAP duración<b>'+fmt(durS,2)+' ms</b></div>'+
+                     '<div>MUAP amplitud<b>'+fmt(mh-ml,2)+' mV</b></div>';
+  }
+  sR.addEventListener('input',redraw); sV.addEventListener('input',redraw); redraw();
+}
+
+/* ---------------- init ---------------- */
+buildComparison(700);
+setScenario('normal');
+initProblemaDirecto();
+// ensamblar objetivos animables: tarjetas + laboratorio
+animTargets=[...cardTargets, {kind:'lab', draw:labDraw}];
+setAnimOn(true);
+startAnim();
+</script>
+</body>
+</html>
