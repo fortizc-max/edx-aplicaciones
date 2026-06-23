@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Criterios EAN/PNS 2021 para CIDP · Clasificador</title>
+<title>Criterios EAN/PNS 2021 para CIDP · Clasificador y calculadora</title>
 <style>
 :root{
   --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;--accent:#3aa0ff;
@@ -29,8 +29,8 @@ label.opt input{margin-top:2px;flex:0 0 auto}
 details{border:1px solid var(--line);border-radius:10px;padding:0 12px;margin:8px 0;background:#111c30}
 details>summary{cursor:pointer;padding:10px 0;font-size:13px;color:var(--accent);font-weight:600;list-style:none}
 details>summary::-webkit-details-marker{display:none}
-details>summary::before{content:"▸ ";color:var(--muted)}
-details[open]>summary::before{content:"▾ "}
+details>summary::before{content:"\25B8 ";color:var(--muted)}
+details[open]>summary::before{content:"\25BE "}
 details .body{font-size:12.5px;color:var(--muted);padding:0 0 12px;line-height:1.5}
 details .body ul{margin:6px 0;padding-left:18px}
 details .body table{width:100%;border-collapse:collapse;margin:6px 0;font-size:11.5px}
@@ -51,80 +51,126 @@ details .body td{border:1px solid var(--line);padding:3px 6px}
 footer{max-width:820px;margin:22px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
 footer a{color:var(--accent)}
 .disabled{opacity:.4;pointer-events:none}
+/* --- demografía y calculadora --- */
+.demo{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.demo label{font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.demo input,.demo select{background:#0e1828;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:7px 8px;font-size:14px}
+.modebar{display:flex;gap:6px;margin:4px 0 10px}
+.modebar button{flex:1;background:#0e1828;border:1px solid var(--line);color:var(--muted);border-radius:9px;padding:8px;font-size:12.5px;font-weight:700;cursor:pointer}
+.modebar button.active{background:var(--accent);color:#06223c;border-color:var(--accent)}
+.calcwrap{display:none}
+.cn{border:1px solid var(--line);border-radius:11px;margin:8px 0;background:#111c30;overflow:hidden}
+.cn>summary{cursor:pointer;list-style:none;padding:10px 12px;font-size:13.5px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.cn>summary::-webkit-details-marker{display:none}
+.cn .badge{font-size:11px;font-weight:800;border-radius:20px;padding:2px 9px;white-space:nowrap}
+.badge.met{background:var(--badbg);color:var(--bad);border:1px solid var(--bad)}
+.badge.no{background:#1c2740;color:var(--muted);border:1px solid var(--line)}
+.cn .panel{padding:0 12px 12px}
+.flds{display:grid;grid-template-columns:1fr 1fr;gap:7px 10px}
+.flds label{font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.flds input{background:#0e1828;border:1px solid var(--line);color:var(--txt);border-radius:7px;padding:6px 7px;font-size:14px}
+.flds .lim input{border-style:dashed;border-color:#3a567f}
+.flds .chk{flex-direction:row;align-items:center;gap:7px;font-size:12.5px;color:var(--txt)}
+.flds .chk input{width:16px;height:16px}
+.limhdr,.valhdr{grid-column:1/-1;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin:6px 0 0}
+.cn .out{margin-top:9px;font-size:12px;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px;min-height:18px}
+.cn .out b{color:var(--bad)}
 </style></head><body>
 <header>
-<h1>Clasificador de CIDP · criterios EAN/PNS 2021</h1>
-<p>Apoyo a la interpretación electrodiagnóstica · complemento del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular</i></p>
+<h1>Clasificador de CIDP &middot; criterios EAN/PNS 2021</h1>
+<p>Apoyo a la interpretaci&oacute;n electrodiagn&oacute;stica &middot; complemento del libro <i>Electrodiagn&oacute;stico y Ultrasonido Neuromuscular</i></p>
 </header>
 <div class="wrap">
 
 <!-- PASO 1: FENOTIPO -->
 <div class="card">
-  <h2><span class="step">1</span>Fenotipo clínico</h2>
-  <p class="hint">Seleccione el cuadro clínico sospechado (Tabla 1 de la guía). El fenotipo define qué configuración electrodiagnóstica confirma el diagnóstico.</p>
-  <label class="opt"><input type="radio" name="ph" value="tipica" checked><span><b>CIDP típica</b><span>Debilidad simétrica proximal y distal, sensitiva, &gt;8 semanas; arreflexia.</span></span></label>
-  <label class="opt"><input type="radio" name="ph" value="distal"><span><b>CIDP distal (DADS)</b><span>Pérdida sensitiva y debilidad de predominio distal.</span></span></label>
-  <label class="opt"><input type="radio" name="ph" value="multifocal"><span><b>CIDP multifocal</b><span>Déficit sensitivo-motor asimétrico, multifocal, en más de un miembro (Lewis–Sumner).</span></span></label>
+  <h2><span class="step">1</span>Fenotipo cl&iacute;nico</h2>
+  <p class="hint">Seleccione el cuadro cl&iacute;nico sospechado (Tabla 1 de la gu&iacute;a). El fenotipo define qu&eacute; configuraci&oacute;n electrodiagn&oacute;stica confirma el diagn&oacute;stico.</p>
+  <label class="opt"><input type="radio" name="ph" value="tipica" checked><span><b>CIDP t&iacute;pica</b><span>Debilidad sim&eacute;trica proximal y distal, sensitiva, &gt;8 semanas; arreflexia.</span></span></label>
+  <label class="opt"><input type="radio" name="ph" value="distal"><span><b>CIDP distal (DADS)</b><span>P&eacute;rdida sensitiva y debilidad de predominio distal.</span></span></label>
+  <label class="opt"><input type="radio" name="ph" value="multifocal"><span><b>CIDP multifocal</b><span>D&eacute;ficit sensitivo-motor asim&eacute;trico, multifocal, en m&aacute;s de un miembro (Lewis&ndash;Sumner).</span></span></label>
   <label class="opt"><input type="radio" name="ph" value="focal"><span><b>CIDP focal</b><span>Compromiso de uno o varios nervios en un solo miembro.</span></span></label>
-  <label class="opt"><input type="radio" name="ph" value="motora"><span><b>CIDP motora</b><span>Síntomas y signos motores sin compromiso sensitivo.</span></span></label>
-  <label class="opt"><input type="radio" name="ph" value="sensitiva"><span><b>CIDP sensitiva</b><span>Síntomas y signos sensitivos sin debilidad.</span></span></label>
+  <label class="opt"><input type="radio" name="ph" value="motora"><span><b>CIDP motora</b><span>S&iacute;ntomas y signos motores sin compromiso sensitivo.</span></span></label>
+  <label class="opt"><input type="radio" name="ph" value="sensitiva"><span><b>CIDP sensitiva</b><span>S&iacute;ntomas y signos sensitivos sin debilidad.</span></span></label>
 </div>
 
-<!-- PASO 2: MOTOR -->
+<!-- DEMOGRAFIA -->
 <div class="card">
-  <h2><span class="step">2</span>Conducción motora</h2>
-  <p class="hint">Marque cada nervio que cumple <b>al menos un</b> criterio de desmielinización (a–g, Tabla 2). Se exploran mediano, cubital, peroneo y tibial; si no se cumplen, el otro lado.</p>
-  <div class="subh">Miembros superiores</div>
-  <div class="grid" id="motor-arm"></div>
-  <div class="subh">Miembros inferiores</div>
-  <div class="grid" id="motor-leg"></div>
-  <details><summary>Ver criterios motores de desmielinización (Tabla 2)</summary>
+  <h2><span class="step">2</span>Datos del paciente</h2>
+  <p class="hint">Se usan para auto-rellenar los valores de referencia (LIN/LSN, ajustados por edad/talla; Buschbacher). Puede editarlos en cada nervio.</p>
+  <div class="demo">
+    <label>Sexo<select id="d-sexo"><option value="m">Mujer</option><option value="h">Hombre</option></select></label>
+    <label>Edad (a&ntilde;os)<input id="d-edad" type="number" inputmode="numeric" value="55"></label>
+    <label>Talla (cm)<input id="d-talla" type="number" inputmode="numeric" value="165"></label>
+    <label>Filtro baja frec.<select id="d-fbf"><option value="2hz">2 Hz</option><option value="10hz">10 Hz</option></select></label>
+  </div>
+</div>
+
+<!-- PASO 3: MOTOR -->
+<div class="card">
+  <h2><span class="step">3</span>Conducci&oacute;n motora</h2>
+  <div class="modebar">
+    <button id="mode-mark" class="active" onclick="setMode('mark')">Marcar criterios</button>
+    <button id="mode-calc" onclick="setMode('calc')">Digitar valores (calcular)</button>
+  </div>
+
+  <!-- modo marcar -->
+  <div id="markwrap">
+    <p class="hint">Marque cada nervio que cumple <b>al menos un</b> criterio de desmielinizaci&oacute;n (a&ndash;g, Tabla 2).</p>
+    <div class="subh">Miembros superiores</div>
+    <div class="grid" id="motor-arm"></div>
+    <div class="subh">Miembros inferiores</div>
+    <div class="grid" id="motor-leg"></div>
+  </div>
+
+  <!-- modo calcular -->
+  <div id="calcwrap" class="calcwrap">
+    <p class="hint">Digite los valores del estudio; la app los compara con el LIN/LSN (editable) y marca si el nervio cumple alg&uacute;n criterio (a&ndash;g).</p>
+    <div id="calc-nerves"></div>
+  </div>
+
+  <details><summary>Ver criterios motores de desmielinizaci&oacute;n (Tabla 2)</summary>
     <div class="body">
-    Fuertemente indicativo de desmielinización: al menos uno de los siguientes (las cifras de «2 nervios» equivalen a fuertemente indicativo; en 1 nervio, débilmente indicativo):
+    Fuertemente indicativo de desmielinizaci&oacute;n: al menos uno de los siguientes (las cifras de &laquo;2 nervios&raquo; equivalen a fuertemente indicativo; en 1 nervio, d&eacute;bilmente indicativo):
     <ul>
-      <li><b>(a)</b> Latencia distal motora ≥50 % por encima del LSN (excluyendo mediano en túnel del carpo).</li>
-      <li><b>(b)</b> Velocidad de conducción motora ≥30 % por debajo del LIN.</li>
-      <li><b>(c)</b> Latencia de onda F ≥20 % por encima del LSN (≥50 % si el CMAP distal &lt;80 % del LIN).</li>
-      <li><b>(d)</b> Ausencia de ondas F (con CMAP distal ≥20 % del LIN) + ≥1 otro parámetro desmielinizante en otro nervio.</li>
-      <li><b>(e)</b> Bloqueo de conducción motora: reducción ≥30 % del CMAP proximal respecto al distal (excluye tibial), con CMAP distal ≥20 % del LIN.</li>
-      <li><b>(f)</b> Dispersión temporal anormal: aumento &gt;30 % de la duración entre CMAP proximal y distal (≥100 % en el tibial).</li>
-      <li><b>(g)</b> Prolongación de la duración del CMAP distal + ≥1 otro parámetro en otro nervio.</li>
+      <li><b>(a)</b> Latencia distal motora &ge;50&nbsp;% por encima del LSN (excluyendo mediano en t&uacute;nel del carpo).</li>
+      <li><b>(b)</b> Velocidad de conducci&oacute;n motora &ge;30&nbsp;% por debajo del LIN.</li>
+      <li><b>(c)</b> Latencia de onda F &ge;20&nbsp;% por encima del LSN (&ge;50&nbsp;% si el CMAP distal &lt;80&nbsp;% del LIN).</li>
+      <li><b>(d)</b> Ausencia de ondas F (con CMAP distal &ge;20&nbsp;% del LIN) + &ge;1 otro par&aacute;metro desmielinizante en otro nervio.</li>
+      <li><b>(e)</b> Bloqueo de conducci&oacute;n motora: reducci&oacute;n &ge;30&nbsp;% del CMAP proximal respecto al distal (excluye tibial), con CMAP distal &ge;20&nbsp;% del LIN.</li>
+      <li><b>(f)</b> Dispersi&oacute;n temporal anormal: aumento &gt;30&nbsp;% de la duraci&oacute;n entre CMAP proximal y distal (&ge;100&nbsp;% en el tibial).</li>
+      <li><b>(g)</b> Prolongaci&oacute;n de la duraci&oacute;n del CMAP distal + &ge;1 otro par&aacute;metro en otro nervio.</li>
     </ul>
-    Duración del CMAP distal según filtro de baja frecuencia (FBF), valores anormales:
-    <table>
-      <tr><td>FBF 2 Hz</td><td>mediano &gt;8,4 · cubital &gt;9,6 · peroneo &gt;8,8 · tibial &gt;9,2 ms</td></tr>
-      <tr><td>FBF 10 Hz</td><td>mediano &gt;7,8 · cubital &gt;8,5 · peroneo &gt;8,3 · tibial &gt;8,2 ms</td></tr>
-    </table>
-    Temperatura ≥33 °C en palma y ≥30 °C en maléolo externo.
+    Duraci&oacute;n del CMAP distal anormal: FBF&nbsp;2&nbsp;Hz &mdash; mediano &gt;8,4 &middot; cubital &gt;9,6 &middot; peroneo &gt;8,8 &middot; tibial &gt;9,2&nbsp;ms; FBF&nbsp;10&nbsp;Hz &mdash; mediano &gt;7,8 &middot; cubital &gt;8,5 &middot; peroneo &gt;8,3 &middot; tibial &gt;8,2&nbsp;ms. Temperatura &ge;33&nbsp;&deg;C en palma y &ge;30&nbsp;&deg;C en mal&eacute;olo externo.
     </div>
   </details>
 </div>
 
-<!-- PASO 3: SENSITIVO -->
+<!-- PASO 4: SENSITIVO -->
 <div class="card">
-  <h2><span class="step">3</span>Conducción sensitiva</h2>
+  <h2><span class="step">4</span>Conducci&oacute;n sensitiva</h2>
   <p class="hint">Marque cada nervio con anormalidad sensitiva (latencia distal prolongada, amplitud del SNAP reducida o velocidad lentificada; Tabla 3).</p>
   <div class="grid" id="sensory"></div>
   <details><summary>Detalle del criterio sensitivo (Tabla 3)</summary>
     <div class="body">
-    CIDP: anormalidad sensitiva en ≥2 nervios. En la CIDP sensitiva con conducción motora normal se requiere, además:
+    CIDP: anormalidad sensitiva en &ge;2 nervios. En la CIDP sensitiva con conducci&oacute;n motora normal se requiere, adem&aacute;s:
     <ul>
-      <li>VC sensitiva &lt;80 % del LIN (si SNAP &gt;80 % del LIN) o &lt;70 % (si SNAP &lt;80 %) en ≥2 nervios, o</li>
-      <li>patrón de «sural sparing» (SNAP de mediano o radial anormal con sural normal; excluir túnel del carpo).</li>
+      <li>VC sensitiva &lt;80&nbsp;% del LIN (si SNAP &gt;80&nbsp;% del LIN) o &lt;70&nbsp;% (si SNAP &lt;80&nbsp;%) en &ge;2 nervios, o</li>
+      <li>patr&oacute;n de &laquo;sural sparing&raquo; (SNAP de mediano o radial anormal con sural normal; excluir t&uacute;nel del carpo).</li>
     </ul>
-    Usar valores de referencia por edad después de los 60 años.
+    Usar valores de referencia por edad despu&eacute;s de los 60 a&ntilde;os.
     </div>
   </details>
 </div>
 
-<!-- PASO 4: APOYO -->
+<!-- PASO 5: APOYO -->
 <div class="card" id="card-support">
-  <h2><span class="step">4</span>Criterios de apoyo <span style="font-weight:400;color:var(--muted);font-size:12px">(opcional)</span></h2>
-  <p class="hint">Útiles cuando el cuadro clínico es típico pero el estudio electrodiagnóstico solo permite «posible CIDP».</p>
-  <label class="opt"><input type="checkbox" id="s-tx"><span><b>Respuesta objetiva al tratamiento</b><span>Mejoría en ≥1 escala de discapacidad y ≥1 de deficiencia con IVIg, plasmaféresis o corticoides.</span></span></label>
-  <label class="opt"><input type="checkbox" id="s-img"><span><b>Imagen de apoyo</b><span>Engrosamiento/realce de raíces o plexos (RM) o aumento del área de sección en ecografía (mediano proximal/plexo braquial).</span></span></label>
-  <label class="opt"><input type="checkbox" id="s-csf"><span><b>LCR</b><span>Disociación albúmino-citológica (proteínas elevadas con celularidad normal).</span></span></label>
-  <label class="opt"><input type="checkbox" id="s-bx"><span><b>Biopsia de nervio</b><span>Signos de desmielinización/remielinización.</span></span></label>
+  <h2><span class="step">5</span>Criterios de apoyo <span style="font-weight:400;color:var(--muted);font-size:12px">(opcional)</span></h2>
+  <p class="hint">&Uacute;tiles cuando el cuadro cl&iacute;nico es t&iacute;pico pero el estudio electrodiagn&oacute;stico solo permite &laquo;posible CIDP&raquo;.</p>
+  <label class="opt"><input type="checkbox" id="s-tx"><span><b>Respuesta objetiva al tratamiento</b><span>Mejor&iacute;a en &ge;1 escala de discapacidad y &ge;1 de deficiencia con IVIg, plasmaf&eacute;resis o corticoides.</span></span></label>
+  <label class="opt"><input type="checkbox" id="s-img"><span><b>Imagen de apoyo</b><span>Engrosamiento/realce de ra&iacute;ces o plexos (RM) o aumento del &aacute;rea de secci&oacute;n en ecograf&iacute;a (mediano proximal/plexo braquial).</span></span></label>
+  <label class="opt"><input type="checkbox" id="s-csf"><span><b>LCR</b><span>Disociaci&oacute;n alb&uacute;mino-citol&oacute;gica (prote&iacute;nas elevadas con celularidad normal).</span></span></label>
+  <label class="opt"><input type="checkbox" id="s-bx"><span><b>Biopsia de nervio</b><span>Signos de desmielinizaci&oacute;n/remielinizaci&oacute;n.</span></span></label>
 </div>
 
 <button class="btn" onclick="classify()">Clasificar</button>
@@ -132,15 +178,43 @@ footer a{color:var(--accent)}
 <div id="result"></div>
 
 <footer>
-Basado en: Van den Bergh PYK, et al. <i>European Academy of Neurology/Peripheral Nerve Society guideline on diagnosis and treatment of chronic inflammatory demyelinating polyradiculoneuropathy</i>. Eur J Neurol. 2021;28(11):3556–3583. <a href="https://doi.org/10.1111/ene.14959">doi:10.1111/ene.14959</a>.<br><br>
-Herramienta de apoyo educativo. No sustituye el juicio del especialista, los valores de referencia del propio laboratorio ni la lectura completa de la guía. La clasificación final exige descartar diagnósticos diferenciales (Flowchart 2) y excluir nodopatías autoinmunes.
-<br><br>Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular 2027</i>, de Fernando Ortiz Corredor. Recurso educativo de distribución gratuita y sin fines comerciales. © 2027 Fernando Ortiz Corredor.</footer>
+Basado en: Van den Bergh PYK, et al. <i>European Academy of Neurology/Peripheral Nerve Society guideline on diagnosis and treatment of chronic inflammatory demyelinating polyradiculoneuropathy</i>. Eur J Neurol. 2021;28(11):3556&ndash;3583. <a href="https://doi.org/10.1111/ene.14959">doi:10.1111/ene.14959</a>. Valores de referencia: Buschbacher&rsquo;s Manual of Nerve Conduction Studies, 3.&ordf; ed.<br><br>
+Herramienta de apoyo educativo. No sustituye el juicio del especialista, los valores de referencia del propio laboratorio ni la lectura completa de la gu&iacute;a. La clasificaci&oacute;n final exige descartar diagn&oacute;sticos diferenciales (Flowchart 2) y excluir nodopat&iacute;as autoinmunes.
+<br><br>Material complementario del libro <i>Electrodiagn&oacute;stico y Ultrasonido Neuromuscular 2027</i>, de Fernando Ortiz Corredor. Recurso educativo de distribuci&oacute;n gratuita y sin fines comerciales. &copy; 2027 Fernando Ortiz Corredor.</footer>
 </div>
 
 <script>
-// --- Definición de nervios ---
-const ARM=[["mediano-i","Mediano izq."],["mediano-d","Mediano der."],["cubital-i","Cubital izq."],["cubital-d","Cubital der."]];
-const LEG=[["peroneo-i","Peroneo izq."],["peroneo-d","Peroneo der."],["tibial-i","Tibial izq."],["tibial-d","Tibial der."]];
+// ===== Datos de referencia (inline; fuente: _datos/*.json) =====
+const LIM={
+ mediano:{lat_lsn:4.5,vc_lin:49,amp_lin:{"19-39":5.9,"40-59":4.2,"60-79":3.8,def:4.1}},
+ cubital:{lat_lsn:3.7,vc_lin:52,amp_lin:{def:7.9}},
+ peroneo:{lat_lsn:6.5,vc_lin:38,amp_lin:{"19-39":2.6,"40-79":1.1,def:1.3}},
+ tibial:{lat_lsn:6.1,vc_lin:39,amp_lin:{"19-29":5.8,"30-59":5.3,"60-79":1.1,def:4.4}}
+};
+const DUR_FIX={"2hz":{mediano:8.4,cubital:9.6,peroneo:8.8,tibial:9.2},"10hz":{mediano:7.8,cubital:8.5,peroneo:8.3,tibial:8.2}};
+const FW={
+ mediano:{corte:50,g:{a:[[0,159,25.7],[160,169,28.5],[170,179,30.9],[180,999,33.5]],b:[[0,159,28.6],[160,169,30.3],[170,179,31.5],[180,999,34.2]]}},
+ cubital:{corte:50,g:{a:[[0,159,26.1],[160,179,30.2],[180,999,32.8]],b:[[0,159,28.8],[160,179,30.9],[180,999,33.8]]}},
+ peroneo:{corte:40,g:{a:[[0,159,48.6],[160,169,54.5],[170,999,59.7]],b:[[0,159,55.0],[160,169,58.8],[170,999,63.6]]}},
+ tibial:{corte:40,g:{a:[[0,159,47.6],[160,169,53.2],[170,179,60.0],[180,999,61.9]],b:[[0,159,56.0],[160,169,57.5],[170,179,61.1],[180,999,68.5]]}}
+};
+function ampLinFor(type,edad){
+ const t=LIM[type].amp_lin;
+ for(const k in t){ if(k==="def")continue; const [a,b]=k.split("-").map(Number); if(edad>=a&&edad<=b) return t[k]; }
+ return t.def;
+}
+function fLsnFor(type,edad,talla){
+ const f=FW[type]; const grp=(edad<f.corte)?"a":"b";
+ for(const [lo,hi,v] of f.g[grp]){ if(talla>=lo&&talla<=hi) return v; }
+ return null;
+}
+function demo(){return {sexo:document.getElementById("d-sexo").value,edad:+document.getElementById("d-edad").value||0,
+  talla:+document.getElementById("d-talla").value||0,fbf:document.getElementById("d-fbf").value};}
+
+// ===== Nervios =====
+const ARM=[["mediano-i","Mediano izq.","mediano"],["mediano-d","Mediano der.","mediano"],["cubital-i","Cubital izq.","cubital"],["cubital-d","Cubital der.","cubital"]];
+const LEG=[["peroneo-i","Peroneo izq.","peroneo"],["peroneo-d","Peroneo der.","peroneo"],["tibial-i","Tibial izq.","tibial"],["tibial-d","Tibial der.","tibial"]];
+const MOTOR=ARM.concat(LEG);
 const SENS=[["s-mediano-i","Mediano izq."],["s-mediano-d","Mediano der."],["s-cubital-i","Cubital izq."],["s-cubital-d","Cubital der."],["s-radial-i","Radial izq."],["s-radial-d","Radial der."],["s-sural-i","Sural izq."],["s-sural-d","Sural der."]];
 
 function chips(containerId, arr){
@@ -153,78 +227,159 @@ function chips(containerId, arr){
 }
 chips("motor-arm",ARM); chips("motor-leg",LEG); chips("sensory",SENS);
 
+// ===== Modo de entrada =====
+let MODE="mark";
+function setMode(m){
+  MODE=m;
+  document.getElementById("mode-mark").classList.toggle("active",m==="mark");
+  document.getElementById("mode-calc").classList.toggle("active",m==="calc");
+  document.getElementById("markwrap").style.display=(m==="mark")?"block":"none";
+  document.getElementById("calcwrap").style.display=(m==="calc")?"block":"none";
+  if(m==="calc") fillLimits();
+}
+
+// ===== Generar paneles de cálculo =====
+const computed={}; // id -> {met, crit}
+function buildCalc(){
+  const c=document.getElementById("calc-nerves");
+  MOTOR.forEach(([id,label,type])=>{
+    const d=document.createElement("details"); d.className="cn"; d.dataset.nerve=id; d.dataset.type=type;
+    d.innerHTML=`<summary>${label}<span class="badge no" id="b-${id}">sin datos</span></summary>
+     <div class="panel">
+       <div class="flds">
+        <div class="limhdr">Valores de referencia (editables)</div>
+        <label>LSN lat distal (ms)<input class="lim" data-k="latLSN" type="number" step="0.1"></label>
+        <label>LIN velocidad (m/s)<input class="lim" data-k="vcLIN" type="number" step="1"></label>
+        <label>LIN amp distal (mV)<input class="lim" data-k="ampLIN" type="number" step="0.1"></label>
+        <label>LSN onda F (ms)<input class="lim" data-k="fLSN" type="number" step="0.1"></label>
+        <div class="valhdr">Valores del paciente</div>
+        <label>Latencia distal (ms)<input class="val" data-k="latD" type="number" step="0.1"></label>
+        <label>Velocidad (m/s)<input class="val" data-k="vc" type="number" step="1"></label>
+        <label>Amplitud CMAP distal (mV)<input class="val" data-k="ampD" type="number" step="0.1"></label>
+        <label>Amplitud CMAP proximal (mV)<input class="val" data-k="ampP" type="number" step="0.1"></label>
+        <label>Duraci&oacute;n CMAP distal (ms)<input class="val" data-k="durD" type="number" step="0.1"></label>
+        <label>Duraci&oacute;n CMAP proximal (ms)<input class="val" data-k="durP" type="number" step="0.1"></label>
+        <label>Latencia onda F (ms)<input class="val" data-k="latF" type="number" step="0.1"></label>
+        <label class="chk"><input class="val" data-k="fAus" type="checkbox"> Onda F ausente</label>
+       </div>
+       <div class="out" id="o-${id}"></div>
+     </div>`;
+    c.appendChild(d);
+    d.querySelectorAll("input").forEach(inp=>inp.addEventListener("input",()=>evalNerve(id)));
+  });
+}
+buildCalc();
+["d-sexo","d-edad","d-talla","d-fbf"].forEach(i=>document.getElementById(i).addEventListener("input",fillLimits));
+
+function fillLimits(){
+  const {edad,talla}=demo();
+  document.querySelectorAll("#calc-nerves .cn").forEach(d=>{
+    const id=d.dataset.nerve, type=d.dataset.type;
+    const set=(k,v)=>{const el=d.querySelector(`.lim[data-k="${k}"]`); if(el && (el.value===""||el.dataset.auto!=="0")) {el.value=(v==null?"":v); el.dataset.auto="1";}};
+    set("latLSN",LIM[type].lat_lsn); set("vcLIN",LIM[type].vc_lin);
+    set("ampLIN",ampLinFor(type,edad)); set("fLSN",fLsnFor(type,edad,talla));
+    d.querySelectorAll(".lim").forEach(el=>el.addEventListener("input",()=>{el.dataset.auto="0";},{once:true}));
+    evalNerve(id);
+  });
+}
+
+function num(d,sel){const el=d.querySelector(sel); const v=parseFloat(el.value); return isNaN(v)?null:v;}
+const fmt=x=>(Math.round(x*10)/10).toString().replace(".",",");
+function evalNerve(id){
+  const d=document.querySelector(`.cn[data-nerve="${id}"]`); const type=d.dataset.type;
+  const g=k=>num(d,`.${k.startsWith("L")?"lim":"val"}[data-k="${k}"]`);
+  const latLSN=num(d,'.lim[data-k="latLSN"]'),vcLIN=num(d,'.lim[data-k="vcLIN"]'),ampLIN=num(d,'.lim[data-k="ampLIN"]'),fLSN=num(d,'.lim[data-k="fLSN"]');
+  const latD=num(d,'.val[data-k="latD"]'),vc=num(d,'.val[data-k="vc"]'),ampD=num(d,'.val[data-k="ampD"]'),
+        ampP=num(d,'.val[data-k="ampP"]'),durD=num(d,'.val[data-k="durD"]'),durP=num(d,'.val[data-k="durP"]'),latF=num(d,'.val[data-k="latF"]');
+  const fAus=d.querySelector('.val[data-k="fAus"]').checked;
+  const crit=[]; const det=[]; const any=(latD!=null||vc!=null||ampD!=null||durD!=null||latF!=null||fAus);
+  // a — latencia distal motora
+  if(latD!=null&&latLSN!=null&&latD>=1.5*latLSN){crit.push("a");
+    det.push(`<b>a</b> &middot; Latencia distal motora ${fmt(latD)}&nbsp;ms &ge; ${fmt(1.5*latLSN)}&nbsp;ms (1,5&times;LSN&nbsp;${fmt(latLSN)})`);}
+  // b — velocidad de conducción
+  if(vc!=null&&vcLIN!=null&&vc<=0.7*vcLIN){crit.push("b");
+    det.push(`<b>b</b> &middot; Velocidad de conducci&oacute;n ${fmt(vc)}&nbsp;m/s &le; ${fmt(0.7*vcLIN)}&nbsp;m/s (0,7&times;LIN&nbsp;${fmt(vcLIN)})`);}
+  // c — latencia de onda F
+  if(latF!=null&&fLSN!=null){
+    const cmapBajo=(ampD!=null&&ampLIN!=null&&ampD<0.8*ampLIN);
+    const factor=cmapBajo?1.5:1.2;
+    if(latF>=factor*fLSN){crit.push("c");
+      det.push(`<b>c</b> &middot; Latencia de onda&nbsp;F ${fmt(latF)}&nbsp;ms &ge; ${fmt(factor*fLSN)}&nbsp;ms (${cmapBajo?"1,5":"1,2"}&times;LSN&nbsp;${fmt(fLSN)}${cmapBajo?"; CMAP distal &lt;80&nbsp;% del LIN":""})`);}
+  }
+  // d — ausencia de onda F
+  if(fAus&&ampD!=null&&ampLIN!=null&&ampD>=0.2*ampLIN){crit.push("d");
+    det.push(`<b>d</b> &middot; Ausencia de onda&nbsp;F con CMAP distal ${fmt(ampD)}&nbsp;mV &ge; ${fmt(0.2*ampLIN)}&nbsp;mV (20&nbsp;% del LIN)`);}
+  // e — bloqueo de conducción (excluye tibial)
+  if(type!=="tibial"&&ampD!=null&&ampP!=null&&ampLIN!=null&&ampP<=0.7*ampD&&ampD>=0.2*ampLIN){crit.push("e");
+    det.push(`<b>e</b> &middot; Bloqueo de conducci&oacute;n: CMAP proximal ${fmt(ampP)}&nbsp;mV &le; ${fmt(0.7*ampD)}&nbsp;mV (70&nbsp;% del distal ${fmt(ampD)})`);}
+  // f — dispersión temporal
+  if(durD!=null&&durP!=null){ const fac=(type==="tibial")?2.0:1.3;
+    if(durP>=fac*durD){crit.push("f");
+      det.push(`<b>f</b> &middot; Dispersi&oacute;n temporal: duraci&oacute;n proximal ${fmt(durP)}&nbsp;ms &ge; ${fmt(fac*durD)}&nbsp;ms (${type==="tibial"?"+100":"+30"}&nbsp;% sobre la distal ${fmt(durD)})`);}
+  }
+  // g — duración del CMAP distal
+  const fbf=demo().fbf; const dthr=DUR_FIX[fbf][type];
+  if(durD!=null&&durD>dthr){crit.push("g");
+    det.push(`<b>g</b> &middot; Duraci&oacute;n del CMAP distal ${fmt(durD)}&nbsp;ms &gt; ${fmt(dthr)}&nbsp;ms (l&iacute;mite a FBF ${fbf==="2hz"?"2&nbsp;Hz":"10&nbsp;Hz"})`);}
+  const met=crit.length>0;
+  computed[id]={met,crit,any};
+  const b=document.getElementById("b-"+id);
+  b.className="badge "+(met?"met":"no"); b.textContent=met?("cumple "+crit.join(",")):(any?"no cumple":"sin datos");
+  const o=document.getElementById("o-"+id);
+  if(!any){o.innerHTML="";}
+  else if(met){o.innerHTML="Criterios de desmielinizaci&oacute;n cumplidos:<ul style='margin:5px 0 0;padding-left:16px'><li>"+det.join("</li><li>")+"</li></ul>";}
+  else{o.innerHTML="No cumple ning&uacute;n criterio motor con los valores ingresados.";}
+}
+
 const on = id => document.getElementById(id).checked;
+function nerveMet(id){ return MODE==="calc" ? !!(computed[id]&&computed[id].met) : on(id); }
 
 function readState(){
   const ph=document.querySelector('input[name="ph"]:checked').value;
-  // motor por miembro: arm-izq, arm-der, leg-izq, leg-der
   const limb={"arm-i":0,"arm-d":0,"leg-i":0,"leg-d":0};
   let motor=0, motorArm=0;
-  ARM.forEach(([id])=>{ if(on(id)){ motor++; motorArm++; limb[id.endsWith("-i")?"arm-i":"arm-d"]++; }});
-  LEG.forEach(([id])=>{ if(on(id)){ motor++; limb[id.endsWith("-i")?"leg-i":"leg-d"]++; }});
+  ARM.forEach(([id])=>{ if(nerveMet(id)){ motor++; motorArm++; limb[id.endsWith("-i")?"arm-i":"arm-d"]++; }});
+  LEG.forEach(([id])=>{ if(nerveMet(id)){ motor++; limb[id.endsWith("-i")?"leg-i":"leg-d"]++; }});
   const limbsAffected=Object.values(limb).filter(n=>n>0).length;
-  // sensitivo
   let sensory=0; SENS.forEach(([id])=>{ if(on(id)) sensory++; });
-  const sensoryNormalAll = sensory===0; // normal en todos los explorados
+  const sensoryNormalAll = sensory===0;
   return {ph,motor,motorArm,limb,limbsAffected,sensory,sensoryNormalAll,
           tx:on("s-tx"),img:on("s-img"),csf:on("s-csf"),bx:on("s-bx"),
           support:(on("s-tx")?1:0)+(on("s-img")?1:0)+(on("s-csf")?1:0)+(on("s-bx")?1:0)};
 }
 
-// Devuelve {cls, verdict, detail, why}
 function decide(s){
   const sens2 = s.sensory>=2;
-  const SUP = (base)=>`${base}. Para sustentar «posible» como CIDP cuando el cuadro clínico es compatible, considere respuesta objetiva al tratamiento + ≥1 criterio de apoyo.`;
+  const SUP = (base)=>`${base}. Para sustentar &laquo;posible&raquo; como CIDP cuando el cuadro cl&iacute;nico es compatible, considere respuesta objetiva al tratamiento + &ge;1 criterio de apoyo.`;
   switch(s.ph){
-
   case "tipica":
-    if(s.motor>=2 && sens2)
-      return {cls:"ok",verdict:"CIDP típica",detail:"Se cumplen los criterios motores en ≥2 nervios y anormalidad sensitiva en ≥2 nervios (Recomendación 1)."};
-    if(s.motor===1 && sens2)
-      return {cls:"warn",verdict:"Posible CIDP típica",detail:"Criterios motores en un solo nervio (con sensitivo en ≥2). " };
-    if(s.motor===0 && s.tx && s.support>=1)
-      return {cls:"warn",verdict:"Posible CIDP típica",detail:"No se cumplen criterios electrodiagnósticos mínimos, pero hay respuesta objetiva al tratamiento + ≥1 criterio de apoyo en un cuadro clínicamente típico (criterio de Koski)."};
-    return {cls:"bad",verdict:"No cumple criterios de CIDP típica",detail:SUP("Faltan criterios motores y/o sensitivos suficientes (se requieren motores en ≥2 nervios y sensitivo en ≥2 nervios)")};
-
+    if(s.motor>=2 && sens2) return {cls:"ok",verdict:"CIDP t&iacute;pica",detail:"Se cumplen los criterios motores en &ge;2 nervios y anormalidad sensitiva en &ge;2 nervios (Recomendaci&oacute;n 1)."};
+    if(s.motor===1 && sens2) return {cls:"warn",verdict:"Posible CIDP t&iacute;pica",detail:"Criterios motores en un solo nervio (con sensitivo en &ge;2). "};
+    if(s.motor===0 && s.tx && s.support>=1) return {cls:"warn",verdict:"Posible CIDP t&iacute;pica",detail:"No se cumplen criterios electrodiagn&oacute;sticos m&iacute;nimos, pero hay respuesta objetiva al tratamiento + &ge;1 criterio de apoyo en un cuadro cl&iacute;nicamente t&iacute;pico (criterio de Koski)."};
+    return {cls:"bad",verdict:"No cumple criterios de CIDP t&iacute;pica",detail:SUP("Faltan criterios motores y/o sensitivos suficientes (se requieren motores en &ge;2 nervios y sensitivo en &ge;2 nervios)")};
   case "distal":
-    if(s.motorArm>=2 && sens2)
-      return {cls:"ok",verdict:"CIDP distal",detail:"Criterios motores en ≥2 nervios de miembros superiores y sensitivo en ≥2 nervios (Recomendación 2). El CMAP distal debe ser ≥1 mV."};
-    if((s.motorArm===1 || (s.motor>=2 && s.motorArm<2)) && sens2)
-      return {cls:"warn",verdict:"Posible CIDP distal",detail:"Criterios en un solo nervio de miembro superior, o cumplidos en miembros inferiores pero no superiores."};
-    return {cls:"bad",verdict:"No cumple criterios de CIDP distal",detail:SUP("Se requieren criterios motores en ≥2 nervios de miembros superiores y sensitivo en ≥2 nervios")};
-
+    if(s.motorArm>=2 && sens2) return {cls:"ok",verdict:"CIDP distal",detail:"Criterios motores en &ge;2 nervios de miembros superiores y sensitivo en &ge;2 nervios (Recomendaci&oacute;n 2). El CMAP distal debe ser &ge;1 mV."};
+    if((s.motorArm===1 || (s.motor>=2 && s.motorArm<2)) && sens2) return {cls:"warn",verdict:"Posible CIDP distal",detail:"Criterios en un solo nervio de miembro superior, o cumplidos en miembros inferiores pero no superiores."};
+    return {cls:"bad",verdict:"No cumple criterios de CIDP distal",detail:SUP("Se requieren criterios motores en &ge;2 nervios de miembros superiores y sensitivo en &ge;2 nervios")};
   case "multifocal":
-    if(s.motor>=2 && s.limbsAffected>=2 && sens2)
-      return {cls:"ok",verdict:"CIDP multifocal",detail:"Criterios motores en ≥2 nervios en más de un miembro y anormalidad sensitiva en ≥2 nervios de los miembros afectados (Recomendación 3)."};
-    if(s.motor>=1 && (s.sensory>=1))
-      return {cls:"warn",verdict:"Posible CIDP multifocal",detail:"Criterios en un solo nervio o distribución/sensitivo insuficientes para la categoría confirmada."};
-    return {cls:"bad",verdict:"No cumple criterios de CIDP multifocal",detail:SUP("Se requieren criterios motores en ≥2 nervios en más de un miembro y sensitivo en ≥2 nervios de los miembros afectados")};
-
+    if(s.motor>=2 && s.limbsAffected>=2 && sens2) return {cls:"ok",verdict:"CIDP multifocal",detail:"Criterios motores en &ge;2 nervios en m&aacute;s de un miembro y anormalidad sensitiva en &ge;2 nervios de los miembros afectados (Recomendaci&oacute;n 3)."};
+    if(s.motor>=1 && (s.sensory>=1)) return {cls:"warn",verdict:"Posible CIDP multifocal",detail:"Criterios en un solo nervio o distribuci&oacute;n/sensitivo insuficientes para la categor&iacute;a confirmada."};
+    return {cls:"bad",verdict:"No cumple criterios de CIDP multifocal",detail:SUP("Se requieren criterios motores en &ge;2 nervios en m&aacute;s de un miembro y sensitivo en &ge;2 nervios de los miembros afectados")};
   case "focal":
     {const oneLimb = Object.values(s.limb).some(n=>n>=2);
-    if(oneLimb && sens2)
-      return {cls:"ok",verdict:"CIDP focal",detail:"Criterios motores en ≥2 nervios de un mismo miembro y anormalidad sensitiva en ≥2 nervios del miembro afectado (Recomendación 3)."};
-    if(s.motor>=1 && s.sensory>=1)
-      return {cls:"warn",verdict:"Posible CIDP focal",detail:"Criterios en un solo nervio o sensitivo en un solo nervio del miembro afectado."};
-    return {cls:"bad",verdict:"No cumple criterios de CIDP focal",detail:SUP("Se requieren criterios motores en ≥2 nervios de un mismo miembro y sensitivo en ≥2 nervios del miembro afectado")};}
-
+    if(oneLimb && sens2) return {cls:"ok",verdict:"CIDP focal",detail:"Criterios motores en &ge;2 nervios de un mismo miembro y anormalidad sensitiva en &ge;2 nervios del miembro afectado (Recomendaci&oacute;n 3)."};
+    if(s.motor>=1 && s.sensory>=1) return {cls:"warn",verdict:"Posible CIDP focal",detail:"Criterios en un solo nervio o sensitivo en un solo nervio del miembro afectado."};
+    return {cls:"bad",verdict:"No cumple criterios de CIDP focal",detail:SUP("Se requieren criterios motores en &ge;2 nervios de un mismo miembro y sensitivo en &ge;2 nervios del miembro afectado")};}
   case "motora":
-    if(s.motor>=2 && s.sensoryNormalAll)
-      return {cls:"ok",verdict:"CIDP motora",detail:"Criterios motores en ≥2 nervios con conducción sensitiva normal en ≥4 nervios (mediano, cubital, radial y sural) (Recomendación 4)."};
-    if(s.motor>=2 && s.sensory>=2)
-      return {cls:"ok",verdict:"CIDP motora-predominante",detail:"Criterios motores en ≥2 nervios pero con anormalidad sensitiva en ≥2 nervios: se clasifica como motora-predominante."};
-    if(s.motor===1)
-      return {cls:"warn",verdict:"Posible CIDP motora",detail:"Criterios motores en un solo nervio."};
-    return {cls:"bad",verdict:"No cumple criterios de CIDP motora",detail:SUP("Se requieren criterios motores en ≥2 nervios")};
-
+    if(s.motor>=2 && s.sensoryNormalAll) return {cls:"ok",verdict:"CIDP motora",detail:"Criterios motores en &ge;2 nervios con conducci&oacute;n sensitiva normal en &ge;4 nervios (mediano, cubital, radial y sural) (Recomendaci&oacute;n 4)."};
+    if(s.motor>=2 && s.sensory>=2) return {cls:"ok",verdict:"CIDP motora-predominante",detail:"Criterios motores en &ge;2 nervios pero con anormalidad sensitiva en &ge;2 nervios: se clasifica como motora-predominante."};
+    if(s.motor===1) return {cls:"warn",verdict:"Posible CIDP motora",detail:"Criterios motores en un solo nervio."};
+    return {cls:"bad",verdict:"No cumple criterios de CIDP motora",detail:SUP("Se requieren criterios motores en &ge;2 nervios")};
   case "sensitiva":
-    if(sens2 && s.motor>=2)
-      return {cls:"ok",verdict:"CIDP sensitiva-predominante",detail:"Criterio sensitivo en ≥2 nervios con criterios motores en ≥2 nervios (Recomendación 5)."};
-    if(sens2 && s.motor===1)
-      return {cls:"warn",verdict:"Posible CIDP sensitiva-predominante",detail:"Criterio sensitivo cumplido con criterios motores en un solo nervio."};
-    if(sens2 && s.motor===0)
-      return {cls:"warn",verdict:"Posible CIDP sensitiva",detail:"Criterio sensitivo en ≥2 nervios con conducción motora normal. La máxima certeza es «posible»; verifique los subcriterios sensitivos (VC sensitiva o patrón de sural sparing)."};
-    return {cls:"bad",verdict:"No cumple criterios de CIDP sensitiva",detail:SUP("Se requiere anormalidad sensitiva en ≥2 nervios")};
+    if(sens2 && s.motor>=2) return {cls:"ok",verdict:"CIDP sensitiva-predominante",detail:"Criterio sensitivo en &ge;2 nervios con criterios motores en &ge;2 nervios (Recomendaci&oacute;n 5)."};
+    if(sens2 && s.motor===1) return {cls:"warn",verdict:"Posible CIDP sensitiva-predominante",detail:"Criterio sensitivo cumplido con criterios motores en un solo nervio."};
+    if(sens2 && s.motor===0) return {cls:"warn",verdict:"Posible CIDP sensitiva",detail:"Criterio sensitivo en &ge;2 nervios con conducci&oacute;n motora normal. La m&aacute;xima certeza es &laquo;posible&raquo;; verifique los subcriterios sensitivos (VC sensitiva o patr&oacute;n de sural sparing)."};
+    return {cls:"bad",verdict:"No cumple criterios de CIDP sensitiva",detail:SUP("Se requiere anormalidad sensitiva en &ge;2 nervios")};
   }
 }
 
@@ -232,12 +387,12 @@ function classify(){
   const s=readState();
   const r=decide(s);
   const el=document.getElementById("result");
-  const limbTxt=`SS izq ${s.limb["arm-i"]} · SS der ${s.limb["arm-d"]} · SI izq ${s.limb["leg-i"]} · SI der ${s.limb["leg-d"]}`;
+  const limbTxt=`SS izq ${s.limb["arm-i"]} &middot; SS der ${s.limb["arm-d"]} &middot; SI izq ${s.limb["leg-i"]} &middot; SI der ${s.limb["leg-d"]}`;
   el.innerHTML=`<div class="rcard ${r.cls}">
     <p class="verdict">${r.verdict}</p>
     <p>${r.detail}</p>
-    <div class="counts">Nervios motores que cumplen criterio: <b>${s.motor}</b> (miembros superiores ${s.motorArm}) · miembros afectados: <b>${s.limbsAffected}</b><br>${limbTxt}<br>Nervios sensitivos anormales: <b>${s.sensory}</b> · criterios de apoyo: <b>${s.support}</b></div>
-    <div class="why">La reducción de niveles de certeza a «CIDP» y «posible CIDP» sigue la guía EAN/PNS 2021. Antes de concluir, excluya nodopatías autoinmunes y revise el diagnóstico diferencial (Flowchart 2).</div>
+    <div class="counts">Modo: <b>${MODE==="calc"?"c&aacute;lculo":"marcado"}</b> &middot; nervios motores que cumplen criterio: <b>${s.motor}</b> (miembros superiores ${s.motorArm}) &middot; miembros afectados: <b>${s.limbsAffected}</b><br>${limbTxt}<br>Nervios sensitivos anormales: <b>${s.sensory}</b> &middot; criterios de apoyo: <b>${s.support}</b></div>
+    <div class="why">La reducci&oacute;n de niveles de certeza a &laquo;CIDP&raquo; y &laquo;posible CIDP&raquo; sigue la gu&iacute;a EAN/PNS 2021. Antes de concluir, excluya nodopat&iacute;as autoinmunes y revise el diagn&oacute;stico diferencial (Flowchart 2).</div>
   </div>`;
   el.style.display="block";
   el.scrollIntoView({behavior:"smooth",block:"start"});
