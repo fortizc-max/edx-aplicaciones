@@ -107,5 +107,104 @@
       ["Media","0","0"],["DE","0.2","0.2"],["Media+2DE","0.4","0.4"],["p95","0.2","0.3"],["p97","0.3","0.3"],["p100","0.4","0.4"]
     ]}
   ]
+},
+{
+ "study_key": "ondas-f-reflejo-h",
+ "study_label": "Ondas F y reflejo H (respuestas tardías)",
+ "group": "tardias",
+ "reference": "Valores de referencia para estatura promedio (capítulo de neuroconducciones de este libro). La latencia F depende de la talla; en tallas extremas prefiera la diferencia interlado.",
+ "technique_notes": "La latencia F mínima depende de la talla y del nervio; los límites corresponden a estatura promedio. La onda F aparece normalmente en >50 % de los estímulos. Elija el nervio o el miembro en el desplegable de cada casilla.",
+ "measures": [
+  {
+   "name": "Onda F · latencia mínima (ms)",
+   "abnormal_side": "alto",
+   "columns": [
+    "Nervio",
+    "Límite superior"
+   ],
+   "rows": [
+    [
+     "Mediano (talla promedio)",
+     "31"
+    ],
+    [
+     "Cubital (talla promedio)",
+     "32"
+    ],
+    [
+     "Peroneo (talla promedio)",
+     "56"
+    ],
+    [
+     "Tibial (talla promedio)",
+     "58"
+    ]
+   ]
+  },
+  {
+   "name": "Onda F · diferencia interlado (ms)",
+   "abnormal_side": "alto",
+   "columns": [
+    "Miembro",
+    "Límite superior"
+   ],
+   "rows": [
+    [
+     "Miembro superior",
+     "2"
+    ],
+    [
+     "Miembro inferior",
+     "4"
+    ]
+   ]
+  },
+  {
+   "name": "Onda F · cronodispersión (ms)",
+   "abnormal_side": "alto",
+   "columns": [
+    "Miembro",
+    "Límite superior"
+   ],
+   "rows": [
+    [
+     "Miembro superior",
+     "6"
+    ],
+    [
+     "Miembro inferior",
+     "10"
+    ]
+   ]
+  },
+  {
+   "name": "Reflejo H · sóleo · latencia (ms)",
+   "abnormal_side": "alto",
+   "columns": [
+    "Subgrupo",
+    "Límite superior"
+   ],
+   "rows": [
+    [
+     "Talla promedio (rango 28–35)",
+     "35"
+    ]
+   ]
+  },
+  {
+   "name": "Reflejo H · diferencia interlado (ms)",
+   "abnormal_side": "alto",
+   "columns": [
+    "Subgrupo",
+    "Límite superior"
+   ],
+   "rows": [
+    [
+     "Sóleo",
+     "1.5"
+    ]
+   ]
+  }
+ ]
 }
 ]

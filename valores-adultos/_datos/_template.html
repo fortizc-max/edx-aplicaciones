@@ -81,7 +81,7 @@ details.crit .body li{margin-bottom:6px}
 </div>
 <script>
 const STUDIES = __DATA__;
-const GRP = {motor:"Estudios motores", sensitivo:"Estudios sensitivos", mixto:"Estudios de nervio mixto y diferencias", especial:"Nervios poco frecuentes (Manual de Buschbacher 2015)"};
+const GRP = {motor:"Estudios motores", sensitivo:"Estudios sensitivos", mixto:"Estudios de nervio mixto y diferencias", tardias:"Respuestas tardías · onda F y reflejo H", especial:"Nervios poco frecuentes (Manual de Buschbacher 2015)"};
 const app = document.getElementById("app");
 var CALCS=[];
 var DEMO={sex:null,age:null,height:null,bmi:null};
@@ -191,11 +191,11 @@ function table(m){
   for(var ci=0;ci<m.columns.length;ci++){ if(cutIdx<0 && /Media\s*[-+−–—±]\s*2\s*DE/i.test(m.columns[ci])){cutIdx=ci;cutName=m.columns[ci];} }
   if(cutIdx<0){ for(var cj=0;cj<m.columns.length;cj++){ if(/l[ií]mite/i.test(m.columns[cj])){cutIdx=cj;cutName=m.columns[cj];break;} } }
   var calcHtml='';
-  if(mediaIdx>=0){
+  if(mediaIdx>=0||cutIdx>=0){
     var rows=[];
     m.rows.forEach(function(r){
-      var md=pnum(r[mediaIdx]); if(isNaN(md)) return;
-      rows.push({label:r[0], media:md, de:deIdx>=0?pnum(r[deIdx]):NaN, cut:cutIdx>=0?pnum(r[cutIdx]):NaN, c:parseLabel(r[0])});
+      var md=mediaIdx>=0?pnum(r[mediaIdx]):NaN, ct=cutIdx>=0?pnum(r[cutIdx]):NaN; if(isNaN(md)&&isNaN(ct)) return;
+      rows.push({label:r[0], media:md, de:deIdx>=0?pnum(r[deIdx]):NaN, cut:ct, c:parseLabel(r[0])});
     });
     if(rows.length){
       var cid=CALCS.length; CALCS.push({side:m.abnormal_side, cutName:cutName, measName:m.name, rows:rows});

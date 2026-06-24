@@ -37,7 +37,7 @@ else:
     print("VALIDACIÓN: todas las filas cuadran con sus columnas ✓")
 
 # --- orden por grupo ---
-order = {"motor": 0, "sensitivo": 1, "mixto": 2, "especial": 3}
+order = {"motor": 0, "sensitivo": 1, "tardias": 1.5, "mixto": 2, "especial": 3}
 seq   = {"mediano-motor":0,"cubital-motor":1,"peroneo-motor":2,"tibial-motor":3,
          "mediano-sensitivo":0,"cubital-sensitivo":1,"sural-sensitivo":2,
          "safeno-sensitivo":3,"sural-vs-safeno":4,
