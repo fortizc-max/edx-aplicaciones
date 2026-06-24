@@ -61,9 +61,9 @@ details.crit .body li{margin-bottom:6px}
 <div class="demobar">
 <span class="title">Datos del paciente · eligen el subgrupo y calculan percentil + desviaciones (z)</span>
 <label>Sexo<select id="d-sex"><option value="">—</option><option value="M">Hombre</option><option value="F">Mujer</option></select></label>
-<label>Edad (años)<input id="d-age" type="number" inputmode="numeric" step="1" placeholder="años"></label>
-<label>Talla (cm)<input id="d-talla" type="number" inputmode="numeric" step="1" placeholder="cm"></label>
-<label>Peso (kg)<input id="d-peso" type="number" inputmode="decimal" step="0.1" placeholder="kg"></label>
+<label>Edad (años)<input id="d-age" type="text" inputmode="numeric" placeholder="años"></label>
+<label>Talla (cm)<input id="d-talla" type="text" inputmode="numeric" placeholder="cm"></label>
+<label>Peso (kg)<input id="d-peso" type="text" inputmode="decimal" placeholder="kg"></label>
 <span class="imc" id="d-imc">IMC —</span>
 </div>
 <div id="app"></div>
@@ -171,9 +171,9 @@ function computeCalc(el){
 function recomputeAll(){ var n=document.querySelectorAll('#app .calc'); for(var i=0;i<n.length;i++) computeCalc(n[i]); }
 function readDemo(){
   var sx=document.getElementById('d-sex').value; DEMO.sex=sx||null;
-  var a=parseFloat(document.getElementById('d-age').value); DEMO.age=isNaN(a)?null:a;
-  var hc=parseFloat(document.getElementById('d-talla').value); DEMO.height=isNaN(hc)?null:hc;
-  var w=parseFloat(document.getElementById('d-peso').value);
+  var a=parseFloat(String(document.getElementById('d-age').value).replace(',','.')); DEMO.age=isNaN(a)?null:a;
+  var hc=parseFloat(String(document.getElementById('d-talla').value).replace(',','.')); DEMO.height=isNaN(hc)?null:hc;
+  var w=parseFloat(String(document.getElementById('d-peso').value).replace(',','.'));
   var bmi=(!isNaN(w)&&!isNaN(hc)&&hc>0)? w/Math.pow(hc/100,2):null; DEMO.bmi=bmi;
   document.getElementById('d-imc').textContent = bmi? ('IMC '+bmi.toFixed(1)) : 'IMC —';
 }
@@ -201,7 +201,7 @@ function table(m){
       var cid=CALCS.length; CALCS.push({side:m.abnormal_side, cutName:cutName, measName:m.name, rows:rows});
       var opts='<option value="-1">Auto (según paciente)</option>';
       rows.forEach(function(x,i){ opts+='<option value="'+i+'">'+x.label+'</option>'; });
-      calcHtml='<div class="calc" data-cid="'+cid+'"><input class="cval" type="number" inputmode="decimal" step="any" placeholder="valor del paciente"><select class="csub">'+opts+'</select><div class="cres muted">— ingresa el valor medido —</div></div>';
+      calcHtml='<div class="calc" data-cid="'+cid+'"><input class="cval" type="text" inputmode="decimal" placeholder="valor del paciente"><select class="csub">'+opts+'</select><div class="cres muted">— ingresa el valor medido —</div></div>';
     }
   }
   let h = '<div class="meas" data-txt="'+ (m.name).toLowerCase() +'"><h3>'+m.name+'</h3>'+calcHtml+'<div class="tw"><table><thead><tr>';
