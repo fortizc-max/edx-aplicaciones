@@ -2,7 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>EDx pediátrico · Valores de referencia</title>
 <style>
-:root{--bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;--accent:#3aa0ff;--warn:#ffb74d}
+:root{--bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;--accent:#3aa0ff;--warn:#ffb74d;--ok:#5ec5a0;--bad:#ff6b6b}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 50px}
 header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:16px 16px 13px;border-bottom:1px solid var(--line)}
 header h1{margin:0;font-size:18px}header p{margin:4px 0 0;font-size:11.5px;color:var(--muted)}
@@ -17,39 +17,44 @@ table{width:100%;border-collapse:collapse;font-size:12px;min-width:430px}
 th,td{padding:6px 5px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
 th{color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700}th span{font-weight:400;text-transform:none}
 td:first-child,th:first-child{text-align:left;font-weight:600}
+tr.hit td{background:#143a2c}
 .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px;margin-bottom:12px}
 .f{font-size:12.5px;background:#1d2d49;border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin:6px 0;color:var(--muted)}.f b{color:var(--txt)}
 .note{font-size:11px;color:var(--muted);margin:6px 0 0;font-style:italic}
 .leg{font-size:11px;color:var(--muted);margin-top:6px}
 details.crit summary{color:var(--warn)}
 details .body{padding-bottom:13px;font-size:12px;color:var(--muted)}details .body li{margin-bottom:6px}
+/* demobar */
+.demobar{background:#0c2f49;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:4px 0 12px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:flex-end}
+.demobar .title{flex-basis:100%;font-size:11px;color:var(--warn);font-weight:700;margin-bottom:1px}
+.demobar label{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);display:flex;flex-direction:column;gap:3px;font-weight:700}
+.demobar .ageline{display:flex;gap:6px}
+.demobar input,.demobar select{background:var(--card);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:6px 8px;font-size:13px}
+.demobar input{width:70px}.demobar select{width:84px}
+.demobar .band{margin-left:auto;font-size:12px;color:var(--accent);font-weight:700;padding-bottom:6px}
+/* calc */
+.calc{margin:4px 0 12px;padding:9px 10px;background:#11203a;border:1px solid var(--line);border-radius:10px}
+.crow{display:flex;align-items:center;gap:8px;margin:3px 0;flex-wrap:wrap}
+.clab{font-size:11px;color:var(--muted);width:74px;font-weight:700;text-transform:uppercase}
+.crow input{width:96px;background:var(--card);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:6px 8px;font-size:13px}
+.cres{font-size:12px;font-weight:700;flex-basis:100%;margin:1px 0 4px 0}
+.cres.ok{color:var(--ok)}.cres.bad{color:var(--bad)}.cres.muted{color:var(--muted);font-weight:500}
+.cband{font-size:10.5px;color:var(--muted);margin-top:2px}
+select.cnerve{background:var(--card);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:6px 8px;font-size:12px}
 </style></head><body>
 <header><h1>Electrodiagnóstico pediátrico</h1>
 <p>Valores de referencia · Ryan 2019 (NCS) · Puksa 2011 · Cai 1997 · Sharma 2020 (ondas F)</p></header>
 <div class="wrap">
-<p class="leg">Toca cada nervio para desplegar su tabla. Amplitud y VC: límite inferior = <b>percentil 2,5</b>. Latencia: límite superior = <b>percentil 97,5</b>.</p>
-<h2>Neuroconducciones motoras (Ryan 2019)</h2><details><summary>Mediano (motor)</summary><div class="tw"><table><thead><tr><th>Edad</th><th>Ampl (mV)<br><span>(±DE)</span></th><th>p2,5</th><th>VC m/s<br><span>(±DE)</span></th><th>p2,5</th><th>Lat ms<br><span>(±DE)</span></th><th>p97,5</th><th>N</th></tr></thead><tbody><tr><td>0–<1 mes</td><td>2.2 (1.6)</td><td>0.2</td><td>25 (3)</td><td>22</td><td>2.2 (0.2)</td><td>2.5</td><td>5</td></tr><tr><td>1–<6 meses</td><td>3.3 (0.8)</td><td>2.3</td><td>37 (9)</td><td>27</td><td>1.7 (0.1)</td><td>1.8</td><td>4</td></tr><tr><td>6–<12 meses</td><td>5.9 (2.5)</td><td>3.2</td><td>45 (13)</td><td>36</td><td>2.1 (0.2)</td><td>2.4</td><td>12</td></tr><tr><td>1–<2 años</td><td>5.7 (1.9)</td><td>2.4</td><td>47 (5)</td><td>38</td><td>2.2 (0.2)</td><td>2.7</td><td>18</td></tr><tr><td>2–<5 años</td><td>7.2 (1.7)</td><td>5.2</td><td>51 (6)</td><td>40</td><td>2.3 (0.3)</td><td>3.0</td><td>18</td></tr><tr><td>5–<10 años</td><td>8.9 (2.8)</td><td>2.1</td><td>56 (7)</td><td>48</td><td>2.9 (0.6)</td><td>5.2</td><td>34</td></tr><tr><td>10–<15 años</td><td>10.9 (2.7)</td><td>5.7</td><td>58 (4)</td><td>51</td><td>3.3 (0.4)</td><td>4.9</td><td>78</td></tr><tr><td>15–<18 años</td><td>11.6 (2.9)</td><td>7.3</td><td>59 (3)</td><td>54</td><td>3.3 (0.4)</td><td>4.0</td><td>240</td></tr></tbody></table></div></details><details><summary>Cubital (motor)</summary><div class="tw"><table><thead><tr><th>Edad</th><th>Ampl (mV)<br><span>(±DE)</span></th><th>p2,5</th><th>VC m/s<br><span>(±DE)</span></th><th>p2,5</th><th>Lat ms<br><span>(±DE)</span></th><th>p97,5</th><th>N</th></tr></thead><tbody><tr><td>0–<1 mes</td><td>3.8 (1.6)</td><td>0.8</td><td>35 (7)</td><td>29</td><td>2.2 (0.5)</td><td>3.2</td><td>7</td></tr><tr><td>1–<6 meses</td><td>4.5 (1.9)</td><td>1.7</td><td>43 (7)</td><td>29</td><td>1.8 (0.3)</td><td>2.6</td><td>13</td></tr><tr><td>6–<12 meses</td><td>5.4 (1.5)</td><td>2.1</td><td>51 (7)</td><td>37</td><td>1.7 (0.2)</td><td>2.4</td><td>29</td></tr><tr><td>1–<2 años</td><td>5.8 (1.8)</td><td>3.5</td><td>53 (7)</td><td>45</td><td>1.7 (0.2)</td><td>2.1</td><td>41</td></tr><tr><td>2–<3 años</td><td>6.2 (1.9)</td><td>3.0</td><td>56 (6)</td><td>45</td><td>1.7 (0.2)</td><td>2.2</td><td>36</td></tr><tr><td>3–<4 años</td><td>7.8 (1.9)</td><td>3.8</td><td>58 (6)</td><td>44</td><td>1.9 (0.3)</td><td>2.8</td><td>33</td></tr><tr><td>4–<5 años</td><td>7.2 (1.7)</td><td>2.8</td><td>60 (6)</td><td>46</td><td>1.9 (0.4)</td><td>3.6</td><td>27</td></tr><tr><td>5–<10 años</td><td>9.2 (2.7)</td><td>5.7</td><td>61 (6)</td><td>53</td><td>2.1 (0.3)</td><td>2.7</td><td>143</td></tr><tr><td>10–<15 años</td><td>10.7 (2.4)</td><td>7.0</td><td>62 (5)</td><td>54</td><td>2.5 (0.3)</td><td>3.1</td><td>261</td></tr><tr><td>15–<18 años</td><td>11.9 (2.5)</td><td>8.0</td><td>63 (5)</td><td>54</td><td>2.6 (0.3)</td><td>3.1</td><td>511</td></tr></tbody></table></div></details><details><summary>Peroneo (motor)</summary><div class="tw"><table><thead><tr><th>Edad</th><th>Ampl (mV)<br><span>(±DE)</span></th><th>p2,5</th><th>VC m/s<br><span>(±DE)</span></th><th>p2,5</th><th>Lat ms<br><span>(±DE)</span></th><th>p97,5</th><th>N</th></tr></thead><tbody><tr><td>0–<1 mes</td><td>2.1 (1.1)</td><td>0.7</td><td>31 (14)</td><td>21</td><td>2.5 (0.5)</td><td>3.3</td><td>7</td></tr><tr><td>1–<6 meses</td><td>2.8 (1.7)</td><td>1.0</td><td>41 (4)</td><td>35</td><td>2.0 (0.5)</td><td>2.9</td><td>9</td></tr><tr><td>6–<12 meses</td><td>3.4 (1.2)</td><td>1.4</td><td>44 (7)</td><td>32</td><td>2.0 (0.4)</td><td>2.8</td><td>24</td></tr><tr><td>1–<2 años</td><td>3.7 (1.3)</td><td>1.7</td><td>48 (8)</td><td>41</td><td>2.2 (0.4)</td><td>2.9</td><td>65</td></tr><tr><td>2–<3 años</td><td>3.7 (1.5)</td><td>0.9</td><td>49 (5)</td><td>41</td><td>2.4 (0.4)</td><td>3.3</td><td>51</td></tr><tr><td>3–<4 años</td><td>4.4 (1.6)</td><td>2.1</td><td>50 (5)</td><td>43</td><td>2.9 (0.7)</td><td>4.7</td><td>46</td></tr><tr><td>4–<5 años</td><td>4.3 (1.8)</td><td>1.4</td><td>50 (4)</td><td>41</td><td>3.1 (0.4)</td><td>4.2</td><td>38</td></tr><tr><td>5–<10 años</td><td>4.7 (1.6)</td><td>2.3</td><td>52 (4)</td><td>46</td><td>3.6 (0.6)</td><td>4.7</td><td>204</td></tr><tr><td>10–<15 años</td><td>5.4 (2.0)</td><td>2.6</td><td>51 (5)</td><td>45</td><td>4.2 (0.7)</td><td>5.6</td><td>410</td></tr><tr><td>15–<18 años</td><td>6.4 (2.1)</td><td>3.2</td><td>50 (3)</td><td>44</td><td>4.4 (0.7)</td><td>5.8</td><td>559</td></tr></tbody></table></div></details><details><summary>Tibial (motor)</summary><div class="tw"><table><thead><tr><th>Edad</th><th>Ampl (mV)<br><span>(±DE)</span></th><th>p2,5</th><th>VC m/s<br><span>(±DE)</span></th><th>p2,5</th><th>Lat ms<br><span>(±DE)</span></th><th>p97,5</th><th>N</th></tr></thead><tbody><tr><td>0–<1 mes</td><td>5.3 (1.6)</td><td>3.2</td><td>24 (3)</td><td>19</td><td>2.7 (0.2)</td><td>2.9</td><td>4</td></tr><tr><td>1–<6 meses</td><td>9.5 (0.9)</td><td>8.3</td><td>40 (5)</td><td>32</td><td>2.3 (0.2)</td><td>2.4</td><td>4</td></tr><tr><td>6–<12 meses</td><td>10.0 (2.8)</td><td>6.2</td><td>41 (5)</td><td>32</td><td>2.7 (0.9)</td><td>4.9</td><td>8</td></tr><tr><td>1–<2 años</td><td>11.1 (3.0)</td><td>4.7</td><td>46 (4)</td><td>40</td><td>2.4 (0.4)</td><td>3.3</td><td>22</td></tr><tr><td>2–<3 años</td><td>11.1 (3.1)</td><td>4.4</td><td>51 (5)</td><td>42</td><td>2.5 (0.4)</td><td>3.4</td><td>20</td></tr><tr><td>3–<5 años</td><td>13.6 (5.2)</td><td>3.8</td><td>50 (6)</td><td>42</td><td>2.8 (0.4)</td><td>3.7</td><td>36</td></tr><tr><td>5–<10 años</td><td>12.8 (3.8)</td><td>7.7</td><td>52 (5)</td><td>45</td><td>3.3 (0.6)</td><td>4.5</td><td>119</td></tr><tr><td>10–<15 años</td><td>11.8 (3.6)</td><td>6.2</td><td>50 (4)</td><td>45</td><td>4.0 (0.7)</td><td>5.6</td><td>274</td></tr><tr><td>15–<18 años</td><td>13.2 (3.9)</td><td>7.1</td><td>50 (4)</td><td>45</td><td>4.2 (0.6)</td><td>5.4</td><td>414</td></tr></tbody></table></div></details><h2>Neuroconducciones sensitivas (Ryan 2019)</h2><details><summary>Mediano (antidrómico)</summary><div class="tw"><table><thead><tr><th>Edad</th><th>Ampl (µV)<br><span>(±DE)</span></th><th>p2,5</th><th>VC m/s<br><span>(±DE)</span></th><th>p2,5</th><th>Lat ms<br><span>(±DE)</span></th><th>p97,5</th><th>N</th></tr></thead><tbody><tr><td>0–<1 mes</td><td>24 (7)</td><td>15</td><td>26 (4)</td><td>19</td><td>2.5 (0.2)</td><td>3.0</td><td>8</td></tr><tr><td>1–<6 meses</td><td>36 (12)</td><td>17</td><td>38 (9)</td><td>21</td><td>2.0 (0.3)</td><td>2.8</td><td>14</td></tr><tr><td>6–<12 meses</td><td>53 (20)</td><td>30</td><td>48 (8)</td><td>33</td><td>2.1 (0.3)</td><td>2.8</td><td>27</td></tr><tr><td>1–<2 años</td><td>54 (23)</td><td>23</td><td>55 (6)</td><td>40</td><td>2.1 (0.2)</td><td>2.5</td><td>48</td></tr><tr><td>2–<3 años</td><td>62 (24)</td><td>17</td><td>59 (6)</td><td>46</td><td>2.0 (0.2)</td><td>2.6</td><td>33</td></tr><tr><td>3–<5 años</td><td>54 (20)</td><td>26</td><td>61 (5)</td><td>52</td><td>2.2 (0.3)</td><td>2.8</td><td>60</td></tr><tr><td>5–<10 años</td><td>55 (19)</td><td>28</td><td>64 (5)</td><td>56</td><td>2.5 (0.3)</td><td>3.2</td><td>150</td></tr><tr><td>10–<15 años</td><td>50 (15)</td><td>28</td><td>64 (4)</td><td>58</td><td>2.9 (0.3)</td><td>3.4</td><td>249</td></tr><tr><td>15–<18 años</td><td>56 (18)</td><td>30</td><td>65 (4)</td><td>59</td><td>2.9 (0.3)</td><td>3.3</td><td>454</td></tr></tbody></table></div></details><details><summary>Cubital (antidrómico)</summary><div class="tw"><table><thead><tr><th>Edad</th><th>Ampl (µV)<br><span>(±DE)</span></th><th>p2,5</th><th>VC m/s<br><span>(±DE)</span></th><th>p2,5</th><th>Lat ms<br><span>(±DE)</span></th><th>p97,5</th><th>N</th></tr></thead><tbody><tr><td>2–<5 años</td><td>41 (15)</td><td>11</td><td>65 (7)</td><td>54</td><td>1.8 (0.2)</td><td>2.3</td><td>11</td></tr><tr><td>5–<10 años</td><td>41 (15)</td><td>18</td><td>65 (5)</td><td>56</td><td>2.2 (0.3)</td><td>3.1</td><td>25</td></tr><tr><td>10–<15 años</td><td>41 (12)</td><td>24</td><td>67 (5)</td><td>57</td><td>2.6 (0.3)</td><td>3.1</td><td>80</td></tr><tr><td>15–<18 años</td><td>44 (17)</td><td>20</td><td>67 (5)</td><td>60</td><td>2.6 (0.2)</td><td>3.0</td><td>214</td></tr></tbody></table></div></details><details><summary>Sural (antidrómico)</summary><div class="tw"><table><thead><tr><th>Edad</th><th>Ampl (µV)<br><span>(±DE)</span></th><th>p2,5</th><th>VC m/s<br><span>(±DE)</span></th><th>p2,5</th><th>Lat ms<br><span>(±DE)</span></th><th>p97,5</th><th>N</th></tr></thead><tbody><tr><td>6–<12 meses</td><td>18 (10)</td><td>8</td><td>—</td><td>—</td><td>2.4 (0.8)</td><td>3.8</td><td>4</td></tr><tr><td>1–<2 años</td><td>20 (7)</td><td>11</td><td>—</td><td>—</td><td>1.9 (0.3)</td><td>2.5</td><td>12</td></tr><tr><td>2–<5 años</td><td>21 (9)</td><td>11</td><td>57 (5)</td><td>50</td><td>2.2 (0.3)</td><td>2.8</td><td>24</td></tr><tr><td>5–<10 años</td><td>21 (10)</td><td>5</td><td>56 (7)</td><td>45</td><td>2.9 (0.6)</td><td>4.3</td><td>46</td></tr><tr><td>10–<15 años</td><td>18 (8)</td><td>9</td><td>52 (6)</td><td>43</td><td>3.6 (0.3)</td><td>4.2</td><td>95</td></tr><tr><td>15–<18 años</td><td>21 (9)</td><td>10</td><td>51 (5)</td><td>43</td><td>3.6 (0.3)</td><td>4.2</td><td>165</td></tr></tbody></table></div></details><details><summary>Plantar medial (ortodrómico)</summary><div class="tw"><table><thead><tr><th>Edad</th><th>Ampl (µV)<br><span>(±DE)</span></th><th>p2,5</th><th>VC m/s<br><span>(±DE)</span></th><th>p2,5</th><th>Lat ms<br><span>(±DE)</span></th><th>p97,5</th><th>N</th></tr></thead><tbody><tr><td>0–<1 mes</td><td>10 (8)</td><td>3</td><td>—</td><td>—</td><td>3.6 (2.6)</td><td>8.0</td><td>4</td></tr><tr><td>1–<6 meses</td><td>21 (11)</td><td>9</td><td>—</td><td>—</td><td>1.8 (0.6)</td><td>2.9</td><td>12</td></tr><tr><td>6–<12 meses</td><td>34 (15)</td><td>12</td><td>—</td><td>—</td><td>1.7 (0.2)</td><td>2.3</td><td>29</td></tr><tr><td>1–<2 años</td><td>32 (16)</td><td>9</td><td>—</td><td>—</td><td>1.8 (0.3)</td><td>2.4</td><td>63</td></tr><tr><td>2–<3 años</td><td>36 (18)</td><td>15</td><td>—</td><td>—</td><td>1.9 (0.3)</td><td>2.3</td><td>46</td></tr><tr><td>3–<4 años</td><td>42 (19)</td><td>11</td><td>—</td><td>—</td><td>2.1 (0.3)</td><td>2.5</td><td>43</td></tr><tr><td>4–<5 años</td><td>38 (17)</td><td>9</td><td>—</td><td>—</td><td>2.2 (0.3)</td><td>3.1</td><td>33</td></tr><tr><td>5–<10 años</td><td>34 (16)</td><td>12</td><td>—</td><td>—</td><td>2.5 (0.4)</td><td>3.2</td><td>193</td></tr><tr><td>10–<15 años</td><td>27 (13)</td><td>11</td><td>—</td><td>—</td><td>2.9 (0.4)</td><td>3.7</td><td>345</td></tr><tr><td>15–<18 años</td><td>28 (13)</td><td>11</td><td>—</td><td>—</td><td>3.0 (0.4)</td><td>3.7</td><td>408</td></tr></tbody></table></div></details>
 
-<h2>Ondas F · latencia por estatura (Puksa 2011)</h2>
-<div class="card">
-<div class="f">LatF (ms) = a + b·estatura. La tabla muestra el <b>límite superior de normalidad (LSN = media + 2 DE)</b> en ms.</div>
-<div class="tw"><table><thead><tr><th>Estatura</th><th>Mediano</th><th>Cubital</th><th>Tibial</th><th>Peroneo</th></tr></thead><tbody><tr><td>80 cm</td><td>14.3</td><td>14.7</td><td>22.1</td><td>22.6</td></tr><tr><td>90 cm</td><td>15.4</td><td>15.9</td><td>24.8</td><td>25.3</td></tr><tr><td>100 cm</td><td>16.5</td><td>17.1</td><td>27.6</td><td>28.0</td></tr><tr><td>110 cm</td><td>17.6</td><td>18.3</td><td>30.3</td><td>30.7</td></tr><tr><td>120 cm</td><td>18.6</td><td>19.5</td><td>33.1</td><td>33.5</td></tr><tr><td>130 cm</td><td>19.7</td><td>20.7</td><td>35.8</td><td>36.2</td></tr><tr><td>140 cm</td><td>20.8</td><td>21.9</td><td>38.6</td><td>38.9</td></tr><tr><td>150 cm</td><td>21.9</td><td>23.1</td><td>41.3</td><td>41.7</td></tr><tr><td>160 cm</td><td>23.0</td><td>24.3</td><td>44.1</td><td>44.4</td></tr><tr><td>170 cm</td><td>24.0</td><td>25.5</td><td>46.8</td><td>47.1</td></tr><tr><td>180 cm</td><td>25.1</td><td>26.7</td><td>49.6</td><td>49.9</td></tr></tbody></table></div>
-<p class="note">Ecuaciones: Mediano 3,78+0,108·E · Cubital 2,525+0,120·E · Tibial −4,145+0,275·E · Peroneo −3,809+0,273·E (E = estatura en cm). Puksa L et al. Clin Neurophysiol 2011;122:199–204.</p>
+<div class="demobar">
+<span class="title">Datos del paciente · escribe la edad (y la talla para ondas F por estatura); luego el valor medido en cada nervio</span>
+<label>Edad<span class="ageline"><input id="d-ageval" type="text" inputmode="numeric" placeholder="edad"><select id="d-ageunit"><option value="y">años</option><option value="m">meses</option></select></span></label>
+<label>Talla (cm)<input id="d-talla" type="text" inputmode="numeric" placeholder="cm"></label>
+<span class="band" id="d-band">banda: —</span>
 </div>
 
-<h2>Ondas F · latencia mínima por edad (Cai 1997)</h2>
-<div class="card">
-<p class="note" style="margin:0 0 8px">Estimulación en muñeca (mediano, cubital) y tobillo (tibial). Media ± DE en ms.</p>
-<div class="tw"><table><thead><tr><th>Edad</th><th>Mediano</th><th>Cubital</th><th>Tibial</th></tr></thead><tbody><tr><td>24–72 h</td><td>19.56 ± 2.44</td><td>19.67 ± 2.74</td><td>26.92 ± 3.27</td></tr><tr><td>0–3 meses</td><td>17.62 ± 1.49</td><td>17.65 ± 2.68</td><td>28.59 ± 2.41</td></tr><tr><td>4–6 meses</td><td>17.54 ± 1.96</td><td>16.99 ± 1.24</td><td>23.93 ± 1.85</td></tr><tr><td>7–12 meses</td><td>16.86 ± 1.50</td><td>17.02 ± 1.45</td><td>23.78 ± 1.83</td></tr><tr><td>1–3 años</td><td>16.41 ± 1.13</td><td>16.63 ± 1.88</td><td>25.44 ± 2.20</td></tr><tr><td>4–6 años</td><td>17.62 ± 1.62</td><td>18.51 ± 1.74</td><td>31.07 ± 3.10</td></tr><tr><td>7–14 años</td><td>20.18 ± 1.61</td><td>20.66 ± 1.92</td><td>36.32 ± 3.72</td></tr><tr><td>18–30 años</td><td>26.14 ± 3.03</td><td>27.03 ± 2.14</td><td>48.27 ± 3.09</td></tr></tbody></table></div>
-<p class="note">Modificado de Cai F, Zhang J. J Child Neurol 1997;12(1):13–18.</p>
-</div>
-
-<h2>FED · F-wave estimated deviance (Sharma 2020)</h2>
-<div class="card">
-<div class="f">F-estimada = <b>(longitud × 2 / VC) + latencia distal</b><br>FED = <b>F observada − F estimada</b></div>
-<p class="note" style="margin:6px 0">Longitud en mm (miembro superior: muñeca→horquilla esternal; inferior: tobillo→apófisis xifoides). VC en m/s, latencias en ms.</p>
-<div class="leg">Rango normal de FED: miembro <b>superior −1 a +6 ms</b>; miembro <b>inferior −8 a +5 ms</b> (percentiles 2,5–97,5).<br>Sharma R et al. J Clin Neurophysiol 2020;37(1):68–73.</div>
-</div>
+<p class="leg">Amplitud y VC: límite inferior = <b>percentil 2,5</b>. Latencia: límite superior = <b>percentil 97,5</b> (Ryan 2019). El percentil/z es orientativo; el veredicto usa el corte publicado.</p>
+<div id="app"></div>
 
 <details class="crit"><summary>⚠️ Nota crítica · limitaciones de Ryan 2019</summary>
 <div class="body"><ul>
@@ -64,4 +69,170 @@ details .body{padding-bottom:13px;font-size:12px;color:var(--muted)}details .bod
 
 <p class="leg" style="margin-top:18px;text-align:center">Herramienta de consulta · no sustituye el juicio clínico.</p>
 </div><div style="max-width:900px;margin:10px auto 28px;padding:0 16px;font-size:11px;color:#888;font-style:italic;text-align:center">Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular 2027</i>, de Fernando Ortiz Corredor. Recurso educativo de distribución gratuita y sin fines comerciales. © 2027 Fernando Ortiz Corredor.</div>
+
+<script>
+const DATA = {"motor": [{"name": "Mediano (motor)", "rows": [{"age": "0–<1 mes", "amp": [2.2, 1.6, 0.2], "vc": [25.0, 3.0, 22.0], "lat": [2.2, 0.2, 2.5], "n": 5.0}, {"age": "1–<6 meses", "amp": [3.3, 0.8, 2.3], "vc": [37.0, 9.0, 27.0], "lat": [1.7, 0.1, 1.8], "n": 4.0}, {"age": "6–<12 meses", "amp": [5.9, 2.5, 3.2], "vc": [45.0, 13.0, 36.0], "lat": [2.1, 0.2, 2.4], "n": 12.0}, {"age": "1–<2 años", "amp": [5.7, 1.9, 2.4], "vc": [47.0, 5.0, 38.0], "lat": [2.2, 0.2, 2.7], "n": 18.0}, {"age": "2–<5 años", "amp": [7.2, 1.7, 5.2], "vc": [51.0, 6.0, 40.0], "lat": [2.3, 0.3, 3.0], "n": 18.0}, {"age": "5–<10 años", "amp": [8.9, 2.8, 2.1], "vc": [56.0, 7.0, 48.0], "lat": [2.9, 0.6, 5.2], "n": 34.0}, {"age": "10–<15 años", "amp": [10.9, 2.7, 5.7], "vc": [58.0, 4.0, 51.0], "lat": [3.3, 0.4, 4.9], "n": 78.0}, {"age": "15–<18 años", "amp": [11.6, 2.9, 7.3], "vc": [59.0, 3.0, 54.0], "lat": [3.3, 0.4, 4.0], "n": 240.0}]}, {"name": "Cubital (motor)", "rows": [{"age": "0–<1 mes", "amp": [3.8, 1.6, 0.8], "vc": [35.0, 7.0, 29.0], "lat": [2.2, 0.5, 3.2], "n": 7.0}, {"age": "1–<6 meses", "amp": [4.5, 1.9, 1.7], "vc": [43.0, 7.0, 29.0], "lat": [1.8, 0.3, 2.6], "n": 13.0}, {"age": "6–<12 meses", "amp": [5.4, 1.5, 2.1], "vc": [51.0, 7.0, 37.0], "lat": [1.7, 0.2, 2.4], "n": 29.0}, {"age": "1–<2 años", "amp": [5.8, 1.8, 3.5], "vc": [53.0, 7.0, 45.0], "lat": [1.7, 0.2, 2.1], "n": 41.0}, {"age": "2–<3 años", "amp": [6.2, 1.9, 3.0], "vc": [56.0, 6.0, 45.0], "lat": [1.7, 0.2, 2.2], "n": 36.0}, {"age": "3–<4 años", "amp": [7.8, 1.9, 3.8], "vc": [58.0, 6.0, 44.0], "lat": [1.9, 0.3, 2.8], "n": 33.0}, {"age": "4–<5 años", "amp": [7.2, 1.7, 2.8], "vc": [60.0, 6.0, 46.0], "lat": [1.9, 0.4, 3.6], "n": 27.0}, {"age": "5–<10 años", "amp": [9.2, 2.7, 5.7], "vc": [61.0, 6.0, 53.0], "lat": [2.1, 0.3, 2.7], "n": 143.0}, {"age": "10–<15 años", "amp": [10.7, 2.4, 7.0], "vc": [62.0, 5.0, 54.0], "lat": [2.5, 0.3, 3.1], "n": 261.0}, {"age": "15–<18 años", "amp": [11.9, 2.5, 8.0], "vc": [63.0, 5.0, 54.0], "lat": [2.6, 0.3, 3.1], "n": 511.0}]}, {"name": "Peroneo (motor)", "rows": [{"age": "0–<1 mes", "amp": [2.1, 1.1, 0.7], "vc": [31.0, 14.0, 21.0], "lat": [2.5, 0.5, 3.3], "n": 7.0}, {"age": "1–<6 meses", "amp": [2.8, 1.7, 1.0], "vc": [41.0, 4.0, 35.0], "lat": [2.0, 0.5, 2.9], "n": 9.0}, {"age": "6–<12 meses", "amp": [3.4, 1.2, 1.4], "vc": [44.0, 7.0, 32.0], "lat": [2.0, 0.4, 2.8], "n": 24.0}, {"age": "1–<2 años", "amp": [3.7, 1.3, 1.7], "vc": [48.0, 8.0, 41.0], "lat": [2.2, 0.4, 2.9], "n": 65.0}, {"age": "2–<3 años", "amp": [3.7, 1.5, 0.9], "vc": [49.0, 5.0, 41.0], "lat": [2.4, 0.4, 3.3], "n": 51.0}, {"age": "3–<4 años", "amp": [4.4, 1.6, 2.1], "vc": [50.0, 5.0, 43.0], "lat": [2.9, 0.7, 4.7], "n": 46.0}, {"age": "4–<5 años", "amp": [4.3, 1.8, 1.4], "vc": [50.0, 4.0, 41.0], "lat": [3.1, 0.4, 4.2], "n": 38.0}, {"age": "5–<10 años", "amp": [4.7, 1.6, 2.3], "vc": [52.0, 4.0, 46.0], "lat": [3.6, 0.6, 4.7], "n": 204.0}, {"age": "10–<15 años", "amp": [5.4, 2.0, 2.6], "vc": [51.0, 5.0, 45.0], "lat": [4.2, 0.7, 5.6], "n": 410.0}, {"age": "15–<18 años", "amp": [6.4, 2.1, 3.2], "vc": [50.0, 3.0, 44.0], "lat": [4.4, 0.7, 5.8], "n": 559.0}]}, {"name": "Tibial (motor)", "rows": [{"age": "0–<1 mes", "amp": [5.3, 1.6, 3.2], "vc": [24.0, 3.0, 19.0], "lat": [2.7, 0.2, 2.9], "n": 4.0}, {"age": "1–<6 meses", "amp": [9.5, 0.9, 8.3], "vc": [40.0, 5.0, 32.0], "lat": [2.3, 0.2, 2.4], "n": 4.0}, {"age": "6–<12 meses", "amp": [10.0, 2.8, 6.2], "vc": [41.0, 5.0, 32.0], "lat": [2.7, 0.9, 4.9], "n": 8.0}, {"age": "1–<2 años", "amp": [11.1, 3.0, 4.7], "vc": [46.0, 4.0, 40.0], "lat": [2.4, 0.4, 3.3], "n": 22.0}, {"age": "2–<3 años", "amp": [11.1, 3.1, 4.4], "vc": [51.0, 5.0, 42.0], "lat": [2.5, 0.4, 3.4], "n": 20.0}, {"age": "3–<5 años", "amp": [13.6, 5.2, 3.8], "vc": [50.0, 6.0, 42.0], "lat": [2.8, 0.4, 3.7], "n": 36.0}, {"age": "5–<10 años", "amp": [12.8, 3.8, 7.7], "vc": [52.0, 5.0, 45.0], "lat": [3.3, 0.6, 4.5], "n": 119.0}, {"age": "10–<15 años", "amp": [11.8, 3.6, 6.2], "vc": [50.0, 4.0, 45.0], "lat": [4.0, 0.7, 5.6], "n": 274.0}, {"age": "15–<18 años", "amp": [13.2, 3.9, 7.1], "vc": [50.0, 4.0, 45.0], "lat": [4.2, 0.6, 5.4], "n": 414.0}]}], "sensitivo": [{"name": "Mediano (antidrómico)", "rows": [{"age": "0–<1 mes", "amp": [24.0, 7.0, 15.0], "vc": [26.0, 4.0, 19.0], "lat": [2.5, 0.2, 3.0], "n": 8.0}, {"age": "1–<6 meses", "amp": [36.0, 12.0, 17.0], "vc": [38.0, 9.0, 21.0], "lat": [2.0, 0.3, 2.8], "n": 14.0}, {"age": "6–<12 meses", "amp": [53.0, 20.0, 30.0], "vc": [48.0, 8.0, 33.0], "lat": [2.1, 0.3, 2.8], "n": 27.0}, {"age": "1–<2 años", "amp": [54.0, 23.0, 23.0], "vc": [55.0, 6.0, 40.0], "lat": [2.1, 0.2, 2.5], "n": 48.0}, {"age": "2–<3 años", "amp": [62.0, 24.0, 17.0], "vc": [59.0, 6.0, 46.0], "lat": [2.0, 0.2, 2.6], "n": 33.0}, {"age": "3–<5 años", "amp": [54.0, 20.0, 26.0], "vc": [61.0, 5.0, 52.0], "lat": [2.2, 0.3, 2.8], "n": 60.0}, {"age": "5–<10 años", "amp": [55.0, 19.0, 28.0], "vc": [64.0, 5.0, 56.0], "lat": [2.5, 0.3, 3.2], "n": 150.0}, {"age": "10–<15 años", "amp": [50.0, 15.0, 28.0], "vc": [64.0, 4.0, 58.0], "lat": [2.9, 0.3, 3.4], "n": 249.0}, {"age": "15–<18 años", "amp": [56.0, 18.0, 30.0], "vc": [65.0, 4.0, 59.0], "lat": [2.9, 0.3, 3.3], "n": 454.0}]}, {"name": "Cubital (antidrómico)", "rows": [{"age": "2–<5 años", "amp": [41.0, 15.0, 11.0], "vc": [65.0, 7.0, 54.0], "lat": [1.8, 0.2, 2.3], "n": 11.0}, {"age": "5–<10 años", "amp": [41.0, 15.0, 18.0], "vc": [65.0, 5.0, 56.0], "lat": [2.2, 0.3, 3.1], "n": 25.0}, {"age": "10–<15 años", "amp": [41.0, 12.0, 24.0], "vc": [67.0, 5.0, 57.0], "lat": [2.6, 0.3, 3.1], "n": 80.0}, {"age": "15–<18 años", "amp": [44.0, 17.0, 20.0], "vc": [67.0, 5.0, 60.0], "lat": [2.6, 0.2, 3.0], "n": 214.0}]}, {"name": "Sural (antidrómico)", "rows": [{"age": "6–<12 meses", "amp": [18.0, 10.0, 8.0], "vc": [null, null, null], "lat": [2.4, 0.8, 3.8], "n": 4.0}, {"age": "1–<2 años", "amp": [20.0, 7.0, 11.0], "vc": [null, null, null], "lat": [1.9, 0.3, 2.5], "n": 12.0}, {"age": "2–<5 años", "amp": [21.0, 9.0, 11.0], "vc": [57.0, 5.0, 50.0], "lat": [2.2, 0.3, 2.8], "n": 24.0}, {"age": "5–<10 años", "amp": [21.0, 10.0, 5.0], "vc": [56.0, 7.0, 45.0], "lat": [2.9, 0.6, 4.3], "n": 46.0}, {"age": "10–<15 años", "amp": [18.0, 8.0, 9.0], "vc": [52.0, 6.0, 43.0], "lat": [3.6, 0.3, 4.2], "n": 95.0}, {"age": "15–<18 años", "amp": [21.0, 9.0, 10.0], "vc": [51.0, 5.0, 43.0], "lat": [3.6, 0.3, 4.2], "n": 165.0}]}, {"name": "Plantar medial (ortodrómico)", "rows": [{"age": "0–<1 mes", "amp": [10.0, 8.0, 3.0], "vc": [null, null, null], "lat": [3.6, 2.6, 8.0], "n": 4.0}, {"age": "1–<6 meses", "amp": [21.0, 11.0, 9.0], "vc": [null, null, null], "lat": [1.8, 0.6, 2.9], "n": 12.0}, {"age": "6–<12 meses", "amp": [34.0, 15.0, 12.0], "vc": [null, null, null], "lat": [1.7, 0.2, 2.3], "n": 29.0}, {"age": "1–<2 años", "amp": [32.0, 16.0, 9.0], "vc": [null, null, null], "lat": [1.8, 0.3, 2.4], "n": 63.0}, {"age": "2–<3 años", "amp": [36.0, 18.0, 15.0], "vc": [null, null, null], "lat": [1.9, 0.3, 2.3], "n": 46.0}, {"age": "3–<4 años", "amp": [42.0, 19.0, 11.0], "vc": [null, null, null], "lat": [2.1, 0.3, 2.5], "n": 43.0}, {"age": "4–<5 años", "amp": [38.0, 17.0, 9.0], "vc": [null, null, null], "lat": [2.2, 0.3, 3.1], "n": 33.0}, {"age": "5–<10 años", "amp": [34.0, 16.0, 12.0], "vc": [null, null, null], "lat": [2.5, 0.4, 3.2], "n": 193.0}, {"age": "10–<15 años", "amp": [27.0, 13.0, 11.0], "vc": [null, null, null], "lat": [2.9, 0.4, 3.7], "n": 345.0}, {"age": "15–<18 años", "amp": [28.0, 13.0, 11.0], "vc": [null, null, null], "lat": [3.0, 0.4, 3.7], "n": 408.0}]}], "caiF": [{"age": "24–72 h", "Mediano": [19.56, 2.44], "Cubital": [19.67, 2.74], "Tibial": [26.92, 3.27]}, {"age": "0–3 meses", "Mediano": [17.62, 1.49], "Cubital": [17.65, 2.68], "Tibial": [28.59, 2.41]}, {"age": "4–6 meses", "Mediano": [17.54, 1.96], "Cubital": [16.99, 1.24], "Tibial": [23.93, 1.85]}, {"age": "7–12 meses", "Mediano": [16.86, 1.5], "Cubital": [17.02, 1.45], "Tibial": [23.78, 1.83]}, {"age": "1–3 años", "Mediano": [16.41, 1.13], "Cubital": [16.63, 1.88], "Tibial": [25.44, 2.2]}, {"age": "4–6 años", "Mediano": [17.62, 1.62], "Cubital": [18.51, 1.74], "Tibial": [31.07, 3.1]}, {"age": "7–14 años", "Mediano": [20.18, 1.61], "Cubital": [20.66, 1.92], "Tibial": [36.32, 3.72]}, {"age": "18–30 años", "Mediano": [26.14, 3.03], "Cubital": [27.03, 2.14], "Tibial": [48.27, 3.09]}], "puksaF": {"Mediano": [3.78, 0.108], "Cubital": [2.525, 0.12], "Tibial": [-4.145, 0.275], "Peroneo": [-3.809, 0.273]}, "fed": {"superior": [-1, 6], "inferior": [-8, 5]}};
+const app = document.getElementById('app');
+const DEMO = {ageMo:null, height:null};
+
+function erf(x){var s=x<0?-1:1;x=Math.abs(x);var t=1/(1+0.3275911*x);var y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x);return s*y;}
+function phi(z){return 0.5*(1+erf(z/Math.SQRT2));}
+function pnum(s){if(s==null)return NaN;var m=String(s).replace(',','.').match(/-?\d+(\.\d+)?/);return m?parseFloat(m[0]):NaN;}
+function pctTxt(p){return p>=99.5?'>99':(p<=0.5?'<1':Math.round(p));}
+
+function parseAge(label){
+  var L=String(label).toLowerCase();
+  var unit = (/\bh\b|hora/.test(L)) ? 'h' : ((/a[ñn]o/.test(L)) ? 'y' : 'm');
+  var nums=(L.match(/\d+(?:\.\d+)?/g)||[]).map(Number);
+  var f = unit==='h' ? (function(n){return n/730;}) : (unit==='y' ? (function(n){return n*12;}) : (function(n){return n;}));
+  var a=f(nums[0]||0), b=nums.length>1?f(nums[1]):a;
+  return [a,b];
+}
+function matchBand(rows, ageMo){
+  if(ageMo==null) return -1;
+  var best=-1, bestMin=-1;
+  for(var i=0;i<rows.length;i++){var r=parseAge(rows[i].age); if(r[0]<=ageMo && r[0]>bestMin){bestMin=r[0];best=i;}}
+  return best<0?0:best;
+}
+function bandLabelFor(rows){ var i=matchBand(rows,DEMO.ageMo); return i>=0&&DEMO.ageMo!=null? rows[i].age : '—'; }
+
+// ---- compute ----
+function verdictRyan(row, param, val){
+  var d=row[param]; // [mean,sd,cut]
+  if(d[0]==null) return {cls:'muted', html:'— sin valor de referencia para este parámetro a esta edad —'};
+  var mean=d[0], sd=d[1], cut=d[2], side=(param==='lat')?'alto':'bajo';
+  var parts=[], abn=null;
+  if(sd){ var z=(val-mean)/sd, p=phi(z)*100; parts.push('z = '+(z>=0?'+':'')+z.toFixed(1)+' DE'); parts.push('p'+pctTxt(p)); }
+  if(cut!=null){ abn = side==='alto'? val>cut : val<cut; parts.push('límite '+(side==='alto'?'p97,5':'p2,5')+' = '+cut); }
+  var v = abn==null?'':(abn?' · ⚠ ANORMAL':' · ✓ normal');
+  return {cls: abn==null?'muted':(abn?'bad':'ok'), html: parts.join(' · ')+v};
+}
+
+function calcBlockRyan(group, ni){
+  var rows=DATA[group][ni].rows;
+  var hasVC = rows.some(function(r){return r.vc[0]!=null;});
+  var params=[['amp','Amplitud'],['vc','VC'],['lat','Latencia']];
+  var h='<div class="calc" data-group="'+group+'" data-ni="'+ni+'">';
+  params.forEach(function(p){
+    if(p[0]==='vc' && !hasVC) return;
+    h+='<div class="crow"><span class="clab">'+p[1]+'</span><input class="cinp" data-param="'+p[0]+'" type="text" inputmode="decimal" placeholder="valor"><span class="cres muted" data-for="'+p[0]+'">—</span></div>';
+  });
+  h+='<div class="cband" data-band>Banda: —</div></div>';
+  return h;
+}
+function ryanTable(group, ni){
+  var st=DATA[group][ni], rows=st.rows;
+  var unit = group==='motor'?'mV':'µV';
+  var h='<div class="tw"><table><thead><tr><th>Edad</th><th>Ampl ('+unit+')<br><span>(±DE)</span></th><th>p2,5</th><th>VC m/s<br><span>(±DE)</span></th><th>p2,5</th><th>Lat ms<br><span>(±DE)</span></th><th>p97,5</th><th>N</th></tr></thead><tbody>';
+  rows.forEach(function(r,i){
+    function md(d){return d[0]==null?'—':(d[0]+(d[1]!=null?' ('+d[1]+')':''));}
+    function c(x){return x==null?'—':x;}
+    h+='<tr data-row="'+i+'"><td>'+r.age+'</td><td>'+md(r.amp)+'</td><td>'+c(r.amp[2])+'</td><td>'+md(r.vc)+'</td><td>'+c(r.vc[2])+'</td><td>'+md(r.lat)+'</td><td>'+c(r.lat[2])+'</td><td>'+c(r.n)+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+  return h;
+}
+
+function render(){
+  var h='';
+  [['motor','Neuroconducciones motoras (Ryan 2019)'],['sensitivo','Neuroconducciones sensitivas (Ryan 2019)']].forEach(function(g){
+    h+='<h2>'+g[1]+'</h2>';
+    DATA[g[0]].forEach(function(st,ni){
+      h+='<details data-grp="'+g[0]+'" data-ni="'+ni+'"><summary>'+st.name+'</summary>'+calcBlockRyan(g[0],ni)+ryanTable(g[0],ni)+'</details>';
+    });
+  });
+  // Cai por edad
+  h+='<h2>Ondas F · latencia mínima por edad (Cai 1997)</h2><div class="card">';
+  h+='<p class="note" style="margin:0 0 8px">Latencia F mínima (ms). Media ± DE; el corte de anormalidad es media + 2 DE (límite superior).</p>';
+  h+='<div class="calc" data-cai="1"><div class="crow"><span class="clab">Nervio</span><select class="cnerve" id="cai-nerve"><option>Mediano</option><option>Cubital</option><option>Tibial</option></select><input class="cinp-cai" type="text" inputmode="decimal" placeholder="latencia F (ms)"></div><div class="cres muted" id="cai-res">—</div><div class="cband" id="cai-band">Banda: —</div></div>';
+  h+=caiTable()+'<p class="note">Modificado de Cai F, Zhang J. J Child Neurol 1997;12(1):13–18.</p></div>';
+  // Puksa por estatura
+  h+='<h2>Ondas F · límite superior por estatura (Puksa 2011)</h2><div class="card">';
+  h+='<div class="f">Límite superior de normalidad (LSN) = a + b·estatura (cm). Anormal si la latencia F supera el LSN. Requiere la talla.</div>';
+  h+='<div class="calc" data-puksa="1"><div class="crow"><span class="clab">Nervio</span><select class="cnerve" id="puksa-nerve"><option>Mediano</option><option>Cubital</option><option>Tibial</option><option>Peroneo</option></select><input class="cinp-puksa" type="text" inputmode="decimal" placeholder="latencia F (ms)"></div><div class="cres muted" id="puksa-res">—</div></div>';
+  h+='<p class="note">Ecuaciones: Mediano 3,78+0,108·E · Cubital 2,525+0,120·E · Tibial −4,145+0,275·E · Peroneo −3,809+0,273·E. Puksa L et al. Clin Neurophysiol 2011;122:199–204.</p></div>';
+  // FED
+  h+='<h2>FED · F-wave estimated deviance (Sharma 2020)</h2><div class="card">';
+  h+='<div class="f">FED = F observada − F estimada [(longitud×2/VC)+latencia distal]. Rango normal: miembro <b>superior −1 a +6 ms</b>; <b>inferior −8 a +5 ms</b> (p2,5–97,5).</div>';
+  h+='<div class="calc" data-fed="1"><div class="crow"><span class="clab">Miembro</span><select class="cnerve" id="fed-limb"><option value="superior">Superior</option><option value="inferior">Inferior</option></select><input class="cinp-fed" type="text" inputmode="decimal" placeholder="FED (ms)"></div><div class="cres muted" id="fed-res">—</div></div>';
+  h+='<p class="note">Sharma R et al. J Clin Neurophysiol 2020;37(1):68–73.</p></div>';
+  app.innerHTML=h;
+}
+function caiTable(){
+  var h='<div class="tw"><table><thead><tr><th>Edad</th><th>Mediano</th><th>Cubital</th><th>Tibial</th></tr></thead><tbody>';
+  DATA.caiF.forEach(function(r,i){
+    function f(d){return d?d[0]+' ± '+d[1]:'—';}
+    h+='<tr data-cai-row="'+i+'"><td>'+r.age+'</td><td>'+f(r.Mediano)+'</td><td>'+f(r.Cubital)+'</td><td>'+f(r.Tibial)+'</td></tr>';
+  });
+  h+='</tbody></table></div>'; return h;
+}
+
+// ---- recompute on demographics / inputs ----
+function readDemo(){
+  var v=pnum(document.getElementById('d-ageval').value);
+  var u=document.getElementById('d-ageunit').value;
+  DEMO.ageMo = isNaN(v)?null:(u==='y'?v*12:v);
+  var t=pnum(document.getElementById('d-talla').value); DEMO.height=isNaN(t)?null:t;
+  document.getElementById('d-band').textContent = DEMO.ageMo==null?'banda: —':('banda: '+bandLabelFor(DATA.motor[0].rows));
+}
+function recomputeAll(){
+  // Ryan blocks
+  document.querySelectorAll('.calc[data-group]').forEach(function(box){
+    var g=box.dataset.group, ni=+box.dataset.ni, rows=DATA[g][ni].rows;
+    var bi=matchBand(rows,DEMO.ageMo);
+    box.querySelector('[data-band]').textContent = DEMO.ageMo==null?'Banda: — (ingresa la edad)':('Banda: '+rows[bi].age);
+    box.querySelectorAll('.cinp').forEach(function(inp){
+      var res=box.querySelector('.cres[data-for="'+inp.dataset.param+'"]');
+      var val=pnum(inp.value);
+      if(isNaN(val)){res.className='cres muted';res.textContent='—';return;}
+      if(DEMO.ageMo==null){res.className='cres muted';res.textContent='ingresa la edad';return;}
+      var o=verdictRyan(rows[bi],inp.dataset.param,val); res.className='cres '+o.cls; res.innerHTML=o.html;
+    });
+    // resaltar fila
+    var det=box.closest('details');
+    det.querySelectorAll('tr[data-row]').forEach(function(tr){tr.classList.toggle('hit', DEMO.ageMo!=null && +tr.dataset.row===bi);});
+  });
+  computeCai(); computePuksa(); computeFed();
+}
+function computeCai(){
+  var res=document.getElementById('cai-res'); if(!res)return;
+  var nv=document.getElementById('cai-nerve').value, val=pnum(document.querySelector('.cinp-cai').value);
+  document.querySelectorAll('tr[data-cai-row]').forEach(function(tr){tr.classList.remove('hit');});
+  if(isNaN(val)){res.className='cres muted';res.textContent='—';return;}
+  if(DEMO.ageMo==null){res.className='cres muted';res.textContent='ingresa la edad';return;}
+  var bi=matchBand(DATA.caiF,DEMO.ageMo), row=DATA.caiF[bi], d=row[nv];
+  document.getElementById('cai-band').textContent='Banda: '+row.age;
+  var tr=document.querySelector('tr[data-cai-row="'+bi+'"]'); if(tr)tr.classList.add('hit');
+  if(!d){res.className='cres muted';res.textContent='— sin dato para este nervio a esta edad —';return;}
+  var mean=d[0],sd=d[1],cut=mean+2*sd,z=(val-mean)/sd,p=phi(z)*100;
+  var abn=val>cut;
+  res.className='cres '+(abn?'bad':'ok');
+  res.innerHTML='z = '+(z>=0?'+':'')+z.toFixed(1)+' DE · p'+pctTxt(p)+' · límite (media+2DE) = '+cut.toFixed(1)+(abn?' · ⚠ ANORMAL':' · ✓ normal');
+}
+function computePuksa(){
+  var res=document.getElementById('puksa-res'); if(!res)return;
+  var nv=document.getElementById('puksa-nerve').value, val=pnum(document.querySelector('.cinp-puksa').value);
+  if(isNaN(val)){res.className='cres muted';res.textContent='—';return;}
+  if(DEMO.height==null){res.className='cres muted';res.textContent='ingresa la talla (cm)';return;}
+  var e=DATA.puksaF[nv], lsn=e[0]+e[1]*DEMO.height, abn=val>lsn;
+  res.className='cres '+(abn?'bad':'ok');
+  res.innerHTML='LSN = '+lsn.toFixed(1)+' ms (talla '+DEMO.height+' cm)'+(abn?' · ⚠ ANORMAL':' · ✓ normal')+' <span style="color:var(--muted);font-weight:500">· sin percentil (no hay DE)</span>';
+}
+function computeFed(){
+  var res=document.getElementById('fed-res'); if(!res)return;
+  var limb=document.getElementById('fed-limb').value, val=pnum(document.querySelector('.cinp-fed').value);
+  if(isNaN(val)){res.className='cres muted';res.textContent='—';return;}
+  var r=DATA.fed[limb], abn=(val<r[0]||val>r[1]);
+  res.className='cres '+(abn?'bad':'ok');
+  res.innerHTML='rango normal '+r[0]+' a +'+r[1]+' ms'+(abn?' · ⚠ ANORMAL':' · ✓ normal')+' <span style="color:var(--muted);font-weight:500">· sin percentil (rango fijo)</span>';
+}
+
+render();
+['d-ageval','d-ageunit','d-talla'].forEach(function(id){var el=document.getElementById(id);el.addEventListener('input',function(){readDemo();recomputeAll();});el.addEventListener('change',function(){readDemo();recomputeAll();});});
+app.addEventListener('input',function(e){
+  if(e.target.classList.contains('cinp')||e.target.classList.contains('cinp-cai')||e.target.classList.contains('cinp-puksa')||e.target.classList.contains('cinp-fed')) recomputeAll();
+});
+app.addEventListener('change',function(e){ if(e.target.classList.contains('cnerve')) recomputeAll(); });
+readDemo();
+</script>
 </body></html>
