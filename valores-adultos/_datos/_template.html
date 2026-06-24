@@ -1,0 +1,249 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>EDx adulto · Valores de referencia (Buschbacher)</title>
+<style>
+:root{--bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;--accent:#3aa0ff;--warn:#ffb74d;--mot:#3aa0ff;--sen:#5ec5a0;--mix:#c79bff}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 60px}
+header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:16px 16px 13px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:18px}header p{margin:4px 0 0;font-size:11.5px;color:var(--muted)}
+.wrap{padding:14px;max-width:920px;margin:0 auto}
+#q{width:100%;padding:10px 12px;font-size:14px;background:var(--card);border:1px solid var(--line);border-radius:10px;color:var(--txt);margin:12px 0 4px}
+#q::placeholder{color:var(--muted)}
+.grp{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:22px 0 8px;font-weight:700}
+details.study{background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;padding:0 13px;border-left:3px solid var(--line)}
+details.g-motor{border-left-color:var(--mot)}details.g-sensitivo{border-left-color:var(--sen)}details.g-mixto{border-left-color:var(--mix)}
+summary{padding:13px 0;font-weight:700;font-size:13.5px;cursor:pointer;list-style:none}
+summary::-webkit-details-marker{display:none}summary::after{content:"＋";float:right;color:var(--muted)}
+details[open]>summary::after{content:"－"}
+.tech{font-size:11.5px;color:var(--muted);font-style:italic;border-bottom:1px solid var(--line);padding:0 0 10px;margin-bottom:6px}
+dl.mont{display:grid;grid-template-columns:auto 1fr;gap:3px 12px;margin:10px 0 8px;padding-bottom:8px;border-bottom:1px solid var(--line);font-size:11.5px}
+dl.mont dt{color:var(--accent);font-weight:600;white-space:nowrap}
+dl.mont dd{margin:0;color:var(--txt)}
+.ref{font-size:10.5px;color:var(--muted);margin:2px 0 10px}
+.meas{margin:12px 0}
+.meas h3{font-size:12.5px;color:var(--accent);margin:0 0 6px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:10px}
+table{width:100%;border-collapse:collapse;font-size:12px;min-width:320px}
+th,td{padding:6px 7px;text-align:center;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--muted);font-size:10px;text-transform:uppercase;font-weight:700;position:sticky;top:0}
+td:first-child,th:first-child{text-align:left;font-weight:600}
+tbody tr:hover{background:#1d2d49}
+.cut{display:inline-block;font-size:10px;color:var(--muted);margin-left:6px}
+.note{font-size:11px;color:var(--warn);margin-top:6px}
+footer{max-width:920px;margin:26px auto 0;padding:0 16px}
+details.crit{background:#1d2d49;border:1px solid var(--line);border-radius:12px;padding:0 13px}
+details.crit summary{color:var(--warn)}
+details.crit .body{padding:0 0 13px;font-size:11.5px;color:var(--muted)}
+details.crit .body li{margin-bottom:6px}
+.hidden{display:none}
+.empty{color:var(--muted);font-size:12px;padding:14px 0;font-style:italic}
+
+.demobar{background:#0c2f49;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:12px 0 4px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:flex-end}
+.demobar .title{flex-basis:100%;font-size:11px;color:var(--warn);font-weight:700;margin-bottom:1px}
+.demobar label{font-size:9.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);display:flex;flex-direction:column;gap:3px;font-weight:700}
+.demobar input,.demobar select{background:var(--card);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:6px 8px;font-size:13px;width:78px}
+.demobar select{width:104px}
+.demobar .imc{font-size:12.5px;color:var(--accent);font-weight:700;margin-left:auto;padding-bottom:6px}
+.calc{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:2px 0 9px;padding:8px 10px;background:#11203a;border:1px solid var(--line);border-radius:10px}
+.calc input.cval{width:128px;background:var(--card);border:1px solid var(--line);border-radius:8px;color:var(--txt);padding:6px 8px;font-size:13px}
+.calc input.cval::placeholder{color:var(--muted)}
+.calc select.csub{max-width:210px;background:var(--card);border:1px solid var(--line);border-radius:8px;color:var(--muted);padding:6px 8px;font-size:11px}
+.cres{font-size:12.5px;font-weight:700;flex-basis:100%;margin-top:1px}
+.cres.good{color:var(--sen)}.cres.bad{color:#ff6b6b}.cres.muted{color:var(--muted);font-weight:500}
+.cres .sub{color:var(--muted);font-weight:500;font-size:11px}
+</style></head><body>
+<header>
+<h1>Electrodiagnóstico del adulto</h1>
+<p>Valores de referencia de neuroconducción · Buschbacher 1999/2003 y Manual 2015 · percentiles por edad, sexo y talla</p>
+</header>
+<div class="wrap">
+<input id="q" type="search" placeholder="Buscar nervio o parámetro (p. ej. peroneo, latencia, sural)…" autocomplete="off">
+<div class="demobar">
+<span class="title">Datos del paciente · eligen el subgrupo y calculan percentil + desviaciones (z)</span>
+<label>Sexo<select id="d-sex"><option value="">—</option><option value="M">Hombre</option><option value="F">Mujer</option></select></label>
+<label>Edad (años)<input id="d-age" type="number" inputmode="numeric" step="1" placeholder="años"></label>
+<label>Talla (cm)<input id="d-talla" type="number" inputmode="numeric" step="1" placeholder="cm"></label>
+<label>Peso (kg)<input id="d-peso" type="number" inputmode="decimal" step="0.1" placeholder="kg"></label>
+<span class="imc" id="d-imc">IMC —</span>
+</div>
+<div id="app"></div>
+<footer>
+<details class="crit"><summary>⚠️ Nota metodológica y de uso</summary>
+<div class="body"><ul>
+<li><b>Fuente.</b> Buschbacher RM, <i>Update on Nerve Conduction Studies</i> (Am J Phys Med Rehabil 1999;78(6 Supl)) y el estudio sural/safeno (2003). Es una de las mayores bases normativas en adultos.</li>
+<li><b>Definición del rango normal.</b> Buschbacher recomienda usar los <b>percentiles observados</b> (p3/p5 como límite inferior de amplitud y velocidad; p95/p97 como límite superior de latencia y duración) en lugar de media±2&nbsp;DE, porque varias medidas no siguen una distribución normal.</li>
+<li><b>Técnica dependiente.</b> Los valores dependen de la técnica (distancias, sitios de estímulo/registro, temperatura ≥32&nbsp;°C). Contrástelos con los valores de referencia del propio laboratorio.</li>
+<li><b>Subgrupos.</b> Cuando una medida varía con la edad, el sexo o la talla, Buschbacher publica subgrupos separados; respételos.</li>
+<li><b>Limitaciones de transcripción.</b> Las tablas se transcribieron de los artículos originales (la mayoría en formato imagen). La tabla de <i>duración</i> del cubital sensitivo no se pudo recuperar del PDF. Verifique cualquier valor crítico contra la fuente antes de tomar decisiones clínicas.</li>
+</ul></div></details>
+<p style="font-size:10.5px;color:var(--muted);margin-top:14px;font-style:italic">Material de apoyo a la interpretación. No sustituye el juicio del especialista ni los valores de referencia propios del laboratorio.</p>
+<br><br>Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular 2027</i>, de Fernando Ortiz Corredor. Recurso educativo de distribución gratuita y sin fines comerciales. © 2027 Fernando Ortiz Corredor.</footer>
+</div>
+<script>
+const STUDIES = __DATA__;
+const GRP = {motor:"Estudios motores", sensitivo:"Estudios sensitivos", mixto:"Estudios de nervio mixto y diferencias", especial:"Nervios poco frecuentes (Manual de Buschbacher 2015)"};
+const app = document.getElementById("app");
+var CALCS=[];
+var DEMO={sex:null,age:null,height:null,bmi:null};
+function pnum(s){ if(s==null) return NaN; s=String(s).replace(/−/g,'-'); var m=s.match(/-?\d+(?:[.,]\d+)?/); return m?parseFloat(m[0].replace(',','.')):NaN; }
+function erf(x){ var s=x<0?-1:1; x=Math.abs(x); var t=1/(1+0.3275911*x); var y=1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-0.284496736)*t+0.254829592)*t*Math.exp(-x*x); return s*y; }
+function phi(z){ return 0.5*(1+erf(z/Math.SQRT2)); }
+function parseLabel(lbl){
+  var raw=String(lbl).toLowerCase(); var s=raw;
+  var sex=null;
+  if(/hombre|var(?:o|ó)n/.test(s)) sex='M'; else if(/mujer/.test(s)) sex='F';
+  var bmin=null,bmax=null,bm;
+  bm=s.match(/imc\s*[<﹤＜]\s*(\d{2})/); if(bm) bmax=+bm[1];
+  bm=s.match(/imc\s*[≥>]\s*(\d{2})/); if(bm) bmin=+bm[1];
+  s=s.replace(/imc\s*[<>≥﹤＜]\s*\d+/g,' ');
+  var hmin=null,hmax=null,hh;
+  hh=s.match(/(\d{3})\s*[-–—]\s*(\d{3})/); if(hh){hmin=+hh[1];hmax=+hh[2];s=s.replace(hh[0],' ');}
+  hh=s.match(/[<﹤＜]\s*(\d{3})/); if(hh){hmax=+hh[1];s=s.replace(hh[0],' ');}
+  hh=s.match(/[≥>]\s*(\d{3})/); if(hh){hmin=+hh[1];s=s.replace(hh[0],' ');}
+  s=s.replace(/\d{3}/g,' ');
+  var age=null, am=s.match(/(\d{2})\s*[-–—]\s*(\d{2})/); if(am) age=[+am[1],+am[2]];
+  var todos=/todos|todas/.test(raw);
+  return {sex:sex,age:age,hmin:hmin,hmax:hmax,bmin:bmin,bmax:bmax,todos:todos};
+}
+function scoreRow(c,d){
+  var sc=0;
+  if(c.sex){ if(!d.sex||c.sex!==d.sex) return -1; sc++; }
+  if(c.age){ if(d.age==null||d.age<c.age[0]||d.age>c.age[1]) return -1; sc++; }
+  if(c.hmin!=null){ if(d.height==null||d.height<c.hmin) return -1; sc++; }
+  if(c.hmax!=null){ if(d.height==null||d.height>=c.hmax) return -1; sc++; }
+  if(c.bmin!=null){ if(d.bmi==null||d.bmi<c.bmin) return -1; sc++; }
+  if(c.bmax!=null){ if(d.bmi==null||d.bmi>=c.bmax) return -1; sc++; }
+  return sc;
+}
+function nConstr(c){ return (c.sex?1:0)+(c.age?1:0)+(c.hmin!=null?1:0)+(c.hmax!=null?1:0)+(c.bmin!=null?1:0)+(c.bmax!=null?1:0); }
+function matchRow(rows,d){
+  var best=-1,bestSc=-2;
+  for(var i=0;i<rows.length;i++){ var s=scoreRow(rows[i].c,d); if(s>bestSc){bestSc=s;best=i;} }
+  if(bestSc<0){
+    // ningún subgrupo aplica (faltan datos): usar el más genérico (sexo pesa más que edad)
+    var fb=0,mn=1e9;
+    for(var k=0;k<rows.length;k++){
+      var c=rows[k].c;
+      var w=(c.sex?4:0)+((c.hmin!=null||c.hmax!=null)?2:0)+((c.bmin!=null||c.bmax!=null)?2:0)+(c.age?1:0)-(c.todos?0.5:0);
+      if(w<mn){mn=w;fb=k;}
+    }
+    return fb;
+  }
+  return best;
+}
+function sideFor(model,row){
+  if(model.side==='alto'||model.side==='bajo') return model.side;
+  var cn=(model.cutName||'').toLowerCase();
+  if(/superior/.test(cn)) return 'alto';
+  if(/inferior/.test(cn)) return 'bajo';
+  var t=((row.label||'')+' '+(model.measName||'')).toLowerCase();
+  if(/latencia|duraci|tiempo de ascenso|retardo|retraso|ca[ií]da|onda f|reflejo|parpadeo|transplexo/.test(t)) return 'alto';
+  if(/amplitud|velocidad|[áa]rea/.test(t)) return 'bajo';
+  return null;
+}
+function computeCalc(el){
+  var model=CALCS[+el.dataset.cid]; if(!model) return;
+  var res=el.querySelector('.cres');
+  var val=parseFloat(String(el.querySelector('.cval').value).replace(',','.'));
+  if(isNaN(val)){ res.className='cres muted'; res.textContent='— ingresa el valor medido —'; return; }
+  var sel=+el.querySelector('.csub').value;
+  var idx = sel>=0 ? sel : matchRow(model.rows,DEMO);
+  if(idx<0||idx>=model.rows.length) idx=0;
+  var row=model.rows[idx], parts=[], abnormal=null, z=NaN;
+  if(!isNaN(row.de)&&row.de>0){
+    z=(val-row.media)/row.de;
+    var p=phi(z)*100;
+    var pT = p>=99.5?'>99' : (p<=0.5?'<1' : Math.round(p));
+    parts.push('z = '+(z>=0?'+':'')+z.toFixed(1)+' DE');
+    parts.push('p'+pT);
+  }
+  var sd=sideFor(model,row);
+  if(!isNaN(row.cut)){
+    parts.push('corte '+model.cutName.replace(/\s*\(.*\)/,'')+' = '+row.cut);
+    if(sd) abnormal = sd==='alto' ? val>row.cut : val<row.cut;
+  } else if(!isNaN(z) && sd){
+    abnormal = sd==='alto' ? z>2 : z<-2;
+  }
+  var verdict = abnormal===null ? '' : (abnormal?' · ⚠ ANORMAL':' · ✓ normal');
+  res.className='cres '+(abnormal===null?'muted':(abnormal?'bad':'good'));
+  res.innerHTML = parts.join(' · ') + verdict + ' <span class="sub">['+row.label+']</span>';
+}
+function recomputeAll(){ var n=document.querySelectorAll('#app .calc'); for(var i=0;i<n.length;i++) computeCalc(n[i]); }
+function readDemo(){
+  var sx=document.getElementById('d-sex').value; DEMO.sex=sx||null;
+  var a=parseFloat(document.getElementById('d-age').value); DEMO.age=isNaN(a)?null:a;
+  var hc=parseFloat(document.getElementById('d-talla').value); DEMO.height=isNaN(hc)?null:hc;
+  var w=parseFloat(document.getElementById('d-peso').value);
+  var bmi=(!isNaN(w)&&!isNaN(hc)&&hc>0)? w/Math.pow(hc/100,2):null; DEMO.bmi=bmi;
+  document.getElementById('d-imc').textContent = bmi? ('IMC '+bmi.toFixed(1)) : 'IMC —';
+}
+['d-sex','d-age','d-talla','d-peso'].forEach(function(id){
+  document.getElementById(id).addEventListener('input', function(){ readDemo(); recomputeAll(); });
+  document.getElementById(id).addEventListener('change', function(){ readDemo(); recomputeAll(); });
+});
+app.addEventListener('input', function(e){ if(e.target.classList.contains('cval')) computeCalc(e.target.closest('.calc')); });
+app.addEventListener('change', function(e){ if(e.target.classList.contains('csub')) computeCalc(e.target.closest('.calc')); });
+readDemo();
+
+
+function table(m){
+  var mediaIdx=m.columns.indexOf('Media'), deIdx=m.columns.indexOf('DE'), cutIdx=-1, cutName='';
+  for(var ci=0;ci<m.columns.length;ci++){ if(cutIdx<0 && /Media\s*[-+−–—±]\s*2\s*DE/i.test(m.columns[ci])){cutIdx=ci;cutName=m.columns[ci];} }
+  if(cutIdx<0){ for(var cj=0;cj<m.columns.length;cj++){ if(/l[ií]mite/i.test(m.columns[cj])){cutIdx=cj;cutName=m.columns[cj];break;} } }
+  var calcHtml='';
+  if(mediaIdx>=0){
+    var rows=[];
+    m.rows.forEach(function(r){
+      var md=pnum(r[mediaIdx]); if(isNaN(md)) return;
+      rows.push({label:r[0], media:md, de:deIdx>=0?pnum(r[deIdx]):NaN, cut:cutIdx>=0?pnum(r[cutIdx]):NaN, c:parseLabel(r[0])});
+    });
+    if(rows.length){
+      var cid=CALCS.length; CALCS.push({side:m.abnormal_side, cutName:cutName, measName:m.name, rows:rows});
+      var opts='<option value="-1">Auto (según paciente)</option>';
+      rows.forEach(function(x,i){ opts+='<option value="'+i+'">'+x.label+'</option>'; });
+      calcHtml='<div class="calc" data-cid="'+cid+'"><input class="cval" type="number" inputmode="decimal" step="any" placeholder="valor del paciente"><select class="csub">'+opts+'</select><div class="cres muted">— ingresa el valor medido —</div></div>';
+    }
+  }
+  let h = '<div class="meas" data-txt="'+ (m.name).toLowerCase() +'"><h3>'+m.name+'</h3>'+calcHtml+'<div class="tw"><table><thead><tr>';
+  m.columns.forEach(c=> h += '<th>'+c+'</th>');
+  h += '</tr></thead><tbody>';
+  m.rows.forEach(r=>{ h+='<tr>'; r.forEach(c=> h+='<td>'+c+'</td>'); h+='</tr>'; });
+  h += '</tbody></table></div></div>';
+  return h;
+}
+function render(list){
+  CALCS=[];
+  let html=""; let lastG=null;
+  list.forEach(st=>{
+    if(st.group!==lastG){ html += '<div class="grp">'+(GRP[st.group]||st.group)+'</div>'; lastG=st.group; }
+    html += '<details class="study g-'+st.group+'" data-txt="'+(st.study_label+' '+st.measures.map(m=>m.name).join(' ')).toLowerCase()+'">';
+    html += '<summary>'+st.study_label+'</summary>';
+    if(st.montaje){ html += '<dl class="mont">'; for(const k in st.montaje){ html += '<dt>'+k+'</dt><dd>'+st.montaje[k]+'</dd>'; } html += '</dl>'; }
+    if(st.technique_notes) html += '<div class="tech">'+st.technique_notes+'</div>';
+    st.measures.forEach(m=> html += table(m));
+    html += '<div class="ref">'+st.reference+'</div>';
+    html += '</details>';
+  });
+  app.innerHTML = html || '<div class="empty">Sin resultados.</div>';
+}
+render(STUDIES);
+
+const q = document.getElementById("q");
+const norm = s => s.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+q.addEventListener("input", ()=>{
+  const t = norm(q.value.trim());
+  if(!t){ render(STUDIES); return; }
+  // filtra estudios cuyo label o alguna medida coincida; abre los que coinciden
+  const filtered = STUDIES.map(st=>{
+    const montTxt = st.montaje ? Object.values(st.montaje).join(" ") : "";
+    const inStudy = norm(st.study_label+" "+montTxt).includes(t);
+    const meas = st.measures.filter(m=> norm(m.name).includes(t));
+    if(inStudy) return st;
+    if(meas.length) return Object.assign({}, st, {measures:meas});
+    return null;
+  }).filter(Boolean);
+  render(filtered);
+  document.querySelectorAll("details.study").forEach(d=> d.open=true);
+});
+</script>
+</body></html>

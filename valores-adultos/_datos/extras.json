@@ -53,7 +53,7 @@
   "technique_notes":"Diferencia de latencia (ms) entre sural y safeno del mismo miembro, según cuál nervio tiene la latencia más alta. Límite superior de normalidad = p97.",
   "measures":[
     {"name":"Diferencia de latencia entre nervios","abnormal_side":"alto","columns":["Comparación","Media","DE","Límite de normalidad"],"rows":[
-      ["Sural − safeno · latencia de inicio (ms)","0.1","0.3","≤ 0.3"],
+      ["Sural − safeno · latencia de inicio (ms)","−0.1","0.3","≤ 0.3"],
       ["Sural − safeno · latencia de pico (ms)","0.0","0.3","≤ 0.5"],
       ["Safeno − sural · latencia de inicio (ms)","0.1","0.3","≤ 0.7"],
       ["Safeno − sural · latencia de pico (ms)","0.0","0.3","≤ 0.6"]
@@ -68,9 +68,9 @@
   "measures":[
     {"name":"Latencias, tiempo de ascenso y duración (todos los sujetos)","abnormal_side":"alto","columns":["Parámetro","Media","DE","Media+2DE","p95","p97","Más larga"],"rows":[
       ["Latencia de inicio (ms)","1.6","0.2","2.0","1.9","2.0","2.3"],
-      ["Latencia de pico (ms)","2.1","0.2","2.5","2.4","2.5","2.8"],
-      ["Tiempo de ascenso (ms)","0.5","0.1","0.7","0.7","0.7","0.9"],
-      ["Duración (ms)","1.1","0.2","1.5","1.4","1.5","1.8"]
+      ["Latencia de pico (ms)","2.1","0.2","2.5","2.4","2.4","2.8"],
+      ["Tiempo de ascenso (ms)","0.5","0.1","0.7","0.6","0.6","0.9"],
+      ["Duración (ms)","1.2","0.3","1.8","1.4","1.5","1.8"]
     ]},
     {"name":"Amplitud y área por sexo","abnormal_side":"bajo","columns":["Subgrupo","Amplitud Media (µV)","Amplitud DE","Área Media (µVs)","Área DE"],"rows":[
       ["Todos","66.9","32.4","49.0","26.3"],
@@ -87,8 +87,8 @@
   "technique_notes":"Nervio mixto del cubital: estímulo en palma, registro en muñeca a distancia fija de 8 cm. En el 6% de los sujetos no se identificó latencia de inicio adecuada.",
   "measures":[
     {"name":"Latencias (todos los sujetos)","abnormal_side":"alto","columns":["Parámetro","Media","DE","Media+2DE","p95","p97","Más larga"],"rows":[
-      ["Latencia de inicio (ms)","1.6","0.2","2.0","1.9","2.0","2.3"],
-      ["Latencia de pico (ms)","2.0","0.2","2.4","2.3","2.4","2.7"]
+      ["Latencia de inicio (ms)","1.6","0.2","2.0","1.8","1.9","2.3"],
+      ["Latencia de pico (ms)","2.1","0.2","2.5","2.4","2.4","2.7"]
     ]},
     {"name":"Amplitud y área","abnormal_side":"bajo","columns":["Subgrupo","Amplitud Media (µV)","Amplitud DE","Área Media (µVs)","Área DE"],"rows":[
       ["Todos","44.9","14.2","28.2","8.5"]
