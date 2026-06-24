@@ -177,7 +177,7 @@ readDemo();
 
 function table(m){
   var mediaIdx=m.columns.indexOf('Media'), deIdx=m.columns.indexOf('DE'), cutIdx=-1, cutName='';
-  for(var ci=0;ci<m.columns.length;ci++){ if(cutIdx<0 && /Media\s*[+\-±]\s*2\s*DE/i.test(m.columns[ci])){cutIdx=ci;cutName=m.columns[ci];} }
+  for(var ci=0;ci<m.columns.length;ci++){ if(cutIdx<0 && /Media\s*[-+−–—±]\s*2\s*DE/i.test(m.columns[ci])){cutIdx=ci;cutName=m.columns[ci];} }
   var calcHtml='';
   if(mediaIdx>=0){
     var rows=[];
