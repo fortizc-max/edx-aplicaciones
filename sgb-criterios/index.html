@@ -1,0 +1,189 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Apoyo diagnóstico del síndrome de Guillain-Barré · EAN/PNS 2023</title>
+<style>
+:root{
+  --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;--accent:#3aa0ff;
+  --ok:#37c97a;--warn:#f5b73d;--bad:#ef6a6a;--okbg:#10331f;--warnbg:#3a2e10;--badbg:#3a1717;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 60px}
+header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:18px 16px 15px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:18px}
+header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+.wrap{padding:16px;max-width:820px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px}
+.card h2{margin:0 0 4px;font-size:15px;color:var(--accent)}
+.card .hint{margin:0 0 10px;font-size:12px;color:var(--muted)}
+.step{display:inline-block;font-size:11px;font-weight:700;color:#fff;background:var(--accent);border-radius:20px;padding:1px 9px;margin-right:6px}
+label.opt{display:flex;align-items:flex-start;gap:9px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;margin:6px 0;cursor:pointer;font-size:13.5px}
+label.opt:hover{border-color:var(--accent)}
+label.opt input{margin-top:2px;flex:0 0 auto;width:17px;height:17px}
+.opt b{color:var(--txt)}
+.opt .sub{color:var(--muted);font-size:12px;display:block;margin-top:2px}
+.tag{display:inline-block;font-size:10px;font-weight:800;border-radius:5px;padding:1px 6px;margin-left:6px;vertical-align:middle;letter-spacing:.02em}
+.tag.spec{background:var(--okbg);color:var(--ok);border:1px solid var(--ok)}
+.tag.sens{background:#122a44;color:var(--accent);border:1px solid var(--accent)}
+.tag.against{background:var(--badbg);color:var(--bad);border:1px solid var(--bad)}
+.subh{font-size:11.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;margin:14px 0 4px}
+.dur{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.dur input[type=number]{background:#0e1828;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:6px 8px;font-size:14px;width:82px}
+.dur .flag{font-size:11.5px;font-weight:700}
+details{border:1px solid var(--line);border-radius:10px;padding:0 12px;margin:10px 0 2px;background:#111c30}
+details>summary{cursor:pointer;padding:10px 0;font-size:13px;color:var(--accent);font-weight:600;list-style:none}
+details>summary::-webkit-details-marker{display:none}
+details>summary::before{content:"\25B8 ";color:var(--muted)}
+details[open]>summary::before{content:"\25BE "}
+details .body{font-size:12.5px;color:var(--muted);padding:0 0 12px;line-height:1.55}
+details .body ul{margin:6px 0;padding-left:18px}
+.btn{display:block;width:100%;border:0;border-radius:11px;background:var(--accent);color:#06223c;font-weight:800;font-size:15px;padding:14px;cursor:pointer;margin-top:6px}
+.btn:active{transform:translateY(1px)}
+#result{display:none;margin-top:14px}
+.rcard{border-radius:12px;padding:15px;border:1px solid}
+.rcard.ok{background:var(--okbg);border-color:var(--ok)}
+.rcard.warn{background:var(--warnbg);border-color:var(--warn)}
+.rcard.bad{background:var(--badbg);border-color:var(--bad)}
+.rcard .verdict{font-size:17px;font-weight:800;margin:0 0 6px}
+.rcard.ok .verdict{color:var(--ok)} .rcard.warn .verdict{color:var(--warn)} .rcard.bad .verdict{color:var(--bad)}
+.rcard p{margin:8px 0 0;font-size:13px;color:var(--txt)}
+.rcard .why{font-size:12.5px;color:var(--muted);margin-top:10px;border-top:1px dashed var(--line);padding-top:9px}
+.rcard .why b{color:var(--txt)}
+.rcard ul{margin:6px 0 0;padding-left:18px;font-size:12.5px}
+.note{background:#122031;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:12.5px;color:var(--muted);margin-top:12px}
+.note b{color:var(--txt)}
+footer{max-width:820px;margin:22px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
+footer a{color:var(--accent)}
+</style></head><body>
+<header>
+<h1>Apoyo diagn&oacute;stico del s&iacute;ndrome de Guillain-Barr&eacute;</h1>
+<p>Rasgos electrodiagn&oacute;sticos seg&uacute;n la gu&iacute;a EAN/PNS 2023 &middot; complemento del libro <i>Electrodiagn&oacute;stico y Ultrasonido Neuromuscular</i></p>
+</header>
+<div class="wrap">
+
+<div class="note">
+<b>Enfoque de la gu&iacute;a EAN/PNS 2023.</b> La clasificaci&oacute;n en subtipos (AIDP / AMAN / AMSAN) <b>no</b> es &uacute;til para el diagn&oacute;stico temprano y <b>no cambia el manejo ni el tratamiento</b>. La electrofisiolog&iacute;a se usa aqu&iacute; para <b>apoyar el diagn&oacute;stico de SGB y distinguirlo de sus imitadores</b>. Marque los hallazgos presentes.
+</div>
+
+<!-- ESPECÍFICOS -->
+<div class="card">
+  <h2><span class="step">1</span>Rasgos de alta especificidad</h2>
+  <p class="hint">Baja-moderada sensibilidad pero alta especificidad: cuando est&aacute;n presentes, apoyan con fuerza el SGB frente a otras causas.</p>
+
+  <label class="opt"><input type="checkbox" class="spec" id="sural"><span><b>Patr&oacute;n de preservaci&oacute;n del sural <span class="tag spec">ESPEC&Iacute;FICO</span></b><span class="sub">SNAP mediano o cubital anormal <b>con SNAP sural normal</b>, tras <b>excluir s&iacute;ndrome del t&uacute;nel del carpo</b>. Refleja el compromiso proximal-desmielinizante t&iacute;pico del SGB.</span></span></label>
+
+  <label class="opt"><input type="checkbox" class="spec" id="awaves"><span><b>Descargas indirectas / ondas A <span class="tag spec">ESPEC&Iacute;FICO</span></b><span class="sub">A menudo m&uacute;ltiples, parecidas a ondas A y distintas de la onda F.</span></span></label>
+
+  <label class="opt"><input type="checkbox" class="spec" id="dur"><span><b>Duraci&oacute;n del CMAP distal prolongada &gt; 8,5 ms <span class="tag spec">ESPEC&Iacute;FICO</span></b><span class="sub">Del inicio de la primera deflexi&oacute;n negativa al retorno a la l&iacute;nea de base de la &uacute;ltima, con filtro <b>2 Hz&ndash;10 kHz</b>.</span></span></label>
+  <div class="dur">Calculadora r&aacute;pida: duraci&oacute;n medida
+    <input type="number" id="durval" step="0.1" min="0" placeholder="ms" inputmode="decimal"> ms
+    <span class="flag" id="durflag"></span>
+  </div>
+</div>
+
+<!-- SENSIBLES -->
+<div class="card">
+  <h2><span class="step">2</span>Rasgos de apoyo (sensibles)</h2>
+  <p class="hint">Alta sensibilidad pero baja especificidad: son compatibles con SGB, pero por s&iacute; solos no lo distinguen de los imitadores.</p>
+
+  <label class="opt"><input type="checkbox" class="sens" id="poly"><span><b>Anormalidades sensitivas y/o motoras de polineuropat&iacute;a <span class="tag sens">SENSIBLE</span></b><span class="sub">Enlentecimiento, latencias prolongadas, bloqueos o dispersi&oacute;n, ca&iacute;da de amplitudes.</span></span></label>
+
+  <label class="opt"><input type="checkbox" class="sens" id="habsent"><span><b>Reflejos H ausentes <span class="tag sens">SENSIBLE</span></b><span class="sub">Hallazgo precoz frecuente.</span></span></label>
+
+  <label class="opt"><input type="checkbox" class="sens" id="facial"><span><b>Nervio facial alterado <span class="tag sens">SENSIBLE</span></b><span class="sub">Latencia motora distal aumentada o CMAP facial reducido (respuesta directa).</span></span></label>
+
+  <label class="opt"><input type="checkbox" class="sens" id="blink"><span><b>Reflejo de parpadeo (blink) alterado <span class="tag sens">SENSIBLE</span></b><span class="sub">Ausente, o R1 y R2 ipsilaterales y R2 contralateral prolongados.</span></span></label>
+</div>
+
+<!-- EN CONTRA -->
+<div class="card">
+  <h2><span class="step">3</span>Rasgo en contra</h2>
+  <label class="opt"><input type="checkbox" class="against" id="hpresent"><span><b>Reflejos H presentes (normales) <span class="tag against">EN CONTRA</span></b><span class="sub">Su presencia hace el diagn&oacute;stico de SGB <b>menos</b> probable.</span></span></label>
+</div>
+
+<!-- MFS -->
+<div class="card">
+  <label class="opt"><input type="checkbox" id="mfs"><span><b>Sospecha de s&iacute;ndrome de Miller Fisher (MFS)</b><span class="sub">Ataxia, arreflexia y oftalmoplej&iacute;a. Cambia la interpretaci&oacute;n del apoyo electrodiagn&oacute;stico.</span></span></label>
+</div>
+
+<button class="btn" onclick="evaluar()">Interpretar hallazgos</button>
+
+<div id="result"></div>
+
+<details>
+  <summary>Detalle de los criterios y notas de la gu&iacute;a</summary>
+  <div class="body">
+    <b>Rasgos que apoyan el diagn&oacute;stico (EAN/PNS 2023, PICO&nbsp;4):</b>
+    <ul>
+      <li><b>Alta sensibilidad / baja especificidad:</b> anormalidades sensitivo-motoras de polineuropat&iacute;a; reflejos H ausentes; nervio facial con latencia distal aumentada o CMAP reducido; reflejo de parpadeo ausente o con R1/R2 prolongados.</li>
+      <li><b>Baja-moderada sensibilidad / alta especificidad:</b> preservaci&oacute;n del sural (SNAP mediano/cubital anormal con sural normal, excluido el t&uacute;nel del carpo); descargas indirectas / ondas A; duraci&oacute;n del CMAP distal &gt; 8,5 ms (filtro 2 Hz&ndash;10 kHz).</li>
+      <li>La <b>presencia</b> de reflejos H hace el SGB menos probable.</li>
+    </ul>
+    <b>Puntos clave de manejo:</b>
+    <ul>
+      <li>La subtipificaci&oacute;n AIDP / AMAN / AMSAN <b>no</b> es &uacute;til para el diagn&oacute;stico temprano ni influye en el tratamiento.</li>
+      <li>Un estudio <b>normal en la primera semana no excluye</b> SGB: las anormalidades pueden tardar semanas; conviene <b>repetir el estudio</b>.</li>
+      <li>El estudio seriado evita adem&aacute;s la mala clasificaci&oacute;n por <b>fallo de conducci&oacute;n reversible</b> (Uncini).</li>
+      <li><b>MFS:</b> el diagn&oacute;stico se apoya en la preservaci&oacute;n del sural y en cualquier anormalidad sensitivo-motora de polineuropat&iacute;a.</li>
+    </ul>
+  </div>
+</details>
+
+</div>
+<footer>
+Fuente: van Doorn PA, et&nbsp;al. European Academy of Neurology / Peripheral Nerve Society Guideline on diagnosis and treatment of Guillain-Barr&eacute; syndrome. <i>Eur J Neurol</i> 2023;30:3646&ndash;3674 (PICO&nbsp;4, electrodiagnosis). Herramienta de apoyo educativa; no sustituye el juicio cl&iacute;nico. Complemento del libro <i>Electrodiagn&oacute;stico y Ultrasonido Neuromuscular</i>.
+</footer>
+
+<script>
+var durval=document.getElementById('durval'), durchk=document.getElementById('dur'), durflag=document.getElementById('durflag');
+durval.addEventListener('input',function(){
+  var v=parseFloat(durval.value);
+  if(isNaN(v)){durflag.textContent='';durflag.style.color='';return;}
+  if(v>8.5){durchk.checked=true;durflag.textContent='> 8,5 ms → rasgo específico presente';durflag.style.color='var(--ok)';}
+  else{durchk.checked=false;durflag.textContent='≤ 8,5 ms → no cumple';durflag.style.color='var(--muted)';}
+});
+// reflejos H: ausente y presente son mutuamente excluyentes
+var hAbs=document.getElementById('habsent'), hPre=document.getElementById('hpresent');
+hAbs.addEventListener('change',function(){if(hAbs.checked)hPre.checked=false;});
+hPre.addEventListener('change',function(){if(hPre.checked)hAbs.checked=false;});
+
+function evaluar(){
+  var spec=[...document.querySelectorAll('.spec:checked')].length;
+  var sens=[...document.querySelectorAll('.sens:checked')].length;
+  var against=hPre.checked;
+  var mfs=document.getElementById('mfs').checked;
+  var r=document.getElementById('result');
+  var cls,verdict,msg;
+
+  if(spec>=1){
+    cls='ok';
+    verdict='Patrón que APOYA el síndrome de Guillain-Barré';
+    msg='Hay '+spec+' rasgo(s) de alta especificidad presente(s), lo que respalda el SGB frente a sus imitadores en el contexto clínico adecuado.';
+  } else if(sens>=1){
+    cls='warn';
+    verdict='Hallazgos de apoyo, no discriminantes';
+    msg='Solo hay rasgos sensibles pero poco específicos ('+sens+'). Son compatibles con SGB, pero no lo distinguen de los imitadores. Busque rasgos específicos (sural sparing, ondas A, duración del CMAP distal).';
+  } else {
+    cls='warn';
+    verdict='Sin hallazgos de apoyo en este estudio';
+    msg='La ausencia de anormalidades no excluye el SGB, sobre todo en la primera semana.';
+  }
+  if(against && spec===0){
+    cls='bad';
+    verdict='Rasgo en contra del SGB';
+    msg='La presencia de reflejos H normales, sin rasgos específicos, hace el diagnóstico de SGB menos probable. Reconsidere el cuadro y sus imitadores.';
+  }
+
+  var extra='<div class="why"><b>Recuerde siempre:</b><ul>'+
+    '<li>Un estudio normal en la 1.ª semana <b>no excluye</b> el SGB — <b>repetir</b> en 1&ndash;2 semanas.</li>'+
+    '<li>La subtipificación AIDP/AMAN/AMSAN <b>no</b> cambia el tratamiento; el estudio seriado evita la mala clasificación por fallo de conducción reversible.</li>';
+  if(mfs) extra+='<li><b>MFS:</b> el diagnóstico se apoya sobre todo en el patrón de preservación del sural y en las anormalidades sensitivo-motoras.</li>';
+  extra+='</ul></div>';
+
+  r.innerHTML='<div class="rcard '+cls+'"><div class="verdict">'+verdict+'</div><p>'+msg+'</p>'+
+    '<div class="counts" style="font-size:12px;color:var(--muted);margin-top:10px">Rasgos específicos: <b style="color:var(--txt)">'+spec+'</b> &middot; rasgos sensibles: <b style="color:var(--txt)">'+sens+'</b></div>'+
+    extra+'</div>';
+  r.style.display='block';
+  r.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+</script>
+</body></html>
