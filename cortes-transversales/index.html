@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Cortes transversales · Tercio medio del muslo</title>
+<title>Cortes transversales · anatomía interactiva</title>
 <style>
 :root{--bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;--accent:#3aa0ff;
       --dot:#1f6feb;--ok:#1f9d55;--bad:#d64545;--gold:#f2b705}
@@ -11,60 +11,58 @@ header h1{margin:0;font-size:17px}
 header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
 .wrap{padding:14px;max-width:760px;margin:0 auto}
 .back{display:inline-block;color:var(--accent);text-decoration:none;font-size:13px;margin-bottom:12px}
+.sel{display:flex;gap:8px;align-items:center;margin-bottom:12px}
+.sel label{font-size:13px;color:var(--muted)}
+.sel select{flex:1;padding:9px;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:9px;font-size:14px}
 .tabs{display:flex;gap:8px;margin-bottom:12px}
-.tabs button{flex:1;padding:10px;border:1px solid var(--line);background:var(--card);color:var(--txt);
-  border-radius:10px;font-size:14px;cursor:pointer}
+.tabs button{flex:1;padding:10px;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:10px;font-size:14px;cursor:pointer}
 .tabs button.on{background:var(--accent);border-color:var(--accent);color:#04121f;font-weight:600}
 .figbox{position:relative;background:#fff;border-radius:12px;border:1px solid var(--line);overflow:hidden}
 .figbox img{display:block;width:100%;height:auto}
 .marker{position:absolute;width:30px;height:30px;margin:-15px 0 0 -15px;border-radius:50%;
   background:var(--dot);color:#fff;border:2px solid #fff;box-shadow:0 0 0 1px #0006;
-  font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;
-  transition:transform .12s, background .12s}
+  font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .12s, background .12s}
 .marker:hover{transform:scale(1.12)}
 .marker.active{background:var(--gold);color:#04121f;transform:scale(1.3);box-shadow:0 0 0 3px #f2b70566,0 0 10px #f2b705aa;z-index:5}
-.marker.ok{background:var(--ok)}
-.marker.bad{background:var(--bad)}
+.marker.ok{background:var(--ok)}.marker.bad{background:var(--bad)}
 .mode-quiz .marker .num{display:none}
 .mode-quiz .marker{width:24px;height:24px;margin:-12px 0 0 -12px}
 .hint{font-size:12px;color:var(--muted);margin:8px 2px 0}
-/* leyenda */
 #legend{margin-top:14px}
 .leg{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;cursor:pointer;border:1px solid transparent}
 .leg:hover{background:var(--card)}
 .leg.active{background:#213a5e;border-color:var(--accent)}
-.leg .b{flex:none;width:26px;height:26px;border-radius:50%;background:var(--dot);color:#fff;font-weight:700;
-  font-size:13px;display:flex;align-items:center;justify-content:center}
+.leg .b{flex:none;width:26px;height:26px;border-radius:50%;background:var(--dot);color:#fff;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
 .leg.active .b{background:var(--gold);color:#04121f}
-.leg .t{font-size:14px}
-.leg .t i{font-style:italic}
+.leg .t{font-size:14px}.leg .t i{font-style:italic}
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:2px 16px}
 @media(max-width:560px){.cols{grid-template-columns:1fr}}
-/* quiz */
 #quiz{display:none}
 .q-prompt{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;margin-bottom:10px;font-size:15px}
-.q-prompt b{color:var(--accent)}
-.q-prompt i{font-style:italic}
-.q-bar{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin:10px 2px 0}
-.q-feback{min-height:22px;font-size:14px;margin-top:8px;font-weight:600}
-.q-feback.ok{color:#7fe3a6}.q-feback.bad{color:#f3a1a1}
+.q-prompt b{color:var(--accent)}.q-prompt i{font-style:italic}
 .q-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 @media(max-width:560px){.q-opts{grid-template-columns:1fr}}
 .opt{padding:11px;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:9px;cursor:pointer;font-size:14px;text-align:left}
 .opt i{font-style:italic}
-.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}
-.opt.bad{background:var(--bad);border-color:var(--bad);color:#fff}
-.q-done{text-align:center;padding:18px}
-.q-done .sc{font-size:34px;font-weight:800;color:var(--accent)}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}.opt.bad{background:var(--bad);border-color:var(--bad);color:#fff}
+.q-bar{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin:10px 2px 0}
+.q-feback{min-height:22px;font-size:14px;margin-top:8px;font-weight:600}
+.q-feback.ok{color:#7fe3a6}.q-feback.bad{color:#f3a1a1}
+.q-done{text-align:center;padding:18px}.q-done .sc{font-size:34px;font-weight:800;color:var(--accent)}
 .btn{padding:10px 16px;border:1px solid var(--accent);background:var(--accent);color:#04121f;border-radius:10px;font-weight:600;cursor:pointer;font-size:14px}
 footer{max-width:760px;margin:22px auto 0;padding:0 14px;font-size:11px;color:var(--muted);font-style:italic}
 </style></head><body>
 <header>
-<h1>Corte transversal · tercio medio del muslo</h1>
-<p>Anatomía interactiva para electromiografía · adaptado de Gray (1918), dominio público</p>
+<h1>Cortes transversales · anatomía interactiva</h1>
+<p>Anatomía seccional para electromiografía · adaptado de Gray (1918), dominio público</p>
 </header>
 <div class="wrap">
 <a class="back" href="../">← Todas las aplicaciones</a>
+
+<div class="sel">
+  <label for="secSel">Corte:</label>
+  <select id="secSel" onchange="loadSection(this.value)"></select>
+</div>
 
 <div class="tabs">
   <button id="tabExpl" class="on" onclick="setMode('expl')">Explorar</button>
@@ -72,17 +70,15 @@ footer{max-width:760px;margin:22px auto 0;padding:0 14px;font-size:11px;color:va
 </div>
 
 <div class="figbox" id="figbox">
-  <img src="muslo.png" alt="Corte transversal del tercio medio del muslo">
+  <img id="figimg" src="" alt="Corte transversal">
   <div id="markers"></div>
 </div>
 
-<!-- EXPLORAR -->
 <div id="explore">
   <p class="hint">Toca un número en la figura o un nombre de la lista; se resaltan a la vez.</p>
   <div id="legend" class="cols"></div>
 </div>
 
-<!-- EVALUACIÓN -->
 <div id="quiz">
   <div class="q-prompt" id="qPrompt"></div>
   <div class="q-opts" id="qOpts"></div>
@@ -93,88 +89,113 @@ footer{max-width:760px;margin:22px auto 0;padding:0 14px;font-size:11px;color:va
 </div>
 <footer>
 Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular 2027</i>, de Fernando Ortiz Corredor.
-Recurso educativo de distribución gratuita y sin fines comerciales. Corte adaptado de <i>Gray's Anatomy</i> (1918), dominio público.
-Los nombres de los músculos siguen la <i>Terminologia Anatomica</i>.
+Recurso educativo de distribución gratuita y sin fines comerciales. Cortes adaptados de <i>Gray's Anatomy</i> (1918), dominio público.
+Nombres musculares según la <i>Terminologia Anatomica</i>.
 </footer>
 
 <script>
-// datos: n, la=nombre latino (músculo, cursiva) | es=nombre español (no músculo), sfx=sufijo español, x/y en %
-const D=[
- {n:1,la:"Rectus femoris",x:40.7,y:12.9},
- {n:2,la:"Vastus intermedius",x:34.5,y:22.6},
- {n:3,la:"Vastus lateralis",x:23.8,y:50.2},
- {n:4,la:"Vastus medialis",x:48.3,y:37.8},
- {n:5,la:"Sartorius",x:61.5,y:24.4},
- {n:6,la:"Adductor longus",x:61.5,y:43.3},
- {n:7,la:"Adductor magnus",x:55.9,y:63.5},
- {n:8,la:"Gracilis",x:74.2,y:56.2},
- {n:9,la:"Semitendinosus",x:53.2,y:78.3},
- {n:10,la:"Semimembranosus",x:65.9,y:72.3},
- {n:11,la:"Biceps femoris",sfx:" (cabeza larga)",x:41.8,y:78.3},
- {n:12,la:"Biceps femoris",sfx:" (cabeza corta)",x:40.3,y:51.2},
- {n:13,es:"Nervio ciático",x:46.3,y:59.4},
- {n:14,es:"Arteria y vena femoral",x:58.7,y:32.2},
- {n:15,es:"Arteria y vena femoral profunda",x:44.9,y:43.3},
+// ====== datos: la = nombre latino (músculo, cursiva) | es = nombre español | sfx = sufijo español | x,y en % ======
+const SECTIONS=[
+ {id:"muslo", title:"Tercio medio del muslo", img:"muslo.png", items:[
+  {n:1,la:"Rectus femoris",x:40.7,y:12.9},
+  {n:2,la:"Vastus intermedius",x:34.5,y:22.6},
+  {n:3,la:"Vastus lateralis",x:23.8,y:50.2},
+  {n:4,la:"Vastus medialis",x:48.3,y:37.8},
+  {n:5,la:"Sartorius",x:61.5,y:24.4},
+  {n:6,la:"Adductor longus",x:61.5,y:43.3},
+  {n:7,la:"Adductor magnus",x:55.9,y:63.5},
+  {n:8,la:"Gracilis",x:74.2,y:56.2},
+  {n:9,la:"Semitendinosus",x:53.2,y:78.3},
+  {n:10,la:"Semimembranosus",x:65.9,y:72.3},
+  {n:11,la:"Biceps femoris",sfx:" (cabeza larga)",x:41.8,y:78.3},
+  {n:12,la:"Biceps femoris",sfx:" (cabeza corta)",x:40.3,y:51.2},
+  {n:13,es:"Nervio ciático",x:46.3,y:59.4},
+  {n:14,es:"Arteria y vena femoral",x:58.7,y:32.2},
+  {n:15,es:"Arteria y vena femoral profunda",x:44.9,y:43.3},
+ ]},
+ {id:"pierna", title:"Tercio medio de la pierna", img:"pierna.png", items:[
+  {n:1,la:"Tibialis anterior",x:38.2,y:19.9},
+  {n:2,la:"Extensor digitorum longus y extensor hallucis longus",x:32.0,y:33.5},
+  {n:3,la:"Peroneus longus y brevis",x:31.6,y:44.8},
+  {n:4,la:"Tibialis posterior",x:46.1,y:40.6},
+  {n:5,la:"Flexor digitorum longus",x:62.4,y:32.9},
+  {n:6,la:"Soleus",x:58.4,y:56.0},
+  {n:7,la:"Gastrocnemius",sfx:" (cabeza medial)",x:74.3,y:72.6},
+  {n:8,la:"Gastrocnemius",sfx:" (cabeza lateral)",x:43.0,y:76.8},
+  {n:9,es:"Tibia",x:55.3,y:18.7},
+  {n:10,es:"Fíbula",x:42.1,y:50.1},
+  {n:11,es:"Membrana interósea",x:45.2,y:35.3},
+  {n:12,es:"Nervio tibial",x:55.5,y:48.7},
+  {n:13,es:"Nervio peroneo profundo",x:40.6,y:36.5},
+  {n:14,es:"Nervio peroneo superficial",x:39.1,y:46.5},
+  {n:15,es:"Nervio sural",x:62.4,y:79.1},
+  {n:16,es:"Nervio cutáneo sural lateral",x:53.6,y:79.7},
+  {n:17,es:"Nervio safeno y vena safena mayor",x:72.1,y:28.2},
+  {n:18,es:"Arteria y vena tibial anterior",x:40.8,y:38.8},
+  {n:19,es:"Arteria y vena peronea",x:40.4,y:57.8},
+  {n:20,es:"Vena safena menor",x:57.5,y:82.7},
+ ]},
 ];
 const label=d=> d.la ? "<i>"+d.la+"</i>"+(d.sfx||"") : d.es;
-const plain=d=> d.la ? d.la+(d.sfx||"") : d.es;
-const figbox=document.getElementById('figbox');
 const markers=document.getElementById('markers');
 const legend=document.getElementById('legend');
-let mode='expl';
+const figimg=document.getElementById('figimg');
+const figbox=document.getElementById('figbox');
+let cur=null, D=[], mode='expl';
 
-// crear marcadores
-D.forEach(d=>{
-  const m=document.createElement('div'); m.className='marker'; m.dataset.n=d.n;
-  m.style.left=d.x+'%'; m.style.top=d.y+'%';
-  m.innerHTML='<span class="num">'+d.n+'</span>';
-  m.onclick=()=> mode==='expl' ? select(d.n) : answer(d.n);
-  markers.appendChild(m);
-});
-// crear leyenda
-D.forEach(d=>{
-  const el=document.createElement('div'); el.className='leg'; el.dataset.n=d.n;
-  el.innerHTML='<div class="b">'+d.n+'</div><div class="t">'+label(d)+'</div>';
-  el.onclick=()=>select(d.n);
-  legend.appendChild(el);
-});
+// selector de cortes
+const sel=document.getElementById('secSel');
+SECTIONS.forEach(s=>{const o=document.createElement('option');o.value=s.id;o.textContent=s.title;sel.appendChild(o);});
+
+function loadSection(id){
+  cur=SECTIONS.find(s=>s.id===id)||SECTIONS[0];
+  D=cur.items; figimg.src=cur.img; sel.value=cur.id;
+  markers.innerHTML=''; legend.innerHTML='';
+  D.forEach(d=>{
+    const m=document.createElement('div'); m.className='marker'; m.dataset.n=d.n;
+    m.style.left=d.x+'%'; m.style.top=d.y+'%'; m.innerHTML='<span class="num">'+d.n+'</span>';
+    m.onclick=()=> mode==='expl' ? select(d.n) : answer(d.n);
+    markers.appendChild(m);
+    const el=document.createElement('div'); el.className='leg'; el.dataset.n=d.n;
+    el.innerHTML='<div class="b">'+d.n+'</div><div class="t">'+label(d)+'</div>';
+    el.onclick=()=>select(d.n); legend.appendChild(el);
+  });
+  setMode('expl');
+}
 const mk=n=>markers.querySelector('.marker[data-n="'+n+'"]');
 const lg=n=>legend.querySelector('.leg[data-n="'+n+'"]');
-
 function select(n){
   markers.querySelectorAll('.marker').forEach(m=>m.classList.remove('active'));
   legend.querySelectorAll('.leg').forEach(l=>l.classList.remove('active'));
   mk(n).classList.add('active'); const l=lg(n); l.classList.add('active');
   l.scrollIntoView({block:'nearest',behavior:'smooth'});
 }
-
 function setMode(m){
   mode=m;
   document.getElementById('tabExpl').classList.toggle('on',m==='expl');
   document.getElementById('tabQuiz').classList.toggle('on',m==='quiz');
-  document.getElementById('explore').style.display = m==='expl'?'':'none';
-  document.getElementById('quiz').style.display = m==='quiz'?'block':'none';
-  figbox.classList.toggle('mode-quiz', m==='quiz');
+  document.getElementById('explore').style.display=m==='expl'?'':'none';
+  document.getElementById('quiz').style.display=m==='quiz'?'block':'none';
+  figbox.classList.toggle('mode-quiz',m==='quiz');
   markers.querySelectorAll('.marker').forEach(x=>x.classList.remove('active','ok','bad'));
   legend.querySelectorAll('.leg').forEach(l=>l.classList.remove('active'));
   if(m==='quiz') startQuiz();
 }
-
-// ---- evaluación (mixta: localizar la estructura / nombrar la señalada) ----
+// ====== evaluación (mixta: localizar / nombrar) ======
 let order=[], idx=0, score=0, locked=false, curDir=0;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=(i+1)*Math.random()|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 function startQuiz(){ order=shuffle(D.map(d=>d.n)); idx=0; score=0; locked=false; showQ(); }
 function clearMarks(){ markers.querySelectorAll('.marker').forEach(x=>x.classList.remove('ok','bad','active')); }
-function nextQ(){ setTimeout(()=>{ idx++; idx<order.length ? showQ() : finish(); }, 1200); }
+function nextQ(){ setTimeout(()=>{ idx++; idx<order.length?showQ():finish(); },1200); }
 function showQ(){
   clearMarks(); locked=false;
   const opts=document.getElementById('qOpts'); opts.innerHTML='';
-  document.getElementById('qFe').textContent=''; document.getElementById('qFe').className='q-feback';
+  const fe=document.getElementById('qFe'); fe.textContent=''; fe.className='q-feback';
   const d=D.find(x=>x.n===order[idx]);
-  curDir = Math.random()<0.5 ? 0 : 1;
-  if(curDir===0){  // localizar: tocar el marcador correcto
+  curDir=Math.random()<0.5?0:1;
+  if(curDir===0){
     document.getElementById('qPrompt').innerHTML='Toca en la figura: <b>'+label(d)+'</b>';
-  } else {         // nombrar: se señala un marcador y se elige el nombre
+  } else {
     mk(d.n).classList.add('active');
     document.getElementById('qPrompt').innerHTML='¿Qué estructura está señalada (en dorado)?';
     const others=shuffle(D.filter(x=>x.n!==d.n)).slice(0,3);
@@ -186,31 +207,31 @@ function showQ(){
   document.getElementById('qProg').textContent='Pregunta '+(idx+1)+' de '+order.length;
   document.getElementById('qScore').textContent='Aciertos: '+score;
 }
-function answer(n){  // clic en marcador (solo modo localizar)
+function answer(n){
   if(locked||curDir!==0) return; locked=true;
   const correct=order[idx]; const fe=document.getElementById('qFe');
   if(n===correct){ mk(n).classList.add('ok'); score++; fe.textContent='¡Correcto!'; fe.className='q-feback ok'; }
-  else{ mk(n).classList.add('bad'); mk(correct).classList.add('ok');
-        fe.innerHTML='Era: '+label(D.find(x=>x.n===correct)); fe.className='q-feback bad'; }
+  else{ mk(n).classList.add('bad'); mk(correct).classList.add('ok'); fe.innerHTML='Era: '+label(D.find(x=>x.n===correct)); fe.className='q-feback bad'; }
   document.getElementById('qScore').textContent='Aciertos: '+score; nextQ();
 }
-function pickName(n,btn){  // clic en opción (modo nombrar)
+function pickName(n,btn){
   if(locked) return; locked=true;
   const correct=order[idx]; const fe=document.getElementById('qFe');
   document.querySelectorAll('#qOpts .opt').forEach(b=>b.style.pointerEvents='none');
   if(n===correct){ btn.classList.add('ok'); score++; fe.textContent='¡Correcto!'; fe.className='q-feback ok'; }
-  else{ btn.classList.add('bad');
-    const corrLbl=label(D.find(x=>x.n===correct));
-    document.querySelectorAll('#qOpts .opt').forEach(b=>{ if(b.innerHTML===corrLbl) b.classList.add('ok'); });
-    fe.innerHTML='Era: '+corrLbl; fe.className='q-feback bad'; }
+  else{ btn.classList.add('bad'); const cl=label(D.find(x=>x.n===correct));
+    document.querySelectorAll('#qOpts .opt').forEach(b=>{ if(b.innerHTML===cl) b.classList.add('ok'); });
+    fe.innerHTML='Era: '+cl; fe.className='q-feback bad'; }
   document.getElementById('qScore').textContent='Aciertos: '+score; nextQ();
 }
 function finish(){
+  document.getElementById('qOpts').innerHTML='';
   document.getElementById('qPrompt').innerHTML=
     '<div class="q-done"><div class="sc">'+score+' / '+order.length+'</div>'+
     '<p>'+(score===order.length?'¡Perfecto!':score>=order.length*0.7?'Muy bien.':'Sigue practicando.')+'</p>'+
     '<button class="btn" onclick="startQuiz()">Reiniciar</button></div>';
   document.getElementById('qFe').textContent=''; document.getElementById('qProg').textContent=''; document.getElementById('qScore').textContent='';
 }
+loadSection('muslo');
 </script>
 </body></html>
