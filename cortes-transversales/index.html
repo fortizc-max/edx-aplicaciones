@@ -48,6 +48,12 @@ header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
 .q-bar{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin:10px 2px 0}
 .q-feback{min-height:22px;font-size:14px;margin-top:8px;font-weight:600}
 .q-feback.ok{color:#7fe3a6}.q-feback.bad{color:#f3a1a1}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+@media(max-width:560px){.q-opts{grid-template-columns:1fr}}
+.opt{padding:11px;border:1px solid var(--line);background:var(--card);color:var(--txt);border-radius:9px;cursor:pointer;font-size:14px;text-align:left}
+.opt i{font-style:italic}
+.opt.ok{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.bad{background:var(--bad);border-color:var(--bad);color:#fff}
 .q-done{text-align:center;padding:18px}
 .q-done .sc{font-size:34px;font-weight:800;color:var(--accent)}
 .btn{padding:10px 16px;border:1px solid var(--accent);background:var(--accent);color:#04121f;border-radius:10px;font-weight:600;cursor:pointer;font-size:14px}
@@ -79,6 +85,7 @@ footer{max-width:760px;margin:22px auto 0;padding:0 14px;font-size:11px;color:va
 <!-- EVALUACIÓN -->
 <div id="quiz">
   <div class="q-prompt" id="qPrompt"></div>
+  <div class="q-opts" id="qOpts"></div>
   <div class="q-feback" id="qFe"></div>
   <div class="q-bar"><span id="qProg"></span><span id="qScore"></span></div>
 </div>
@@ -153,27 +160,50 @@ function setMode(m){
   if(m==='quiz') startQuiz();
 }
 
-// ---- evaluación ----
-let order=[], idx=0, score=0, locked=false;
+// ---- evaluación (mixta: localizar la estructura / nombrar la señalada) ----
+let order=[], idx=0, score=0, locked=false, curDir=0;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=(i+1)*Math.random()|0;[a[i],a[j]]=[a[j],a[i]];}return a;}
 function startQuiz(){ order=shuffle(D.map(d=>d.n)); idx=0; score=0; locked=false; showQ(); }
+function clearMarks(){ markers.querySelectorAll('.marker').forEach(x=>x.classList.remove('ok','bad','active')); }
+function nextQ(){ setTimeout(()=>{ idx++; idx<order.length ? showQ() : finish(); }, 1200); }
 function showQ(){
-  markers.querySelectorAll('.marker').forEach(x=>x.classList.remove('ok','bad','active'));
+  clearMarks(); locked=false;
+  const opts=document.getElementById('qOpts'); opts.innerHTML='';
   document.getElementById('qFe').textContent=''; document.getElementById('qFe').className='q-feback';
   const d=D.find(x=>x.n===order[idx]);
-  document.getElementById('qPrompt').innerHTML='Toca en la figura: <b>'+label(d)+'</b>';
+  curDir = Math.random()<0.5 ? 0 : 1;
+  if(curDir===0){  // localizar: tocar el marcador correcto
+    document.getElementById('qPrompt').innerHTML='Toca en la figura: <b>'+label(d)+'</b>';
+  } else {         // nombrar: se señala un marcador y se elige el nombre
+    mk(d.n).classList.add('active');
+    document.getElementById('qPrompt').innerHTML='¿Qué estructura está señalada (en dorado)?';
+    const others=shuffle(D.filter(x=>x.n!==d.n)).slice(0,3);
+    shuffle([d,...others]).forEach(c=>{
+      const b=document.createElement('button'); b.className='opt'; b.innerHTML=label(c);
+      b.onclick=()=>pickName(c.n,b); opts.appendChild(b);
+    });
+  }
   document.getElementById('qProg').textContent='Pregunta '+(idx+1)+' de '+order.length;
   document.getElementById('qScore').textContent='Aciertos: '+score;
-  locked=false;
 }
-function answer(n){
-  if(locked) return; locked=true;
+function answer(n){  // clic en marcador (solo modo localizar)
+  if(locked||curDir!==0) return; locked=true;
   const correct=order[idx]; const fe=document.getElementById('qFe');
   if(n===correct){ mk(n).classList.add('ok'); score++; fe.textContent='¡Correcto!'; fe.className='q-feback ok'; }
   else{ mk(n).classList.add('bad'); mk(correct).classList.add('ok');
         fe.innerHTML='Era: '+label(D.find(x=>x.n===correct)); fe.className='q-feback bad'; }
-  document.getElementById('qScore').textContent='Aciertos: '+score;
-  setTimeout(()=>{ idx++; idx<order.length ? showQ() : finish(); }, 1200);
+  document.getElementById('qScore').textContent='Aciertos: '+score; nextQ();
+}
+function pickName(n,btn){  // clic en opción (modo nombrar)
+  if(locked) return; locked=true;
+  const correct=order[idx]; const fe=document.getElementById('qFe');
+  document.querySelectorAll('#qOpts .opt').forEach(b=>b.style.pointerEvents='none');
+  if(n===correct){ btn.classList.add('ok'); score++; fe.textContent='¡Correcto!'; fe.className='q-feback ok'; }
+  else{ btn.classList.add('bad');
+    const corrLbl=label(D.find(x=>x.n===correct));
+    document.querySelectorAll('#qOpts .opt').forEach(b=>{ if(b.innerHTML===corrLbl) b.classList.add('ok'); });
+    fe.innerHTML='Era: '+corrLbl; fe.className='q-feback bad'; }
+  document.getElementById('qScore').textContent='Aciertos: '+score; nextQ();
 }
 function finish(){
   document.getElementById('qPrompt').innerHTML=
