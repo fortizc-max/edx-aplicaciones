@@ -111,6 +111,13 @@ const SECTIONS=[
   {n:3,es:"Nervio ciático",x:32,y:56.3},
   {n:4,es:"Fémur",x:56.7,y:85.5},
  ]},
+ {id:"flexor-carpi-radialis", title:"Flexor carpi radialis (antebrazo)", img:"flexor-carpi-radialis.png",
+  orient:"Lado izquierdo de la imagen: lateral · lado derecho: medial", items:[
+  {n:1,la:"Flexor carpi radialis",x:54.4,y:18.9},
+  {n:2,la:"Flexor digitorum sublimis",x:76.6,y:44.6},
+  {n:3,la:"Pronator teres",x:35.7,y:43.2},
+  {n:4,es:"Nervio mediano",x:49.1,y:54.2},
+ ]},
 ];
 const label=d=> d.la ? "<i>"+d.la+"</i>"+(d.sfx||"") : d.es;
 const markers=document.getElementById('markers');
