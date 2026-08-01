@@ -118,6 +118,13 @@ const SECTIONS=[
   {n:3,la:"Pronator teres",x:35.7,y:43.2},
   {n:4,es:"Nervio mediano",x:49.1,y:54.2},
  ]},
+ {id:"levator-scapulae", title:"Levator scapulae (cintura escapular)", img:"levator-scapulae.png",
+  orient:"Lado izquierdo de la imagen: medial · lado derecho: lateral", items:[
+  {n:1,la:"Trapezius",x:39.3,y:26},
+  {n:2,la:"Levator scapulae",x:18.8,y:54.2},
+  {n:3,la:"Supraspinatus",x:89,y:44.2},
+  {n:4,es:"Escápula",x:64.6,y:63.3},
+ ]},
 ];
 const label=d=> d.la ? "<i>"+d.la+"</i>"+(d.sfx||"") : d.es;
 const markers=document.getElementById('markers');
