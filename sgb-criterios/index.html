@@ -1,10 +1,11 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Guillain-Barré · apoyo diagnóstico y subtipificación (EAN/PNS 2023 · Rajabally 2015)</title>
+<title>Guillain-Barré · apoyo diagnóstico y subtipificación (EAN/PNS 2023 · Hadden 1998 · Rajabally 2015)</title>
 <style>
 :root{
   --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;--accent:#3aa0ff;
   --ok:#37c97a;--warn:#f5b73d;--bad:#ef6a6a;--okbg:#10331f;--warnbg:#3a2e10;--badbg:#3a1717;
+  --had:#b78cf0;--raj:#4fc3d9;
 }
 *{box-sizing:border-box}
 body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 60px}
@@ -37,6 +38,7 @@ details .body{font-size:12.5px;color:var(--muted);padding:0 0 12px;line-height:1
 details .body ul{margin:6px 0;padding-left:18px}
 .btn{display:block;width:100%;border:0;border-radius:11px;background:var(--accent);color:#06223c;font-weight:800;font-size:15px;padding:14px;cursor:pointer;margin-top:6px}
 .btn:active{transform:translateY(1px)}
+.btn.ghost{background:#0e1828;color:var(--muted);border:1px solid var(--line);font-size:13px;padding:10px;font-weight:700}
 #result,#result2{display:none;margin-top:14px}
 .rcard{border-radius:12px;padding:15px;border:1px solid}
 .rcard.ok{background:var(--okbg);border-color:var(--ok)}
@@ -51,38 +53,69 @@ details .body ul{margin:6px 0;padding-left:18px}
 .note{background:#122031;border:1px solid var(--line);border-radius:10px;padding:11px 12px;font-size:12.5px;color:var(--muted);margin-top:12px}
 .note b{color:var(--txt)}
 .modebar{display:flex;gap:6px;margin:4px 0 14px}
-.modebar button{flex:1;background:#0e1828;border:1px solid var(--line);color:var(--muted);border-radius:9px;padding:9px;font-size:12.5px;font-weight:700;cursor:pointer}
+.modebar button{flex:1;background:#0e1828;border:1px solid var(--line);color:var(--muted);border-radius:9px;padding:9px 6px;font-size:12px;font-weight:700;cursor:pointer;line-height:1.25}
 .modebar button.active{background:var(--accent);color:#06223c;border-color:var(--accent)}
 .nerve{border:1px solid var(--line);border-radius:11px;margin:9px 0;background:#111c30;overflow:hidden}
 .nerve>summary{cursor:pointer;list-style:none;padding:11px 12px;font-size:14px;font-weight:600;display:flex;justify-content:space-between;align-items:center;gap:8px}
 .nerve>summary::-webkit-details-marker{display:none}
 .nerve>summary::before{content:"\25B8 ";color:var(--muted)}
 .nerve[open]>summary::before{content:"\25BE "}
-.nerve .badge{font-size:10.5px;font-weight:800;border-radius:20px;padding:2px 9px;white-space:nowrap}
+.nerve .badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end}
+.nerve .badge{font-size:10px;font-weight:800;border-radius:20px;padding:2px 8px;white-space:nowrap}
 .badge.dem{background:var(--warnbg);color:var(--warn);border:1px solid var(--warn)}
 .badge.ax{background:var(--badbg);color:var(--bad);border:1px solid var(--bad)}
 .badge.na{background:#1c2740;color:var(--muted);border:1px solid var(--line)}
 .badge.off{background:#1c2740;color:var(--muted);border:1px solid var(--line)}
 .nerve .panel{padding:0 12px 12px}
-.feat{display:flex;align-items:flex-start;gap:8px;padding:7px 9px;border:1px solid var(--line);border-radius:9px;margin:5px 0;font-size:12.5px;cursor:pointer}
-.feat input{margin-top:1px;width:16px;height:16px;flex:0 0 auto}
-.feat.dm{border-left:3px solid var(--warn)}
-.feat.ax{border-left:3px solid var(--bad)}
-.grp{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin:9px 0 2px}
+.grp{font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:700;margin:11px 0 3px}
 .incl{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--txt);padding:2px 0 4px}
+.row{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:12.5px;flex-wrap:wrap}
+.row .lbl{flex:1 1 150px;min-width:120px;color:var(--txt)}
+.row .unit{color:var(--muted);font-size:11.5px}
+.row input[type=number]{background:#0e1828;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:6px 8px;font-size:14px;width:78px}
+.row select{background:#0e1828;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:6px 8px;font-size:13px}
+.row input:focus,.row select:focus{outline:none;border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.chip{font-size:10.5px;font-weight:700;border-radius:6px;padding:2px 7px;border:1px solid}
+.chip.had{background:#241a38;color:var(--had);border-color:var(--had)}
+.chip.raj{background:#0e2b33;color:var(--raj);border-color:var(--raj)}
+.chip.none{background:#1c2740;color:var(--muted);border-color:var(--line)}
+.dual{display:flex;gap:10px;flex-wrap:wrap}
+.dual>div{flex:1 1 260px}
+.vcard{border-radius:12px;padding:13px;border:1px solid;height:100%}
+.vcard .who{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;margin:0 0 5px}
+.vcard.had{border-color:var(--had)} .vcard.had .who{color:var(--had)}
+.vcard.raj{border-color:var(--raj)} .vcard.raj .who{color:var(--raj)}
+.vcard .v{font-size:16px;font-weight:800;margin:0 0 5px}
+.vcard .m{font-size:12.5px;color:var(--muted);margin:0}
+.v.dem{color:var(--warn)} .v.ax{color:var(--bad)} .v.nor{color:var(--ok)} .v.eq{color:var(--muted)} .v.inx{color:var(--bad)}
+.concord{border-radius:10px;padding:11px 12px;margin-top:11px;font-size:12.5px;border:1px solid}
+.concord.same{background:var(--okbg);border-color:var(--ok)}
+.concord.diff{background:var(--warnbg);border-color:var(--warn)}
+.concord b{color:var(--txt)}
+table.cmp{width:100%;border-collapse:collapse;font-size:11.5px;margin-top:8px}
+table.cmp th,table.cmp td{border:1px solid var(--line);padding:7px 8px;vertical-align:top;text-align:left}
+table.cmp thead th{background:#0e2842;color:var(--txt);font-size:11px}
+table.cmp th.had{color:var(--had)} table.cmp th.raj{color:var(--raj)}
+table.cmp tr.sec td{background:#0e1828;font-weight:800;color:var(--accent);font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+table.cmp ul{margin:4px 0 0;padding-left:15px}
+table.cmp li{margin:2px 0}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.diffmark{color:var(--warn);font-weight:800}
 footer{max-width:820px;margin:22px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
 footer a{color:var(--accent)}
 .hidden{display:none}
 </style></head><body>
 <header>
 <h1>Guillain-Barr&eacute; &middot; electrodiagn&oacute;stico</h1>
-<p>Apoyo diagn&oacute;stico (EAN/PNS 2023) y subtipificaci&oacute;n (Rajabally 2015) &middot; complemento del libro <i>Electrodiagn&oacute;stico y Ultrasonido Neuromuscular</i></p>
+<p>Apoyo diagn&oacute;stico (EAN/PNS 2023) y subtipificaci&oacute;n con <b>los dos</b> juegos de criterios (Hadden 1998 &middot; Rajabally 2015) &middot; complemento del libro <i>Electrodiagn&oacute;stico y Ultrasonido Neuromuscular</i></p>
 </header>
 <div class="wrap">
 
 <div class="modebar">
-  <button id="btA" class="active" onclick="setMode('A')">Apoyo diagn&oacute;stico</button>
-  <button id="btB" onclick="setMode('B')">Subtipo (Rajabally)</button>
+  <button id="btA" class="active" onclick="setMode('A')">Apoyo<br>diagn&oacute;stico</button>
+  <button id="btB" onclick="setMode('B')">Subtipo<br>Hadden vs Rajabally</button>
+  <button id="btC" onclick="setMode('C')">Los criterios<br>lado a lado</button>
 </div>
 
 <!-- ===================== MODO A: APOYO DIAGNÓSTICO ===================== -->
@@ -125,42 +158,135 @@ footer a{color:var(--accent)}
 <div id="result"></div>
 </div>
 
-<!-- ===================== MODO B: SUBTIPIFICACIÓN ===================== -->
+<!-- ===================== MODO B: SUBTIPIFICACIÓN DUAL ===================== -->
 <div id="modeB" class="hidden">
 <div class="note">
-<b>Criterios de Rajabally 2015 (Box&nbsp;2).</b> Marque, <b>en cada nervio explorado</b>, los rasgos que cumple seg&uacute;n <b>los valores de referencia de su laboratorio</b>. La app aplica la l&oacute;gica de conteo y entrega el subtipo. La subtipificaci&oacute;n <b>no cambia el tratamiento</b>; su valor es reconocer el sustrato y el pron&oacute;stico, y a menudo <b>exige estudio seriado</b>.
+<b>Un solo ingreso de datos, dos clasificaciones.</b> Los criterios de <b style="color:var(--had)">Hadden 1998</b> y <b style="color:var(--raj)">Rajabally 2015</b> usan los mismos par&aacute;metros pero <b>umbrales distintos</b>, de modo que un mismo estudio puede quedar en categor&iacute;as diferentes seg&uacute;n cu&aacute;l se aplique. Introduzca cada par&aacute;metro <b>como porcentaje del l&iacute;mite de su laboratorio</b> ---igual que en los criterios originales--- y la app aplica las dos l&oacute;gicas y las compara.
+</div>
+
+<div class="card">
+  <h2>C&oacute;mo se ingresan los datos</h2>
+  <p class="hint" style="margin-bottom:0">
+  <b>VCM</b> y <b>CMAP</b> como <b>% del l&iacute;mite inferior</b> (LIN): si su LIN de VCM del mediano es 49&nbsp;m/s y midi&oacute; 39&nbsp;m/s &rarr; 39/49 = <b>80&nbsp;%</b>.<br>
+  <b>LDM</b> y <b>latencia F</b> como <b>% del l&iacute;mite superior</b> (LSN): si su LSN de LDM es 4,2&nbsp;ms y midi&oacute; 5,9&nbsp;ms &rarr; 5,9/4,2 = <b>140&nbsp;%</b>.<br>
+  El <b>cociente pCMAP/dCMAP</b> se calcula solo a partir de las dos amplitudes. Deje en blanco lo que no midi&oacute;.
+  </p>
 </div>
 
 <div id="nerves"></div>
 
-<button class="btn" onclick="evaluarB()">Clasificar subtipo</button>
+<button class="btn" onclick="evaluarB()">Clasificar con los dos criterios</button>
+<button class="btn ghost" onclick="limpiarB()">Limpiar todo</button>
 <div id="result2"></div>
+</div>
 
-<details>
-  <summary>Puntos de corte de desmielinizaci&oacute;n (Rajabally 2015)</summary>
-  <div class="body">
-    <ul>
-      <li><b>VCM</b> &lt; 70&nbsp;% del LIN.</li>
-      <li><b>LDM</b> &gt; 150&nbsp;% del LSN.</li>
-      <li><b>Latencia de onda F</b> &gt; 120&nbsp;% del LSN (&gt; 150&nbsp;% si el CMAP distal &lt; 50&nbsp;% del LIN).</li>
-      <li><b>Bloqueo de conducci&oacute;n:</b> cociente CMAP proximal/distal &lt; 0,7 (se excluye el nervio tibial).</li>
-      <li><b>Ausencia de onda F</b> con CMAP distal &ge; 20&nbsp;% del LIN.</li>
-      <li><b>Amplitud (axonal):</b> CMAP distal &lt; 80&nbsp;% del LIN; inexcitable si &lt; 10&nbsp;% o ausente.</li>
-    </ul>
-    <b>Categor&iacute;as:</b>
-    <ul>
-      <li><b>AIDP:</b> &ge;1 rasgo desmielinizante (VCM/LDM/F) en &ge;2 nervios; o ausencia de F en 2 nervios (o cociente &lt;0,7 en 2 nervios) m&aacute;s un par&aacute;metro adicional en otro nervio.</li>
-      <li><b>Axonal:</b> sin rasgos desmielinizantes de velocidad/latencia (se admite uno si ese nervio tiene CMAP &lt;10&nbsp;% LIN) y ca&iacute;da de amplitud o falla de conducci&oacute;n compatibles.</li>
-      <li><b>Inexcitable:</b> CMAP distal ausente en todos los nervios (o presente en uno con &lt;10&nbsp;% LIN).</li>
-      <li><b>Equ&iacute;voco:</b> hallazgos anormales que no encajan en las anteriores.</li>
-    </ul>
+<!-- ===================== MODO C: COMPARACIÓN DE CRITERIOS ===================== -->
+<div id="modeC" class="hidden">
+<div class="note">
+<b>Por qu&eacute; importa cu&aacute;l se use.</b> En la cohorte IGOS de Arends 2026 (469 pacientes con neuroconducciones seriadas) el <b>mismo</b> primer estudio se clasific&oacute; como <b style="color:var(--warn)">desmielinizante</b> en el <b>52,9&nbsp;%</b> con Hadden pero solo en el <b>27,3&nbsp;%</b> con Rajabally, y como <b style="color:var(--bad)">axonal</b> en el <b>7,7&nbsp;%</b> con Hadden frente al <b>29,4&nbsp;%</b> con Rajabally. Rajabally, m&aacute;s estricto para llamar desmielinizante, deja m&aacute;s estudios en axonal y en equ&iacute;voco (33,7&nbsp;% frente a 29,6&nbsp;%).
+</div>
+
+<div class="card">
+  <h2>Los dos juegos de criterios, categor&iacute;a por categor&iacute;a</h2>
+  <p class="hint">Se resaltan en <span class="diffmark">&aacute;mbar</span> los umbrales en que difieren. LIN/LSN: l&iacute;mite inferior/superior de la normalidad. dCMAP/pCMAP: CMAP distal/proximal.</p>
+  <div class="scroll">
+  <table class="cmp">
+    <thead><tr><th style="width:22%">Categor&iacute;a</th><th class="had" style="width:39%">Hadden 1998</th><th class="raj" style="width:39%">Rajabally 2015</th></tr></thead>
+    <tbody>
+      <tr class="sec"><td colspan="3">Normal &mdash; todo lo siguiente, en todos los nervios explorados</td></tr>
+      <tr>
+        <td>Normal</td>
+        <td><ul>
+          <li>LDM &le; 100&nbsp;% LSN</li>
+          <li>Onda F presente con latencia &le; 100&nbsp;% LSN</li>
+          <li>VCM &ge; 100&nbsp;% LIN</li>
+          <li>dCMAP &ge; 100&nbsp;% LIN</li>
+          <li class="diffmark">pCMAP &ge; 100&nbsp;% LIN</li>
+          <li>Cociente pCMAP/dCMAP <span class="diffmark">&gt; 0,5</span></li>
+        </ul></td>
+        <td><ul>
+          <li>LDM &le; 100&nbsp;% LSN</li>
+          <li>Onda F presente con latencia &le; 100&nbsp;% LSN</li>
+          <li>VCM &ge; 100&nbsp;% LIN</li>
+          <li>dCMAP &ge; 100&nbsp;% LIN</li>
+          <li class="diffmark">(no exige pCMAP)</li>
+          <li>Cociente pCMAP/dCMAP <span class="diffmark">&gt; 0,7</span> (se excluye el tibial)</li>
+        </ul></td>
+      </tr>
+      <tr class="sec"><td colspan="3">Desmielinizante primario</td></tr>
+      <tr>
+        <td>Desmielinizante</td>
+        <td>
+          Al menos uno de los siguientes en <b>cada uno de al menos dos nervios</b>; o al menos <b>dos</b> de los siguientes en <b>un</b> nervio si todos los dem&aacute;s son inexcitables y ese nervio tiene dCMAP &ge; 10&nbsp;% LIN:
+          <ul>
+          <li>VCM <span class="diffmark">&lt; 90&nbsp;% LIN</span> (&lt; 85&nbsp;% si dCMAP &lt; 50&nbsp;% LIN)</li>
+          <li>LDM <span class="diffmark">&gt; 110&nbsp;% LSN</span> (&gt; 120&nbsp;% si dCMAP &lt; 100&nbsp;% LIN)</li>
+          <li>Cociente pCMAP/dCMAP <span class="diffmark">&lt; 0,5</span> con dCMAP &ge; 20&nbsp;% LIN</li>
+          <li>Latencia de onda F &gt; 120&nbsp;% LSN</li>
+          </ul>
+          <p class="diffmark" style="margin:6px 0 0;font-size:11px">Hadden no contempla la <b>ausencia</b> de onda F como rasgo desmielinizante: solo su latencia prolongada. Un estudio con ondas F ausentes en varios nervios y nada m&aacute;s puede quedar equ&iacute;voco con Hadden y desmielinizante o axonal con Rajabally.</p>
+        </td>
+        <td>
+          Al menos uno de los siguientes en <b>al menos dos nervios</b>:
+          <ul>
+          <li>VCM <span class="diffmark">&lt; 70&nbsp;% LIN</span></li>
+          <li>LDM <span class="diffmark">&gt; 150&nbsp;% LSN</span></li>
+          <li>Latencia de onda F &gt; 120&nbsp;% LSN, o &gt; 150&nbsp;% LSN si dCMAP &lt; 50&nbsp;% LIN</li>
+          </ul>
+          <b>O BIEN</b>
+          <ul><li>Ausencia de onda F en dos nervios con dCMAP &ge; 20&nbsp;% LIN, m&aacute;s un par&aacute;metro adicional en otro nervio</li></ul>
+          <b>O BIEN</b>
+          <ul><li>Cociente pCMAP/dCMAP <span class="diffmark">&lt; 0,7</span> (excluido el tibial) en dos nervios, m&aacute;s un par&aacute;metro adicional en otro nervio</li></ul>
+        </td>
+      </tr>
+      <tr class="sec"><td colspan="3">Axonal primario</td></tr>
+      <tr>
+        <td>Axonal</td>
+        <td>
+          Ninguno de los rasgos de desmielinizaci&oacute;n anteriores en ning&uacute;n nervio (se admite <b>uno</b> en <b>un</b> nervio si su dCMAP &lt; 10&nbsp;% LIN), y:
+          <ul><li>dCMAP &lt; 80&nbsp;% LIN en al menos dos nervios</li></ul>
+        </td>
+        <td>
+          Ninguno de los rasgos de desmielinizaci&oacute;n anteriores en ning&uacute;n nervio (se admite <b>uno</b> en <b>un</b> nervio si su dCMAP &lt; 10&nbsp;% LIN), <b>y al menos uno</b> de:
+          <ul>
+          <li>dCMAP &lt; 80&nbsp;% LIN en al menos dos nervios</li>
+          <li class="diffmark">Ausencia de onda F en dos nervios con dCMAP &ge; 20&nbsp;% LIN, sin ning&uacute;n rasgo desmielinizante en ning&uacute;n nervio</li>
+          <li class="diffmark">Cociente pCMAP/dCMAP &lt; 0,7 en dos nervios (excluido el tibial)</li>
+          <li class="diffmark">Ausencia de onda F en un nervio con dCMAP &ge; 20&nbsp;% LIN, o cociente &lt; 0,7 en un nervio (excluido el tibial); <b>m&aacute;s</b> dCMAP &lt; 80&nbsp;% en otro nervio</li>
+          </ul>
+        </td>
+      </tr>
+      <tr class="sec"><td colspan="3">Inexcitable y equ&iacute;voco &mdash; id&eacute;nticos en los dos juegos</td></tr>
+      <tr>
+        <td>Inexcitable</td>
+        <td colspan="2">dCMAP ausente en todos los nervios (o presente solo en un nervio con dCMAP &lt; 10&nbsp;% LIN).</td>
+      </tr>
+      <tr>
+        <td>Equ&iacute;voco</td>
+        <td colspan="2">Hallazgos anormales que no cumplen los criterios de ning&uacute;n otro grupo.</td>
+      </tr>
+    </tbody>
+  </table>
   </div>
-</details>
+</div>
+
+<div class="card">
+  <h2>Qu&eacute; hacer con esto en la pr&aacute;ctica</h2>
+  <div class="note" style="margin-top:0">
+  <ul style="margin:0;padding-left:18px">
+    <li>El papel de la neuroconducci&oacute;n es <b>apoyar el diagn&oacute;stico cl&iacute;nico de SGB</b>, y debe hacerse <b>lo antes posible</b> tras el inicio de la debilidad.</li>
+    <li>Si ese primer estudio no es diagn&oacute;stico, <b>conviene repetirlo</b>: en la primera semana un estudio normal no excluye nada.</li>
+    <li>El subtipo <b>cambia</b> al repetir el estudio en el 37,8&nbsp;% (Hadden) y el 44,7&nbsp;% (Rajabally) de los pacientes con SGB motor-sensitivo y motor, <b>y en direcciones opuestas</b>: unos pasan de desmielinizante a equ&iacute;voco y otros al rev&eacute;s, de modo que las proporciones globales se mantienen aunque los pacientes individuales se reclasifiquen.</li>
+    <li>La forma <b>motora</b> de SGB no equivale a subtipo axonal: en IGOS mostr&oacute; subtipos desmielinizantes con los dos juegos de criterios.</li>
+    <li>Conclusi&oacute;n de Arends 2026: <b>la subtipificaci&oacute;n electrodiagn&oacute;stica no aporta valor adicional</b> al manejo. Su inter&eacute;s es fisiopatol&oacute;gico y de investigaci&oacute;n, y exige declarar siempre <b>qu&eacute; criterios se usaron</b>.</li>
+  </ul>
+  </div>
+</div>
 </div>
 
 </div>
 <footer>
-Fuentes: van&nbsp;Doorn&nbsp;PA et&nbsp;al. EAN/PNS Guideline on GBS. <i>Eur J Neurol</i> 2023;30:3646&ndash;3674 (apoyo diagn&oacute;stico). Rajabally&nbsp;YA et&nbsp;al. <i>J Neurol Neurosurg Psychiatry</i> 2015 (criterios de subtipo, Box&nbsp;2). Herramienta educativa; no sustituye el juicio cl&iacute;nico. Complemento del libro <i>Electrodiagn&oacute;stico y Ultrasonido Neuromuscular</i>.
+Fuentes: van&nbsp;Doorn&nbsp;PA et&nbsp;al. EAN/PNS Guideline on GBS. <i>Eur J Neurol</i> 2023;30:3646&ndash;3674 (apoyo diagn&oacute;stico). Hadden&nbsp;RDM et&nbsp;al. <i>Ann Neurol</i> 1998;44:780&ndash;788. Rajabally&nbsp;YA et&nbsp;al. <i>J Neurol Neurosurg Psychiatry</i> 2015;86:115&ndash;119. Tabla comparativa y cifras de rendimiento: Arends&nbsp;S et&nbsp;al. Dynamics of nerve conduction studies in patients with Guillain&ndash;Barr&eacute; syndrome. <i>Muscle Nerve</i> 2026;73:832&ndash;842 (Tabla&nbsp;S1). Herramienta educativa; no sustituye el juicio cl&iacute;nico. Complemento del libro <i>Electrodiagn&oacute;stico y Ultrasonido Neuromuscular</i>.
 </footer>
 
 <script>
@@ -176,8 +302,8 @@ var hAbs=document.getElementById('habsent'), hPre=document.getElementById('hpres
 hAbs.addEventListener('change',function(){if(hAbs.checked)hPre.checked=false;});
 hPre.addEventListener('change',function(){if(hPre.checked)hAbs.checked=false;});
 function evaluarA(){
-  var spec=[...document.querySelectorAll('.spec:checked')].length;
-  var sens=[...document.querySelectorAll('.sens:checked')].length;
+  var spec=[].slice.call(document.querySelectorAll('.spec:checked')).length;
+  var sens=[].slice.call(document.querySelectorAll('.sens:checked')).length;
   var against=hPre.checked, mfs=document.getElementById('mfs').checked;
   var r=document.getElementById('result'),cls,verdict,msg;
   if(spec>=1){cls='ok';verdict='Patrón que APOYA el síndrome de Guillain-Barré';msg='Hay '+spec+' rasgo(s) de alta especificidad presente(s), lo que respalda el SGB frente a sus imitadores en el contexto clínico adecuado.';}
@@ -194,108 +320,249 @@ function evaluarA(){
   r.style.display='block';r.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-/* ---------- MODO B: nervios y clasificador Rajabally ---------- */
+/* ================= MODO B: clasificador dual Hadden / Rajabally ================= */
 var NERVES=[
   {id:'med',name:'Mediano (motor)',tib:false},
   {id:'cub',name:'Cubital (motor)',tib:false},
   {id:'per',name:'Peroneo (motor)',tib:false},
   {id:'tib',name:'Tibial (motor)',tib:true}
 ];
-var FEATS_DM=[
-  {k:'vcm',t:'VCM < 70 % del LIN'},
-  {k:'ldm',t:'LDM > 150 % del LSN'},
-  {k:'fprol',t:'Latencia de onda F > 120 % LSN (o > 150 % si CMAP < 50 % LIN)'},
-  {k:'cb',t:'Bloqueo: cociente CMAP prox/dist < 0,7',tibHide:true},
-  {k:'fabs',t:'Onda F ausente (con CMAP distal ≥ 20 % LIN)'}
-];
-var FEATS_AX=[
-  {k:'amp80',t:'CMAP distal < 80 % del LIN'},
-  {k:'amp10',t:'CMAP distal < 10 % del LIN'},
-  {k:'absent',t:'CMAP distal ausente (inexcitable)'}
-];
+
 (function buildNerves(){
   var host=document.getElementById('nerves'),html='';
   NERVES.forEach(function(n){
-    html+='<details class="nerve" id="nv-'+n.id+'"><summary><span>'+n.name+'</span><span class="badge off" id="bd-'+n.id+'">no incluido</span></summary><div class="panel">';
-    html+='<label class="incl"><input type="checkbox" class="inc" data-n="'+n.id+'"> Incluir este nervio en el análisis</label>';
-    html+='<div class="grp">Rasgos desmielinizantes</div>';
-    FEATS_DM.forEach(function(f){ if(f.tibHide&&n.tib) return; html+='<label class="feat dm"><input type="checkbox" data-n="'+n.id+'" data-k="'+f.k+'"><span>'+f.t+'</span></label>'; });
-    html+='<div class="grp">Amplitud (axonal / inexcitable)</div>';
-    FEATS_AX.forEach(function(f){ html+='<label class="feat ax"><input type="checkbox" data-n="'+n.id+'" data-k="'+f.k+'"><span>'+f.t+'</span></label>'; });
+    html+='<details class="nerve" id="nv-'+n.id+'"><summary><span>'+n.name+'</span>'+
+          '<span class="badges"><span class="badge off" id="bh-'+n.id+'">Hadden &mdash;</span><span class="badge off" id="br-'+n.id+'">Rajabally &mdash;</span></span></summary><div class="panel">';
+    html+='<label class="incl"><input type="checkbox" class="inc" data-n="'+n.id+'"> Incluir este nervio en el an&aacute;lisis</label>';
+    html+='<label class="incl"><input type="checkbox" class="abs" data-n="'+n.id+'"> CMAP distal <b>ausente</b> (nervio inexcitable)</label>';
+
+    html+='<div class="grp">Velocidad y latencias</div>';
+    html+='<div class="row"><span class="lbl">VCM</span><input type="number" step="1" min="0" inputmode="decimal" data-n="'+n.id+'" data-k="mcv" placeholder="—"><span class="unit">% del LIN</span></div>';
+    html+='<div class="row"><span class="lbl">Latencia distal motora</span><input type="number" step="1" min="0" inputmode="decimal" data-n="'+n.id+'" data-k="dml" placeholder="—"><span class="unit">% del LSN</span></div>';
+    html+='<div class="row"><span class="lbl">Onda F</span>'+
+          '<select data-n="'+n.id+'" data-k="fmode"><option value="na">no explorada</option><option value="present">presente</option><option value="absent">ausente</option></select>'+
+          '<input type="number" step="1" min="0" inputmode="decimal" data-n="'+n.id+'" data-k="flat" placeholder="—" class="flat"><span class="unit">% del LSN</span></div>';
+
+    html+='<div class="grp">Amplitudes</div>';
+    html+='<div class="row"><span class="lbl">CMAP distal</span><input type="number" step="1" min="0" inputmode="decimal" data-n="'+n.id+'" data-k="dcmap" placeholder="—"><span class="unit">% del LIN</span></div>';
+    html+='<div class="row"><span class="lbl">CMAP proximal</span><input type="number" step="1" min="0" inputmode="decimal" data-n="'+n.id+'" data-k="pcmap" placeholder="—"><span class="unit">% del LIN</span></div>';
+    html+='<div class="row"><span class="lbl">Cociente pCMAP/dCMAP</span><b id="ratio-'+n.id+'" style="color:var(--accent)">&mdash;</b>'+
+          '<span class="unit">calculado'+(n.tib?' &middot; <b>excluido</b> en Rajabally':'')+'</span></div>';
+
+    html+='<div class="chips" id="chips-'+n.id+'"></div>';
     html+='</div></details>';
   });
   host.innerHTML=html;
-  document.querySelectorAll('#nerves input').forEach(function(i){ i.addEventListener('change',updateBadges); });
+  document.querySelectorAll('#nerves input,#nerves select').forEach(function(i){
+    i.addEventListener('input',updateNerve); i.addEventListener('change',updateNerve);
+  });
+  updateNerve();
 })();
-function nerveData(id){
-  var d={inc:false};
-  var inc=document.querySelector('.inc[data-n="'+id+'"]'); d.inc=inc&&inc.checked;
-  document.querySelectorAll('input[data-n="'+id+'"][data-k]').forEach(function(i){ d[i.dataset.k]=i.checked; });
+
+function num(id,k){
+  var el=document.querySelector('input[data-n="'+id+'"][data-k="'+k+'"]');
+  if(!el||el.value==='') return null;
+  var v=parseFloat(el.value); return isNaN(v)?null:v;
+}
+function nerveData(n){
+  var d={id:n.id,name:n.name,tib:n.tib};
+  var inc=document.querySelector('.inc[data-n="'+n.id+'"]'), abs=document.querySelector('.abs[data-n="'+n.id+'"]');
+  d.inc=!!(inc&&inc.checked); d.absent=!!(abs&&abs.checked);
+  d.mcv=num(n.id,'mcv'); d.dml=num(n.id,'dml'); d.flat=num(n.id,'flat');
+  d.dcmap=d.absent?0:num(n.id,'dcmap'); d.pcmap=num(n.id,'pcmap');
+  var fm=document.querySelector('select[data-n="'+n.id+'"][data-k="fmode"]');
+  d.fmode=d.absent?'absent':(fm?fm.value:'na');
+  d.ratio=(d.pcmap!=null&&d.dcmap!=null&&d.dcmap>0)?(d.pcmap/d.dcmap):null;
   return d;
 }
-function demVel(d){return d.vcm||d.ldm||d.fprol;}          // desmielinización de velocidad/latencia
-function anyDem(d){return demVel(d)||d.cb||d.fabs;}         // cualquier rasgo desmielinizante
-function anyAbn(d){return anyDem(d)||d.amp80||d.amp10||d.absent;}
-function updateBadges(){
+
+/* ---- rasgos de HADDEN ---- */
+function hadFeats(d){
+  var f=[];
+  if(d.absent) return f;
+  if(d.mcv!=null){ var t=(d.dcmap!=null&&d.dcmap<50)?85:90; if(d.mcv<t) f.push('VCM < '+t+' % LIN'); }
+  if(d.dml!=null){ var u=(d.dcmap!=null&&d.dcmap<100)?120:110; if(d.dml>u) f.push('LDM > '+u+' % LSN'); }
+  if(d.ratio!=null&&d.ratio<0.5&&d.dcmap!=null&&d.dcmap>=20) f.push('cociente < 0,5 (dCMAP ≥ 20 % LIN)');
+  if(d.fmode==='present'&&d.flat!=null&&d.flat>120) f.push('latencia F > 120 % LSN');
+  return f;
+}
+/* ---- rasgos de RAJABALLY ---- */
+function rajVelFeats(d){
+  var f=[];
+  if(d.absent) return f;
+  if(d.mcv!=null&&d.mcv<70) f.push('VCM < 70 % LIN');
+  if(d.dml!=null&&d.dml>150) f.push('LDM > 150 % LSN');
+  if(d.fmode==='present'&&d.flat!=null){ var t=(d.dcmap!=null&&d.dcmap<50)?150:120; if(d.flat>t) f.push('latencia F > '+t+' % LSN'); }
+  return f;
+}
+function rajFabs(d){ return !d.absent && d.fmode==='absent' && d.dcmap!=null && d.dcmap>=20; }
+function rajRatioLow(d){ return !d.absent && !d.tib && d.ratio!=null && d.ratio<0.7; }
+function rajAnyFeat(d){ return rajVelFeats(d).length>0 || rajFabs(d) || rajRatioLow(d); }
+function lowAmp(d){ return !d.absent && d.dcmap!=null && d.dcmap<80; }
+
+function updateNerve(){
   NERVES.forEach(function(n){
-    var d=nerveData(n.id),b=document.getElementById('bd-'+n.id);
-    if(!d.inc){b.className='badge off';b.textContent='no incluido';return;}
-    if(d.absent){b.className='badge ax';b.textContent='inexcitable';}
-    else if(demVel(d)||d.cb||d.fabs){b.className='badge dem';b.textContent='desmielinizante';}
-    else if(d.amp80||d.amp10){b.className='badge ax';b.textContent='amplitud baja';}
-    else if(anyAbn(d)){b.className='badge ax';b.textContent='anormal';}
-    else{b.className='badge na';b.textContent='normal';}
+    var d=nerveData(n);
+    var rEl=document.getElementById('ratio-'+n.id);
+    rEl.textContent = d.ratio!=null ? d.ratio.toFixed(2).replace('.',',') : '—';
+    var bh=document.getElementById('bh-'+n.id), br=document.getElementById('br-'+n.id);
+    var ch=document.getElementById('chips-'+n.id), chips='';
+    if(!d.inc){
+      bh.className='badge off'; bh.textContent='Hadden —';
+      br.className='badge off'; br.textContent='Rajabally —';
+      ch.innerHTML=''; return;
+    }
+    var hf=hadFeats(d), rv=rajVelFeats(d);
+    if(d.absent){ bh.className='badge ax'; bh.textContent='Hadden: inexcitable'; }
+    else if(hf.length){ bh.className='badge dem'; bh.textContent='Hadden: desmiel. ('+hf.length+')'; }
+    else if(lowAmp(d)){ bh.className='badge ax'; bh.textContent='Hadden: amplitud baja'; }
+    else{ bh.className='badge na'; bh.textContent='Hadden: sin rasgos'; }
+
+    if(d.absent){ br.className='badge ax'; br.textContent='Rajabally: inexcitable'; }
+    else if(rv.length||rajFabs(d)||rajRatioLow(d)){ br.className='badge dem'; br.textContent='Rajabally: rasgo(s)'; }
+    else if(lowAmp(d)){ br.className='badge ax'; br.textContent='Rajabally: amplitud baja'; }
+    else{ br.className='badge na'; br.textContent='Rajabally: sin rasgos'; }
+
+    hf.forEach(function(t){ chips+='<span class="chip had">H · '+t+'</span>'; });
+    rv.forEach(function(t){ chips+='<span class="chip raj">R · '+t+'</span>'; });
+    if(rajFabs(d)) chips+='<span class="chip raj">R · onda F ausente (dCMAP ≥ 20 % LIN)</span>';
+    if(rajRatioLow(d)) chips+='<span class="chip raj">R · cociente &lt; 0,7</span>';
+    if(lowAmp(d)) chips+='<span class="chip none">dCMAP &lt; 80 % LIN</span>';
+    if(!chips) chips='<span class="chip none">sin rasgos que cumplan umbral</span>';
+    ch.innerHTML=chips;
   });
 }
+
+function normalHad(d){
+  return d.dml!=null&&d.dml<=100 && d.fmode==='present'&&d.flat!=null&&d.flat<=100 &&
+         d.mcv!=null&&d.mcv>=100 && d.dcmap!=null&&d.dcmap>=100 &&
+         d.pcmap!=null&&d.pcmap>=100 && d.ratio!=null&&d.ratio>0.5;
+}
+function normalRaj(d){
+  var ratioOK = d.tib ? true : (d.ratio!=null&&d.ratio>0.7);
+  return d.dml!=null&&d.dml<=100 && d.fmode==='present'&&d.flat!=null&&d.flat<=100 &&
+         d.mcv!=null&&d.mcv>=100 && d.dcmap!=null&&d.dcmap>=100 && ratioOK;
+}
+
+function classifyHadden(N){
+  var absent=N.filter(function(d){return d.absent;});
+  var alive=N.filter(function(d){return !d.absent;});
+  if(absent.length===N.length || (alive.length===1 && alive[0].dcmap!=null && alive[0].dcmap<10))
+    return {cat:'inx',why:'CMAP distal ausente en todos los nervios (o presente solo en uno con < 10 % del LIN).'};
+  if(N.every(normalHad)) return {cat:'nor',why:'Todos los nervios incluidos cumplen los seis requisitos de normalidad.'};
+
+  var withF=N.filter(function(d){return hadFeats(d).length>0;});
+  if(withF.length>=2)
+    return {cat:'dem',why:'al menos un rasgo desmielinizante en cada uno de '+withF.length+' nervios ('+withF.map(function(d){return d.name.split(' ')[0];}).join(', ')+').'};
+  if(withF.length===1 && hadFeats(withF[0]).length>=2 && withF[0].dcmap!=null && withF[0].dcmap>=10 &&
+     N.filter(function(d){return d.id!==withF[0].id;}).every(function(d){return d.absent;}))
+    return {cat:'dem',why:'dos o más rasgos desmielinizantes en un nervio ('+withF[0].name+', dCMAP ≥ 10 % LIN) con todos los demás inexcitables.'};
+
+  var gate = withF.length===0 || (withF.length===1 && hadFeats(withF[0]).length===1 && withF[0].dcmap!=null && withF[0].dcmap<10);
+  var amp=N.filter(lowAmp);
+  if(gate && amp.length>=2)
+    return {cat:'ax',why:'sin rasgos desmielinizantes y con dCMAP < 80 % del LIN en '+amp.length+' nervios.'};
+
+  return {cat:'eq',why:'hallazgos que no cumplen los requisitos de ninguna otra categoría.'};
+}
+
+function classifyRajabally(N){
+  var absent=N.filter(function(d){return d.absent;});
+  var alive=N.filter(function(d){return !d.absent;});
+  if(absent.length===N.length || (alive.length===1 && alive[0].dcmap!=null && alive[0].dcmap<10))
+    return {cat:'inx',why:'CMAP distal ausente en todos los nervios (o presente solo en uno con < 10 % del LIN).'};
+  if(N.every(normalRaj)) return {cat:'nor',why:'Todos los nervios incluidos cumplen los requisitos de normalidad.'};
+
+  var vel=N.filter(function(d){return rajVelFeats(d).length>0;});
+  var fab=N.filter(rajFabs), rat=N.filter(rajRatioLow), any=N.filter(rajAnyFeat);
+  if(vel.length>=2)
+    return {cat:'dem',why:'al menos un rasgo desmielinizante de velocidad o latencia en '+vel.length+' nervios ('+vel.map(function(d){return d.name.split(' ')[0];}).join(', ')+').'};
+  if(fab.length>=2 && any.length>=3)
+    return {cat:'dem',why:'ausencia de onda F en '+fab.length+' nervios con dCMAP ≥ 20 % del LIN, más un parámetro adicional en otro nervio.'};
+  if(rat.length>=2 && any.length>=3)
+    return {cat:'dem',why:'cociente pCMAP/dCMAP < 0,7 en '+rat.length+' nervios (excluido el tibial), más un parámetro adicional en otro nervio.'};
+
+  var gate = vel.length===0 || (vel.length===1 && rajVelFeats(vel[0]).length===1 && vel[0].dcmap!=null && vel[0].dcmap<10);
+  if(gate){
+    var amp=N.filter(lowAmp);
+    if(amp.length>=2) return {cat:'ax',why:'dCMAP < 80 % del LIN en '+amp.length+' nervios, sin rasgos desmielinizantes de velocidad o latencia.'};
+    if(fab.length>=2 && vel.length===0 && rat.length===0)
+      return {cat:'ax',why:'ausencia de onda F en '+fab.length+' nervios con dCMAP ≥ 20 % del LIN, sin ningún rasgo desmielinizante.'};
+    if(rat.length>=2) return {cat:'ax',why:'cociente < 0,7 en '+rat.length+' nervios (excluido el tibial), sin desmielinización de velocidad: compatible con falla de conducción reversible.'};
+    if((fab.length+rat.length)>=1 && amp.length>=1){
+      var other=amp.filter(function(a){ return !fab.concat(rat).some(function(x){return x.id===a.id;}); });
+      if(other.length>=1) return {cat:'ax',why:'un nervio con ausencia de onda F o cociente < 0,7, más dCMAP < 80 % del LIN en otro nervio.'};
+    }
+  }
+  return {cat:'eq',why:'hallazgos que no cumplen los requisitos de ninguna otra categoría.'};
+}
+
+var CAT={
+  dem:{t:'Desmielinizante (AIDP)',c:'dem'},
+  ax:{t:'Axonal (AMAN / AMSAN)',c:'ax'},
+  inx:{t:'Inexcitable',c:'inx'},
+  nor:{t:'Normal',c:'nor'},
+  eq:{t:'Equívoco',c:'eq'}
+};
+
 function evaluarB(){
-  var N=NERVES.map(function(n){var d=nerveData(n.id);d.id=n.id;d.tib=n.tib;return d;}).filter(function(d){return d.inc;});
+  var N=NERVES.map(nerveData).filter(function(d){return d.inc;});
   var r=document.getElementById('result2');
-  if(N.length<2){ r.innerHTML='<div class="rcard warn"><div class="verdict">Faltan nervios</div><p>Incluya al menos <b>2 nervios</b> motores para aplicar los criterios de Rajabally.</p></div>'; r.style.display='block'; r.scrollIntoView({behavior:'smooth',block:'nearest'}); return; }
+  if(N.length<2){
+    r.innerHTML='<div class="rcard warn"><div class="verdict">Faltan nervios</div><p>Incluya al menos <b>2 nervios</b> motores: los dos juegos de criterios se construyen sobre conteos de nervios.</p></div>';
+    r.style.display='block'; r.scrollIntoView({behavior:'smooth',block:'nearest'}); return;
+  }
+  var H=classifyHadden(N), R=classifyRajabally(N);
+  var html='<div class="dual">'+
+    '<div><div class="vcard had"><p class="who">Criterios de Hadden 1998</p><p class="v '+CAT[H.cat].c+'">'+CAT[H.cat].t+'</p><p class="m">'+cap(H.why)+'</p></div></div>'+
+    '<div><div class="vcard raj"><p class="who">Criterios de Rajabally 2015</p><p class="v '+CAT[R.cat].c+'">'+CAT[R.cat].t+'</p><p class="m">'+cap(R.why)+'</p></div></div>'+
+    '</div>';
 
-  var velN=N.filter(demVel), cbN=N.filter(function(d){return d.cb;}), fabsN=N.filter(function(d){return d.fabs;});
-  var demAnyN=N.filter(anyDem), amp80N=N.filter(function(d){return d.amp80;});
-  var absentN=N.filter(function(d){return d.absent;}), amp10N=N.filter(function(d){return d.amp10||d.absent;});
-
-  // AIDP
-  var aidp=false, aidpWhy='';
-  if(velN.length>=2){aidp=true;aidpWhy='≥1 rasgo desmielinizante de velocidad/latencia (VCM/LDM/F) en '+velN.length+' nervios.';}
-  else if(fabsN.length>=2 && demAnyN.length>=3){aidp=true;aidpWhy='ausencia de onda F en '+fabsN.length+' nervios más un parámetro desmielinizante adicional en otro nervio.';}
-  else if(cbN.length>=2 && demAnyN.length>=3){aidp=true;aidpWhy='cociente <0,7 en '+cbN.length+' nervios más un parámetro desmielinizante adicional en otro nervio.';}
-
-  // Inexcitable
-  var inexcitable = (absentN.length===N.length) || (N.length-absentN.length===1 && amp10N.length===N.length);
-
-  // Axonal (solo si no AIDP)
-  var gateAx = velN.length===0 || (velN.length===1 && (velN[0].amp10||velN[0].absent));
-  var axonal=false, axWhy='';
-  if(!aidp && gateAx){
-    if(amp80N.length>=2){axonal=true;axWhy='CMAP distal < 80 % LIN en '+amp80N.length+' nervios, sin rasgos desmielinizantes de velocidad.';}
-    else if(fabsN.length>=2){axonal=true;axWhy='ausencia de onda F en '+fabsN.length+' nervios sin rasgos desmielinizantes.';}
-    else if(cbN.length>=2){axonal=true;axWhy='falla de conducción (cociente <0,7) en '+cbN.length+' nervios sin desmielinización de velocidad (compatible con falla de conducción reversible).';}
-    else if((fabsN.length+cbN.length)>=1 && amp80N.length>=1){axonal=true;axWhy='un nervio con ausencia de F o cociente <0,7 más CMAP distal < 80 % LIN en otro nervio.';}
+  if(H.cat===R.cat){
+    html+='<div class="concord same"><b>Los dos juegos coinciden</b> en clasificar este estudio como <b>'+CAT[H.cat].t.toLowerCase()+'</b>. La conclusión no depende de qué criterios se apliquen.</div>';
+  }else{
+    html+='<div class="concord diff"><b>Los dos juegos discrepan:</b> Hadden lo clasifica como <b>'+CAT[H.cat].t.toLowerCase()+'</b> y Rajabally como <b>'+CAT[R.cat].t.toLowerCase()+'</b>. '+
+      'No es un error de la app ni de la medición: los umbrales de desmielinización de Rajabally son más estrictos, de modo que el mismo estudio cae en categorías distintas. '+
+      'Al informar o publicar un subtipo hay que <b>declarar siempre qué criterios se usaron</b>.</div>';
   }
 
-  var anyAbnormal=N.some(anyAbn);
-  var cls,verdict,msg;
-  if(inexcitable){cls='bad';verdict='Patrón inexcitable';msg='CMAP distal ausente en todos los nervios (o presente en uno con < 10 % LIN). Peor pronóstico; puede corresponder a formas axonales graves o a AIDP muy grave. El estudio seriado ayuda a distinguirlas.';}
-  else if(aidp){cls='warn';verdict='Subtipo desmielinizante (AIDP)';msg='Cumple criterios de desmielinización: '+aidpWhy;}
-  else if(axonal){cls='warn';verdict='Subtipo axonal (AMAN / AMSAN)';msg='Sin rasgos desmielinizantes de velocidad y con: '+axWhy+' La conducción sensitiva conservada orienta a AMAN; su reducción, a AMSAN.';}
-  else if(!anyAbnormal){cls='ok';verdict='Estudio dentro de límites normales';msg='Ningún nervio incluido cumple criterios de anormalidad. Un estudio normal precoz no excluye el SGB: repita las neuroconducciones en 1–2 semanas.';}
-  else{cls='warn';verdict='Equívoco';msg='Hay hallazgos anormales que no encajan en las categorías AIDP, axonal ni inexcitable. Es una situación frecuente en estudios precoces; repita el estudio para reclasificar.';}
+  var rows='';
+  N.forEach(function(d){
+    var hf=hadFeats(d), rv=rajVelFeats(d), extras=[];
+    if(rajFabs(d)) extras.push('F ausente');
+    if(rajRatioLow(d)) extras.push('cociente &lt; 0,7');
+    rows+='<li><b>'+d.name+'</b>'+(d.absent?' — <i>inexcitable</i>':'')+
+          ' · Hadden: '+(hf.length?hf.join('; '):'sin rasgos')+
+          ' · Rajabally: '+((rv.length||extras.length)?rv.concat(extras).join('; '):'sin rasgos')+
+          (lowAmp(d)?' · dCMAP &lt; 80 % LIN':'')+'</li>';
+  });
 
-  var why='<div class="why"><b>Conteo por nervio (incluidos: '+N.length+'):</b><ul>'+
-    '<li>Desmielinizantes de velocidad/latencia: <b>'+velN.length+'</b> · con bloqueo (cociente&lt;0,7): <b>'+cbN.length+'</b> · con F ausente: <b>'+fabsN.length+'</b></li>'+
-    '<li>CMAP &lt;80 % LIN: <b>'+amp80N.length+'</b> · inexcitable/ausente: <b>'+absentN.length+'</b></li>'+
-    '</ul><b>Recuerde:</b> las formas axonales pueden simular desmielinización por <b>falla de conducción reversible</b>; la clasificación definitiva a menudo exige <b>estudio seriado</b>, y el subtipo <b>no modifica el tratamiento</b>.</div>';
-  r.innerHTML='<div class="rcard '+cls+'"><div class="verdict">'+verdict+'</div><p>'+msg+'</p>'+why+'</div>';
-  r.style.display='block';r.scrollIntoView({behavior:'smooth',block:'nearest'});
+  html+='<div class="rcard warn" style="margin-top:12px;background:#122031;border-color:var(--line)">'+
+    '<div class="why" style="border-top:0;padding-top:0;margin-top:0"><b>Rasgos que cumplió cada nervio ('+N.length+' incluidos):</b><ul>'+rows+'</ul>'+
+    '<b>Antes de dar el subtipo por definitivo:</b><ul>'+
+    '<li>Las formas axonales pueden simular desmielinización por <b>falla de conducción reversible</b>, y la clasificación a menudo exige <b>estudio seriado</b>.</li>'+
+    '<li>Al repetir el estudio el subtipo cambia en el <b>37,8 %</b> (Hadden) y el <b>44,7 %</b> (Rajabally) de los pacientes, en direcciones opuestas (Arends 2026).</li>'+
+    '<li>El subtipo <b>no modifica el tratamiento</b>; un estudio normal precoz <b>no excluye</b> el SGB.</li>'+
+    '</ul></div></div>';
+
+  r.innerHTML=html; r.style.display='block'; r.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
+
+function limpiarB(){
+  document.querySelectorAll('#nerves input[type=number]').forEach(function(i){i.value='';});
+  document.querySelectorAll('#nerves input[type=checkbox]').forEach(function(i){i.checked=false;});
+  document.querySelectorAll('#nerves select').forEach(function(s){s.value='na';});
+  document.getElementById('result2').style.display='none';
+  updateNerve();
 }
 
 function setMode(m){
-  document.getElementById('modeA').classList.toggle('hidden',m!=='A');
-  document.getElementById('modeB').classList.toggle('hidden',m!=='B');
-  document.getElementById('btA').classList.toggle('active',m==='A');
-  document.getElementById('btB').classList.toggle('active',m==='B');
+  ['A','B','C'].forEach(function(x){
+    document.getElementById('mode'+x).classList.toggle('hidden',m!==x);
+    document.getElementById('bt'+x).classList.toggle('active',m===x);
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 </script>
 </body></html>
