@@ -125,6 +125,14 @@ const SECTIONS=[
   {n:3,la:"Levator scapulae",x:85.9,y:41.7},
   {n:4,es:"Escápula",x:61,y:58.7},
  ]},
+ {id:"latissimus-serratus", title:"Latissimus dorsi y serratus anterior (línea axilar posterior)", img:"latissimus-serratus.png",
+  orient:"Lado izquierdo de la imagen: superior (cefálico) · lado derecho: inferior (caudal)", items:[
+  {n:1,la:"Serratus anterior",x:63,y:46.6},
+  {n:2,la:"Latissimus dorsi",x:61.8,y:28.2},
+  {n:3,la:"Intercostales",x:38.9,y:72.5},
+  {n:4,es:"Costilla",x:79,y:58.7},
+  {n:5,es:"Pleura",x:38.7,y:86.4},
+ ]},
 ];
 const label=d=> d.la ? "<i>"+d.la+"</i>"+(d.sfx||"") : d.es;
 const markers=document.getElementById('markers');
