@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Patrón de interferencia · giros, segmentos y nubes</title>
+<style>
+:root{
+  --bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;--accent:#3aa0ff;
+  --screen:#08130c;--trace:#7CFC9B;--grid:rgba(124,252,155,0.10);--green:#1f9d57;
+  --act:#7CFC9B;--nss:#ffc857;--out:#5a6b85;--bad:#ff6b6b;--turn:#ffffff;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 50px}
+header{background:linear-gradient(180deg,#0b3d5c,#0e2842);padding:18px 16px 15px;border-bottom:1px solid var(--line)}
+header h1{margin:0;font-size:19px}
+header p{margin:5px 0 0;font-size:12px;color:var(--muted)}
+.wrap{padding:16px;max-width:980px;margin:0 auto}
+canvas{width:100%;display:block;background:var(--screen);border:1px solid #0c1f12;border-radius:8px}
+canvas.plain{background:#101c30;border-color:var(--line)}
+section{margin:0 0 26px}
+h2{font-size:15px;margin:0 0 4px;color:var(--accent)}
+h2 .n{display:inline-block;width:22px;height:22px;line-height:22px;text-align:center;border-radius:50%;background:var(--accent);color:#06203b;font-size:12px;margin-right:7px;vertical-align:1px}
+.lead{font-size:12.5px;color:var(--muted);margin:0 0 12px}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:12px 0 6px}
+button{font-size:14px;border:1px solid var(--line);border-radius:8px;padding:9px 15px;cursor:pointer;background:var(--card);color:var(--txt);font-weight:600}
+button.play{background:var(--green);color:#fff;border-color:var(--green)}
+button:hover{filter:brightness(1.10)}
+button:disabled{opacity:.45;cursor:default}
+select{font-size:14px;border:1px solid var(--line);border-radius:8px;padding:9px 11px;background:var(--card);color:var(--txt);font-weight:600}
+.note{font-size:11.5px;color:var(--muted);line-height:1.55;margin:8px 0 0}
+.clin{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:11px 13px;margin:12px 0 0;font-size:12.5px;color:#cdd9ec}
+.clin b{color:var(--accent)}
+.step{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--nss);border-radius:8px;padding:11px 13px;margin:10px 0 0;font-size:12.5px;color:#cdd9ec;min-height:44px}
+.step b{color:var(--nss)}
+.grid{display:flex;gap:14px;flex-wrap:wrap;margin-top:14px}
+.panel{flex:1 1 260px;min-width:250px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:13px 14px}
+.panel h3{margin:0 0 10px;font-size:13px;color:var(--accent)}
+.sl{display:block;margin-bottom:13px}
+.sl .top{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px}
+.sl .top .l{color:var(--muted)}
+.sl .top .v{font-family:ui-monospace,Menlo,Consolas,monospace;color:var(--txt)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:none;border-radius:0;background:var(--card);font-weight:500;padding:8px 0;flex:1;font-size:13px}
+.seg button.on{background:var(--accent);color:#06203b;font-weight:700}
+.read{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.rd{flex:1 1 108px;min-width:104px;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:9px 10px}
+.rd .k{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.rd .v{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:17px;margin-top:2px}
+.rd .u{font-size:10.5px;color:var(--muted)}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11.5px;font-weight:700}
+.b-ok{background:rgba(31,157,87,.22);color:#7fe0a8;border:1px solid #1f9d57}
+.b-mid{background:rgba(255,200,87,.16);color:#ffd98a;border:1px solid #a07d1f}
+.b-no{background:rgba(255,107,107,.16);color:#ff9d9d;border:1px solid #a03a3a}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px;color:var(--muted);margin-top:9px;align-items:center}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+table.mini{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+table.mini th,table.mini td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left}
+table.mini th{color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.3px}
+table.mini td.n{font-family:ui-monospace,Menlo,Consolas,monospace}
+.two{display:flex;gap:14px;flex-wrap:wrap}
+.two>div{flex:1 1 300px;min-width:280px}
+.cap{font-size:11px;color:var(--muted);margin:5px 0 0;font-style:italic}
+footer{max-width:980px;margin:24px auto 0;padding:0 16px;font-size:11px;color:var(--muted);font-style:italic}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+<h1>Patrón de interferencia</h1>
+<p>Giros, segmentos y nubes del análisis automático (IPA) · sobre la Fig. 2 de Nandedkar, Sanders y Stålberg (1986)</p>
+</header>
+
+<div class="wrap">
+
+<!-- ===================== 1. ESQUEMA ===================== -->
+<section>
+  <h2><span class="n">1</span>El segmento como unidad de medida</h2>
+  <p class="lead">Los cinco parámetros del patrón de interferencia se calculan sobre una sola entidad elemental: el segmento comprendido entre dos giros consecutivos. Este esquema reproduce la Fig. 2 del trabajo original; los giros que ve marcados los detecta el mismo algoritmo que analiza la época real del apartado 2.</p>
+  <canvas id="schem" width="900" height="400"></canvas>
+  <div class="bar">
+    <button id="schPrev">◀ Anterior</button>
+    <button id="schNext" class="play">Siguiente ▶</button>
+    <button id="schAuto">↻ Reiniciar</button>
+    <span class="note" id="schCount" style="margin:0"></span>
+  </div>
+  <div class="step" id="schTxt"></div>
+</section>
+
+<!-- ===================== 2. EPOCA ===================== -->
+<section>
+  <h2><span class="n">2</span>Una época de 500 ms</h2>
+  <p class="lead">Señal sintética construida por suma de potenciales de unidad motora, con reclutamiento y frecuencia de descarga dependientes de la fuerza. El trazo se colorea segmento por segmento según el criterio de amplitud y duración: en verde los que entran en la actividad, en ámbar los que además cuentan como segmentos pequeños (NSS) y en gris los excluidos.</p>
+  <canvas id="epoch" width="900" height="310"></canvas>
+  <div class="legend">
+    <span><i style="background:var(--act)"></i>Contado en la actividad</span>
+    <span><i style="background:var(--nss)"></i>Contado en la actividad y en el NSS (&lt; 2 mV)</span>
+    <span><i style="background:var(--out)"></i>Excluido por el criterio</span>
+    <span><i style="background:var(--turn)"></i>Giro</span>
+  </div>
+
+  <div class="bar">
+    <button id="run" class="play">▶ Animar época</button>
+    <button id="newEp">↻ Nueva época</button>
+    <button id="study">▶ Estudio de 20 épocas</button>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <h3>Registro</h3>
+      <div class="sl">
+        <div class="top"><span class="l">Patrón simulado</span></div>
+        <div class="seg" id="patSeg">
+          <button data-v="normal" class="on">Normal</button>
+          <button data-v="neuro">Neurógeno</button>
+          <button data-v="myo">Miógeno</button>
+        </div>
+      </div>
+      <label class="sl">
+        <div class="top"><span class="l">Fuerza de contracción</span><span class="v" id="vForce">50 %</span></div>
+        <input type="range" id="force" min="5" max="100" step="5" value="50">
+      </label>
+      <label class="sl">
+        <div class="top"><span class="l">Longitud de la época</span><span class="v" id="vEp">500 ms</span></div>
+        <input type="range" id="epms" min="400" max="500" step="100" value="500">
+      </label>
+      <p class="note">El trabajo original empleó épocas de 500 ms; las series normativas recientes usan 400 ms. Los recuentos se expresan por segundo tras escalar la época, de modo que la longitud debe constar en el informe.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Detalle (ventana de 40 ms)</h3>
+      <canvas id="zoomC" class="plain" width="900" height="230" style="margin-bottom:10px"></canvas>
+      <label class="sl" style="margin-bottom:0">
+        <div class="top"><span class="l">Posición de la ventana</span><span class="v" id="vZoom">0 ms</span></div>
+        <input type="range" id="zoom" min="0" max="460" step="2" value="0">
+      </label>
+    </div>
+  </div>
+
+  <div class="read">
+    <div class="rd"><div class="k">Giros</div><div class="v" id="mNT">–</div><div class="u">por segundo</div></div>
+    <div class="rd"><div class="k">Amplitud media</div><div class="v" id="mMA">–</div><div class="u">µV por segmento</div></div>
+    <div class="rd"><div class="k">Actividad</div><div class="v" id="mACT">–</div><div class="u">ms/s (techo 1000)</div></div>
+    <div class="rd"><div class="k">Envolvente (UCA)</div><div class="v" id="mUCA">–</div><div class="u">mV · centil 99</div></div>
+    <div class="rd"><div class="k">NSS</div><div class="v" id="mNSS">–</div><div class="u">segmentos/s</div></div>
+    <div class="rd"><div class="k">Segmentos</div><div class="v" id="mSEG">–</div><div class="u">en la época</div></div>
+  </div>
+  <div class="clin" id="fullBox"></div>
+</section>
+
+<!-- ===================== 3. DISPERSION ===================== -->
+<section>
+  <h2><span class="n">3</span>El criterio de amplitud y duración</h2>
+  <p class="lead">Cada segmento de la época es un punto en el plano amplitud–duración. La escalera marca el límite: solo los segmentos que quedan por debajo de la línea correspondiente a su amplitud entran en la actividad. Es la figura con la que los autores fijaron el criterio, «por tanteo», después de comprobar que la definición inicial —todo segmento de menos de 5 ms— daba valores de actividad espuriamente altos a fuerzas bajas.</p>
+  <canvas id="scatter" class="plain" width="900" height="380"></canvas>
+  <div class="legend">
+    <span><i style="background:var(--act)"></i>Actividad (&gt; 2 mV)</span>
+    <span><i style="background:var(--nss)"></i>Actividad y NSS (&lt; 2 mV)</span>
+    <span><i style="background:var(--out)"></i>Excluido</span>
+    <span><i style="background:var(--accent)"></i>Envolvente (UCA): solo el 1 % de los segmentos la supera</span>
+  </div>
+  <table class="mini">
+    <tr><th>Amplitud del segmento</th><th>Duración máxima admitida</th><th>Cuenta en</th></tr>
+    <tr><td>menos de 0,5 mV</td><td class="n">1,5 ms</td><td>Actividad y NSS</td></tr>
+    <tr><td>0,5 a 2 mV</td><td class="n">3 ms</td><td>Actividad y NSS</td></tr>
+    <tr><td>más de 2 mV</td><td class="n">5 ms</td><td>Actividad</td></tr>
+  </table>
+</section>
+
+<!-- ===================== 4. NUBES ===================== -->
+<section>
+  <h2><span class="n">4</span>Las nubes</h2>
+  <p class="lead">Cada época aporta un punto a cada nube. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse «Estudio de 20 épocas» en el apartado 2 para construir la nube completa.</p>
+
+  <div class="bar">
+    <span class="note" style="margin:0">Referencia: <b>biceps brachii</b>, aguja concéntrica</span>
+    <select id="sex"><option value="H">Hombre</option><option value="M">Mujer</option></select>
+    <select id="age"><option value="joven">Joven</option><option value="media">Edad media</option><option value="mayor">Mayor</option></select>
+    <button id="clearPts">Borrar puntos</button>
+  </div>
+
+  <div class="two">
+    <div>
+      <canvas id="cTA" class="plain" width="600" height="440"></canvas>
+      <p class="cap" id="capTA"></p>
+    </div>
+    <div>
+      <canvas id="cNSS" class="plain" width="600" height="440"></canvas>
+      <p class="cap" id="capNSS"></p>
+    </div>
+  </div>
+  <div style="margin-top:14px">
+    <canvas id="cUCA" class="plain" width="900" height="330"></canvas>
+    <p class="cap">Envolvente frente a actividad. Se representa la trayectoria de los puntos, sin nube: la nube de envolvente–actividad existe y se usa en los equipos, pero los valores normativos publicados por músculo no están disponibles en la literatura consultada, de modo que aquí no se dibuja ningún límite. La dirección de anormalidad es la misma que en la nube de giros–amplitud: por encima, patrón neurógeno; por debajo, miógeno.</p>
+  </div>
+
+  <div class="clin" id="verdict"></div>
+  <div class="clin" id="corrBox" style="border-left-color:var(--nss)"></div>
+</section>
+
+<!-- ===================== NOTAS ===================== -->
+<section>
+  <h2><span class="n">5</span>Notas de lectura</h2>
+  <div class="panel">
+    <h3>Definiciones</h3>
+    <p class="note" style="margin-top:0">
+    <b>Giro:</b> mínimo o máximo local en el que la señal cambia de dirección y la amplitud cambia al menos 100 µV respecto del giro previo y del siguiente. Es un umbral más exigente que los 50 µV con que se cuentan los giros dentro de un MUP aislado.<br><br>
+    <b>Segmento:</b> porción de señal comprendida entre dos giros consecutivos; su amplitud y su duración son las diferencias de amplitud y de tiempo entre los dos giros que lo delimitan.<br><br>
+    <b>Giros por segundo (NT)</b> y <b>amplitud media (MA):</b> los dos parámetros del análisis clásico de Stålberg. La amplitud media de la época es la media de las amplitudes de todos sus segmentos, identidad que unifica los cinco parámetros sobre la misma entidad elemental.<br><br>
+    <b>Actividad:</b> suma de las duraciones de los segmentos que cumplen el criterio conjunto de amplitud y duración, escalada a un segundo. Mide el llenado del patrón, tiene techo teórico de 1000 ms/s y no es un parámetro de enfermedad, sino la covariable frente a la cual se juzgan los demás.<br><br>
+    <b>Envolvente (UCA):</b> amplitud superada solamente por el 1 % de los segmentos de la época. Se descarta ese 1 % porque, en señales simuladas, menos del 8 % de los segmentos supera la amplitud del MUP mayor y esos coinciden con su sumación fortuita con otros potenciales; el centil 99 estima el límite superior de amplitud de los potenciales contenidos en el registro.<br><br>
+    <b>NSS:</b> número por segundo de segmentos de amplitud menor de 2 mV que cumplen el criterio de duración. Mide la complejidad del patrón, reflejo de la polifasia de los MUP que lo componen.
+    </p>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h3>Por qué la actividad va en la abscisa</h3>
+    <p class="note" style="margin-top:0">Las primeras series de análisis del patrón de interferencia midieron el mismo músculo —<i>biceps brachii</i>— a fuerzas distintas, y sus resultados llegan a invertirse: con carga de 2 kg la miopatía aumenta el número de giros, y con contracción máxima lo disminuye. Sin una medida del esfuerzo con que se registró cada época, el signo del hallazgo es ambiguo. La actividad resuelve ese problema porque estima la fuerza mejor que los giros: en el trabajo original correlacionó con el porcentaje de la contracción máxima con <i>r</i> = 0,78 frente a <i>r</i> = 0,61 del número de giros. Por eso las nubes de envolvente y de NSS llevan la actividad en la abscisa, y no los giros.</p>
+    <table class="mini">
+      <tr><th>Serie</th><th>Fuerza</th><th>Neuropatía</th><th>Miopatía</th></tr>
+      <tr><td>Rose y Willison (1967)</td><td>2 kg</td><td>—</td><td>↑ giros</td></tr>
+      <tr><td>Hayward y Willison (1977)</td><td>2 kg</td><td>↑ amplitud media, sin cambio de los giros</td><td>—</td></tr>
+      <tr><td>Fuglsang-Frederiksen (1976, 1977)</td><td>30 % del máximo</td><td>↑ amplitud media, ↓ giros</td><td>↑ y ↓ giros</td></tr>
+      <tr><td>Sica (1978)</td><td>máxima</td><td>↓ giros, solo en enfermedad de motoneurona</td><td>↓ amplitud media, ↓ giros</td></tr>
+    </table>
+    <p class="cap">Tabla 1 de Nandedkar, Sanders y Stålberg (1986), Muscle Nerve 9:431–439.</p>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h3>El ojo se adelanta al número</h3>
+    <p class="note" style="margin-top:0">Los umbrales de llenado no son arbitrarios. En ocho a diez sitios de tres sujetos, con barrido de 10 ms/div y ganancia de 2 mV/div, el electromiografista declaraba el patrón «lleno» con actividades de 320 a 500 ms/s, siempre a fuerzas del 30 al 80 % del máximo; por encima de 500 ms/s el patrón estaba lleno siempre, y a más del 70 % de la fuerza máxima el 97 % de los sitios superó ese valor. La actividad no es máxima cuando desaparece la línea de base porque mide solo la duración del componente de espiga, no los componentes lentos, que son los que la ocultan a la vista.</p>
+  </div>
+
+  <div class="panel" style="margin-top:14px">
+    <h3>Fuentes de los valores normativos</h3>
+    <p class="note" style="margin-top:0">
+    <b>Nube de giros–amplitud:</b> Wang y cols. (2022), <i>Front Neurol</i>, aguja concéntrica, ocho músculos por sexo, edad y lado dominante. La nube es <i>A</i> = 10<sup><i>a</i></sup>·<i>T</i><sup><i>b</i></sup>, con bordes en 10<sup>(<i>a</i>±EE<sub><i>a</i></sub>)</sup>·<i>T</i><sup>(<i>b</i>±EE<sub><i>b</i></sub>)</sup> y borde derecho en el percentil 99 de los giros.<br><br>
+    <b>Nube de NSS–actividad:</b> Li y cols. (2020), <i>Muscle Nerve</i>, 59 sujetos sanos de 15 a 80 años, ocho músculos con aguja concéntrica; regresión de log(NSS) sobre log(actividad) con bordes a ±2 desviaciones estándar residuales.<br><br>
+    En las dos fuentes los grupos de edad no coinciden y para el <i>biceps brachii</i> de la mujer solo hay publicada una fila de la nube de giros–amplitud; el pie de cada gráfico indica la fila exacta que se está usando. Los criterios de anormalidad por porcentaje de puntos fuera de la nube provienen de Wang (2022) para giros–amplitud y de Li (2020) para NSS–actividad.
+    </p>
+  </div>
+</section>
+
+</div>
+
+<footer>
+Material complementario del libro <i>Electrodiagnóstico y Ultrasonido Neuromuscular 2027</i>, de Fernando Ortiz Corredor. La señal es un modelo paramétrico con fines docentes, no un registro real: reproduce las definiciones y los criterios publicados, no la variabilidad biológica de un músculo concreto. Los valores normativos se reproducen con fines docentes citando su origen, y no sustituyen los valores de referencia del propio laboratorio ni el juicio del especialista.
+Recurso educativo de distribución gratuita y sin fines comerciales. © 2027 Fernando Ortiz Corredor.
+</footer>
+
+<script>
+"use strict";
+
+/* ==ENGINE-START==
+   ------------------------------------------------------------------
+   Motor del análisis del patrón de interferencia
+   ------------------------------------------------------------------
+   (1) SINTESIS   : suma de MUAP con reclutamiento dependiente de la fuerza
+   (2) DETECCION  : giros con umbral de 100 uV respecto del giro previo
+   (3) SEGMENTOS  : amplitud y duracion entre giros consecutivos
+   (4) PARAMETROS : NT, MA, actividad, UCA y NSS sobre esos segmentos
+   El mismo detector se aplica al esquema didactico y a la epoca real.
+*/
+
+const DT = 0.05;              // ms por muestra (20 kHz)
+const TURN_THR = 100;         // uV: umbral de giro en el patron de interferencia
+
+/* --- criterio conjunto de amplitud y duracion (Tabla del capitulo) --- */
+function maxDur(ampUV){
+  if(ampUV < 500)  return 1.5;
+  if(ampUV <= 2000) return 3.0;
+  return 5.0;
+}
+function counts(seg){ return seg.dur <= maxDur(seg.amp); }
+function isSmall(seg){ return seg.amp < 2000 && counts(seg); }
+
+/* --- generador reproducible --- */
+function rng(seed){
+  let s = (seed>>>0) || 1;
+  return ()=>{ s ^= s<<13; s>>>=0; s ^= s>>>17; s ^= s<<5; s>>>=0; return s/4294967296; };
+}
+function gaussOf(r){
+  let u=0,v=0; while(u===0) u=r(); while(v===0) v=r();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+
+/* --- patrones --- */
+const PATTERNS = {
+  normal:{ label:"Normal",     nMax:30, ampMed: 900, ampSig:0.32, dur:10.0, shape:"muap",  rateMax:32, expo:0.95 },
+  neuro: { label:"Neurógeno",  nMax: 9,  ampMed:3600, ampSig:0.38, dur:15.0, shape:"neuro", rateMax:45, expo:0.70 },
+  myo:   { label:"Miógeno",    nMax:38, ampMed: 430, ampSig:0.50, dur: 5.0, shape:"poly",  rateMax:28, expo:0.55 }
+};
+
+function shapeComps(kind, r){
+  const j = (s)=> (r()-0.5)*2*s;
+  if(kind==="muap") return [
+    {a:-0.18+j(0.05), c:0.30+j(0.03), w:0.055+j(0.010)},
+    {a: 1.00,         c:0.45+j(0.03), w:0.055+j(0.010)},
+    {a:-0.30+j(0.08), c:0.63+j(0.04), w:0.100+j(0.020)} ];
+  if(kind==="neuro") return [
+    {a:-0.16+j(0.05), c:0.24+j(0.02), w:0.045+j(0.008)},
+    {a: 1.00,         c:0.38+j(0.02), w:0.045+j(0.008)},
+    {a:-0.45+j(0.12), c:0.50+j(0.03), w:0.045+j(0.008)},
+    {a: 0.32+j(0.12), c:0.62+j(0.03), w:0.045+j(0.008)},
+    {a:-0.26+j(0.08), c:0.75+j(0.04), w:0.080+j(0.015)} ];
+  // miopatico: serrado y corto, pero sin exagerar el contenido de alta frecuencia
+  const cs=[0.20,0.34,0.48,0.62,0.76], aa=[-0.48,0.92,-0.72,1.0,-0.50];
+  return cs.map((c,k)=>({a:aa[k]*(1+j(0.20)), c:c+j(0.016), w:0.050+Math.abs(j(0.009))}));
+}
+
+/* plantilla de MUAP normalizada a amplitud pico-pico = 1 */
+function makeTemplate(pat, r){
+  const D = pat.dur*(0.82+0.36*r());
+  const n = Math.max(8, Math.round(D/DT));
+  const comps = shapeComps(pat.shape, r);
+  const y = new Float64Array(n);
+  let mn=Infinity, mx=-Infinity;
+  for(let i=0;i<n;i++){
+    const t=i/(n-1); let v=0;
+    for(const c of comps) v += c.a*Math.exp(-Math.pow((t-c.c)/c.w,2));
+    y[i]=v; if(v<mn)mn=v; if(v>mx)mx=v;
+  }
+  const pp = (mx-mn)||1;
+  for(let i=0;i<n;i++) y[i]/=pp;
+  return y;
+}
+
+/* pool de unidades motoras de un sitio de insercion */
+function makePool(patKey, seed){
+  const pat = PATTERNS[patKey];
+  const r = rng(seed);
+  const pool = [];
+  // ganancia del sitio: la punta de la aguja no queda a la misma distancia de las
+  // fibras en cada insercion, y de ahi buena parte de la dispersion de un estudio real
+  const siteGain = Math.exp(0.33*gaussOf(r));
+  for(let i=0;i<pat.nMax;i++){
+    const amp = pat.ampMed*siteGain*Math.exp(pat.ampSig*gaussOf(r));
+    pool.push({ amp:Math.min(amp, pat.ampMed*8), tpl:makeTemplate(pat,r), ph:r() });
+  }
+  pool.sort((a,b)=>a.amp-b.amp);              // principio del tamano: pequenas primero
+  return { pat, pool, seed };
+}
+
+/* sintesis de una epoca a una fuerza dada (0..1) */
+function synth(site, force, epochMs, seed){
+  const { pat, pool } = site;
+  const r = rng(seed);
+  const n = Math.round(epochMs/DT);
+  const sig = new Float64Array(n);
+
+  // linea de base: deriva lenta + ruido
+  const f1=2.5+3*r(), f2=6+5*r(), ph1=r()*6.28, ph2=r()*6.28;
+  for(let i=0;i<n;i++){
+    const t=i*DT/1000;
+    sig[i] = 26*Math.sin(2*Math.PI*f1*t+ph1) + 16*Math.sin(2*Math.PI*f2*t+ph2) + 13*gaussOf(r);
+  }
+
+  // reclutamiento
+  const N = Math.max(1, Math.round(1 + (pat.nMax-1)*Math.pow(force, pat.expo)));
+  const base = 6 + (pat.rateMax-6)*force;
+  for(let u=0;u<N;u++){
+    const mu = pool[u];
+    const rate = Math.max(5, base*(1 - 0.35*u/Math.max(1,N-1)));
+    const iv = 1000/rate;                     // ms
+    let t = mu.ph*iv;
+    while(t < epochMs){
+      const i0 = Math.round(t/DT);
+      const tpl = mu.tpl;
+      for(let k=0;k<tpl.length;k++){
+        const i=i0+k; if(i>=0 && i<n) sig[i] += tpl[k]*mu.amp;
+      }
+      t += iv*(1 + 0.13*gaussOf(r));
+    }
+  }
+  return sig;
+}
+
+/* deteccion de giros: cambio de direccion con excursion >= 100 uV
+   respecto del giro previo y del siguiente */
+function findTurns(sig){
+  const n = sig.length, out = [];
+  let ref = sig[0], cand = sig[0], candIdx = 0, dir = 0;
+  for(let i=1;i<n;i++){
+    const v = sig[i];
+    if(dir === 0){
+      if(Math.abs(v-ref) >= TURN_THR){ dir = v>ref ? 1 : -1; cand = v; candIdx = i; }
+      continue;
+    }
+    if(dir > 0){
+      if(v > cand){ cand = v; candIdx = i; }
+      else if(cand - v >= TURN_THR){ out.push({i:candIdx, v:cand}); ref = cand; dir = -1; cand = v; candIdx = i; }
+    } else {
+      if(v < cand){ cand = v; candIdx = i; }
+      else if(v - cand >= TURN_THR){ out.push({i:candIdx, v:cand}); ref = cand; dir = 1; cand = v; candIdx = i; }
+    }
+  }
+  return out;
+}
+
+function makeSegments(turns){
+  const segs = [];
+  for(let k=1;k<turns.length;k++){
+    const a=turns[k-1], b=turns[k];
+    segs.push({ i0:a.i, i1:b.i, amp:Math.abs(b.v-a.v), dur:(b.i-a.i)*DT });
+  }
+  return segs;
+}
+
+function percentile(arr, p){
+  if(!arr.length) return 0;
+  const s = arr.slice().sort((a,b)=>a-b);
+  const k = Math.min(s.length-1, Math.max(0, Math.ceil(p*s.length)-1));
+  return s[k];
+}
+
+function analyze(sig, epochMs){
+  const turns = findTurns(sig);
+  const segs = makeSegments(turns);
+  const scale = 1000/epochMs;                      // a un segundo de registro
+  let act = 0, nss = 0;
+  const amps = [];
+  for(const s of segs){
+    amps.push(s.amp);
+    if(counts(s)){ act += s.dur; if(s.amp < 2000) nss++; }
+  }
+  const ma = segs.length ? amps.reduce((a,b)=>a+b,0)/segs.length : 0;
+  return {
+    turns, segs,
+    nt:  turns.length*scale,
+    ma:  ma,
+    act: Math.min(1000, act*scale),
+    uca: percentile(amps, 0.99),
+    nss: nss*scale
+  };
+}
+
+/* ---------- nubes normativas publicadas (biceps brachii, aguja concentrica) ---------- */
+/* Wang 2022: A = 10^a * T^b ; bordes con a+-EEa y b+-EEb ; borde derecho = giros p99 */
+const TA_ROWS = {
+  "H:joven": {a:1.612,ea:0.151,b:0.492,eb:0.056,t99: 985,row:"dominante, hombre, 18–44 años (n = 300)"},
+  "H:media": {a:1.747,ea:0.168,b:0.422,eb:0.063,t99:1016,row:"dominante, hombre, 45–59 años (n = 338)"},
+  "H:mayor": {a:1.202,ea:0.150,b:0.615,eb:0.057,t99: 825,row:"dominante, hombre, ≥ 60 años (n = 295)"},
+  "M:joven": {a:2.304,ea:0.128,b:0.206,eb:0.047,t99: 857,row:"no dominante, mujer, 45–59 años (n = 613) — única fila publicada para la mujer",approx:true},
+  "M:media": {a:2.304,ea:0.128,b:0.206,eb:0.047,t99: 857,row:"no dominante, mujer, 45–59 años (n = 613)"},
+  "M:mayor": {a:2.304,ea:0.128,b:0.206,eb:0.047,t99: 857,row:"no dominante, mujer, 45–59 años (n = 613) — única fila publicada para la mujer",approx:true}
+};
+/* Li 2020: log10(NSS) = intercept + slope*log10(actividad) ; bordes a +-2 DE */
+const NSS_ROWS = {
+  "H:joven": {sl:0.926,ic:0.103,sd:0.119,row:"hombre, 15–39 años (395 registros)"},
+  "H:media": {sl:0.876,ic:0.198,sd:0.116,row:"hombre, 40–64 años (376 registros)"},
+  "H:mayor": {sl:0.878,ic:0.217,sd:0.112,row:"hombre, ≥ 65 años (262 registros)"},
+  "M:joven": {sl:0.922,ic:0.108,sd:0.124,row:"mujer, 15–39 años (424 registros)"},
+  "M:media": {sl:0.905,ic:0.172,sd:0.095,row:"mujer, 40–64 años (415 registros)"},
+  "M:mayor": {sl:0.909,ic:0.169,sd:0.087,row:"mujer, ≥ 65 años (321 registros)"}
+};
+
+function taBand(row, T){
+  return { up: Math.pow(10,row.a+row.ea)*Math.pow(T,row.b+row.eb),
+           lo: Math.pow(10,row.a-row.ea)*Math.pow(T,row.b-row.eb) };
+}
+function nssBand(row, A){
+  const c = row.ic + row.sl*Math.log10(A);
+  return { up: Math.pow(10, c+2*row.sd), lo: Math.pow(10, c-2*row.sd) };
+}
+/* clasificacion de un punto: 0 dentro, +1 por encima, -1 por debajo, 2 a la derecha */
+function classTA(row, nt, ma){
+  if(nt > row.t99) return 2;
+  const b = taBand(row, Math.max(1,nt));
+  if(ma > b.up) return 1;
+  if(ma < b.lo) return -1;
+  return 0;
+}
+function classNSS(row, act, nss){
+  if(act < 10 || nss < 1) return 0;
+  const b = nssBand(row, act);
+  if(nss > b.up) return 1;
+  if(nss < b.lo) return -1;
+  return 0;
+}
+function pearson(xs, ys){
+  const n=xs.length; if(n<3) return NaN;
+  const mx=xs.reduce((a,b)=>a+b,0)/n, my=ys.reduce((a,b)=>a+b,0)/n;
+  let sxy=0,sxx=0,syy=0;
+  for(let i=0;i<n;i++){ const dx=xs[i]-mx, dy=ys[i]-my; sxy+=dx*dy; sxx+=dx*dx; syy+=dy*dy; }
+  return sxy/Math.sqrt(sxx*syy);
+}
+/* ==ENGINE-END== */
+
+/* ================================================================
+   ESTADO
+   ================================================================ */
+const ST = {
+  pat:"normal", force:50, epochMs:500, sex:"H", age:"joven",
+  site:null, sig:null, res:null, zoom:0, reveal:1,
+  points:[], anim:null, studyLeft:0, seedN:1
+};
+
+const $ = id => document.getElementById(id);
+const fmt = (v,d)=> (v===null||v===undefined||!isFinite(v)) ? "–" : v.toLocaleString("es-CO",{minimumFractionDigits:d,maximumFractionDigits:d});
+
+/* ================================================================
+   1 · ESQUEMA (Fig. 2)
+   ================================================================ */
+/* curva del esquema en unidades reales (ms, uV) con una melladura
+   deliberadamente pequena que NO alcanza el umbral de 100 uV */
+const SCH_PTS = [
+  [0.0, 350],[1.0,-200],[2.0,-1050],[3.2, 300],[4.4, 1200],
+  [6.2, 380],[8.4, -650],[9.9, 60],[12.4, 600],[14.2, 300],
+  [17.2,-1150],[19.0,-200],[20.0, 320]
+];
+function catmull(pts, t){          // t en ms
+  const n=pts.length;
+  let k=0; while(k<n-2 && pts[k+1][0]<t) k++;
+  const p0=pts[Math.max(0,k-1)], p1=pts[k], p2=pts[Math.min(n-1,k+1)], p3=pts[Math.min(n-1,k+2)];
+  const span=(p2[0]-p1[0])||1, u=Math.min(1,Math.max(0,(t-p1[0])/span));
+  const u2=u*u, u3=u2*u;
+  return 0.5*((2*p1[1]) + (-p0[1]+p2[1])*u + (2*p0[1]-5*p1[1]+4*p2[1]-p3[1])*u2 + (-p0[1]+3*p1[1]-3*p2[1]+p3[1])*u3);
+}
+function buildSchematic(){
+  const n=Math.round(20/DT)+1, y=new Float64Array(n);
+  for(let i=0;i<n;i++){
+    const t=i*DT;
+    let v=catmull(SCH_PTS,t);
+    // melladura de 60 uV pico-pico centrada en 10,8 ms: no es giro
+    const d=t-10.8;
+    if(Math.abs(d)<0.9) v += 30*Math.sin(Math.PI*d/0.45);
+    y[i]=v;
+  }
+  return y;
+}
+const SCH = { sig:buildSchematic() };
+SCH.turns = findTurns(SCH.sig);
+SCH.segs  = makeSegments(SCH.turns);
+
+const SCH_STEPS = [
+  {t:"<b>La señal.</b> Veinte milisegundos de un patrón de interferencia. Sobre este trazo hay que decidir, de forma automática, qué es un evento y qué no lo es."},
+  {t:"<b>Los giros (T1–T5).</b> Un giro es un mínimo o un máximo local en el que la señal cambia de dirección y la amplitud cambia al menos 100 µV respecto del giro previo y del siguiente. La melladura marcada con ✗ cambia de dirección, pero su excursión es de solo 60 µV: no es un giro. Ese umbral es más exigente que los 50 µV con que se cuentan las fases y los giros dentro de un MUP aislado."},
+  {t:"<b>Los segmentos (S1–S4).</b> Cinco giros definen cuatro segmentos. El segmento es la porción de señal comprendida entre dos giros consecutivos, y es la entidad elemental de todo el análisis."},
+  {t:"<b>Las duraciones (D1–D4).</b> La duración de un segmento es la diferencia de tiempo entre los dos giros que lo delimitan. La suma de las duraciones de los segmentos que cumplen el criterio de amplitud y duración es la <i>actividad</i>."},
+  {t:"<b>Las amplitudes (A1–A4).</b> La amplitud de un segmento es la diferencia de amplitud entre los dos giros que lo delimitan. La media de las amplitudes de todos los segmentos de la época es la <i>amplitud media</i> del análisis clásico; el centil 99 de esas amplitudes es la <i>envolvente</i>."},
+  {t:"<b>De cuatro números a cinco parámetros.</b> Contando los giros se obtiene NT; promediando las amplitudes, MA; sumando las duraciones admitidas, la actividad; tomando el centil 99 de las amplitudes, la envolvente; y contando los segmentos de menos de 2 mV admitidos, el NSS. Los cinco salen del mismo registro, sin prolongarlo ni aumentar la molestia del paciente."}
+];
+
+function drawSchematic(){
+  const c=$("schem"), g=c.getContext("2d");
+  const W=c.width, H=c.height;
+  const L=118, R=W-24, TOP=30, BOT=H-58;
+  g.clearRect(0,0,W,H);
+  g.fillStyle="#08130c"; g.fillRect(0,0,W,H);
+
+  const x = t => L + t/20*(R-L);
+  const yv = v => (TOP+BOT)/2 - v/1500*((BOT-TOP)/2);
+
+  // rejilla
+  g.strokeStyle="rgba(124,252,155,0.09)"; g.lineWidth=1;
+  for(let t=0;t<=20;t+=2){ g.beginPath(); g.moveTo(x(t),TOP); g.lineTo(x(t),BOT); g.stroke(); }
+  for(let v=-1500;v<=1500;v+=500){ g.beginPath(); g.moveTo(L,yv(v)); g.lineTo(R,yv(v)); g.stroke(); }
+  g.strokeStyle="rgba(124,252,155,0.30)"; g.beginPath(); g.moveTo(L,yv(0)); g.lineTo(R,yv(0)); g.stroke();
+
+  // escala de 100 uV
+  g.strokeStyle="#3aa0ff"; g.lineWidth=2;
+  g.beginPath(); g.moveTo(L-30,yv(0)); g.lineTo(L-30,yv(100)); g.stroke();
+  g.beginPath(); g.moveTo(L-35,yv(0)); g.lineTo(L-25,yv(0)); g.stroke();
+  g.beginPath(); g.moveTo(L-35,yv(100)); g.lineTo(L-25,yv(100)); g.stroke();
+  g.fillStyle="#3aa0ff"; g.font="600 11px -apple-system,sans-serif"; g.textAlign="right";
+  g.fillText("100 µV", L-40, yv(50)+4);
+  g.fillText("umbral de giro", L-40, yv(50)+18);
+
+  // trazo
+  g.strokeStyle="#7CFC9B"; g.lineWidth=2.2; g.beginPath();
+  for(let i=0;i<SCH.sig.length;i++){
+    const t=i*DT, px=x(t), py=yv(SCH.sig[i]);
+    i?g.lineTo(px,py):g.moveTo(px,py);
+  }
+  g.stroke();
+
+  const st = ST.reveal;
+  const T = SCH.turns, S = SCH.segs;
+
+  // segmentos resaltados
+  if(st>=2){
+    for(let k=0;k<S.length;k++){
+      const s=S[k];
+      g.strokeStyle="#3aa0ff"; g.lineWidth=3.4; g.globalAlpha=0.55; g.beginPath();
+      for(let i=s.i0;i<=s.i1;i++){ const px=x(i*DT), py=yv(SCH.sig[i]); i===s.i0?g.moveTo(px,py):g.lineTo(px,py); }
+      g.stroke(); g.globalAlpha=1;
+      const mid=(s.i0+s.i1)/2*DT;
+      g.fillStyle="#cfe3ff"; g.font="700 13px -apple-system,sans-serif"; g.textAlign="center";
+      g.fillText("S"+(k+1), x(mid), yv(catmull(SCH_PTS,mid))-16);
+    }
+  }
+
+  // giros
+  if(st>=1){
+    T.forEach((t,k)=>{
+      const px=x(t.i*DT), py=yv(t.v);
+      g.fillStyle="#ffffff"; g.beginPath(); g.arc(px,py,4.6,0,6.283); g.fill();
+      g.fillStyle="#ffffff"; g.font="700 13px -apple-system,sans-serif"; g.textAlign="center";
+      g.fillText("T"+(k+1), px, py + (t.v>0 ? -12 : 22));
+    });
+    // melladura que no califica
+    const pxn=x(10.8), pyn=yv(catmull(SCH_PTS,10.8)+30);
+    g.strokeStyle="#ff6b6b"; g.lineWidth=2; g.beginPath();
+    g.moveTo(pxn-6,pyn-16); g.lineTo(pxn+6,pyn-28); g.moveTo(pxn+6,pyn-16); g.lineTo(pxn-6,pyn-28); g.stroke();
+    g.fillStyle="#ff9d9d"; g.font="600 10.5px -apple-system,sans-serif"; g.textAlign="left";
+    g.fillText("60 µV: no es giro", pxn+12, pyn-20);
+  }
+
+  // duraciones
+  if(st>=3){
+    const yb=BOT+16;
+    for(let k=0;k<S.length;k++){
+      const s=S[k], x0=x(s.i0*DT), x1=x(s.i1*DT);
+      g.strokeStyle="#ffc857"; g.lineWidth=1.6;
+      g.beginPath(); g.moveTo(x0,yb); g.lineTo(x1,yb); g.stroke();
+      g.beginPath(); g.moveTo(x0,yb-4); g.lineTo(x0,yb+4); g.stroke();
+      g.beginPath(); g.moveTo(x1,yb-4); g.lineTo(x1,yb+4); g.stroke();
+      g.fillStyle="#ffd98a"; g.font="600 11px -apple-system,sans-serif"; g.textAlign="center";
+      g.fillText("D"+(k+1)+" = "+fmt(s.dur,1)+" ms", (x0+x1)/2, yb+17);
+    }
+  }
+
+  // amplitudes
+  if(st>=4){
+    for(let k=0;k<S.length;k++){
+      const s=S[k];
+      const v0=SCH.sig[s.i0], v1=SCH.sig[s.i1];
+      const xa=L-52-k*16;
+      g.strokeStyle="#ff9d9d"; g.lineWidth=1.6;
+      g.beginPath(); g.moveTo(xa,yv(v0)); g.lineTo(xa,yv(v1)); g.stroke();
+      g.beginPath(); g.moveTo(xa-4,yv(v0)); g.lineTo(xa+4,yv(v0)); g.stroke();
+      g.beginPath(); g.moveTo(xa-4,yv(v1)); g.lineTo(xa+4,yv(v1)); g.stroke();
+      g.fillStyle="#ff9d9d"; g.font="600 11px -apple-system,sans-serif"; g.textAlign="center";
+      g.fillText("A"+(k+1), xa, Math.min(yv(v0),yv(v1))-6);
+    }
+    g.textAlign="left"; g.fillStyle="#ff9d9d"; g.font="600 10.5px -apple-system,sans-serif";
+    for(let k=0;k<S.length;k++){
+      g.fillText("A"+(k+1)+" = "+Math.round(SCH.segs[k].amp)+" µV", R-118, TOP+14+k*15);
+    }
+  }
+
+  // eje de tiempo
+  g.fillStyle="#9fb2cc"; g.font="11px -apple-system,sans-serif"; g.textAlign="center";
+  for(let t=0;t<=20;t+=5) g.fillText(t+" ms", x(t), H-8);
+}
+
+function schStep(d){
+  ST.reveal = Math.min(SCH_STEPS.length-1, Math.max(0, ST.reveal+d));
+  $("schTxt").innerHTML = SCH_STEPS[ST.reveal].t;
+  $("schCount").textContent = "Paso "+(ST.reveal+1)+" de "+SCH_STEPS.length+
+     " · el detector encuentra "+SCH.turns.length+" giros y "+SCH.segs.length+" segmentos";
+  $("schPrev").disabled = ST.reveal===0;
+  $("schNext").disabled = ST.reveal===SCH_STEPS.length-1;
+  drawSchematic();
+}
+
+/* ================================================================
+   2 · EPOCA REAL
+   ================================================================ */
+function newEpoch(force){
+  const f = (force!==undefined?force:ST.force)/100;
+  if(!ST.site || ST.site.patKey!==ST.pat){
+    ST.site = makePool(ST.pat, 20250905 + ST.seedN*977);
+    ST.site.patKey = ST.pat;
+  }
+  ST.sig = synth(ST.site, f, ST.epochMs, 4711 + (ST.seedN++)*131);
+  ST.res = analyze(ST.sig, ST.epochMs);
+  return ST.res;
+}
+function newSite(){
+  ST.site = makePool(ST.pat, 20250905 + (ST.seedN++)*977);
+  ST.site.patKey = ST.pat;
+}
+
+function segColor(s){
+  if(!counts(s)) return "#5a6b85";
+  return s.amp < 2000 ? "#ffc857" : "#7CFC9B";
+}
+
+function drawEpoch(revealMs){
+  const c=$("epoch"), g=c.getContext("2d");
+  const W=c.width,H=c.height, L=60,R=W-14,TOP=16,BOT=H-30;
+  g.clearRect(0,0,W,H); g.fillStyle="#08130c"; g.fillRect(0,0,W,H);
+  if(!ST.sig) return;
+
+  let peak=0; for(let i=0;i<ST.sig.length;i++) peak=Math.max(peak,Math.abs(ST.sig[i]));
+  const span = Math.max(1000, Math.ceil(peak/500)*500);
+  const x = t => L + t/ST.epochMs*(R-L);
+  const yv = v => (TOP+BOT)/2 - v/span*((BOT-TOP)/2);
+  const upTo = revealMs===undefined ? ST.epochMs : revealMs;
+
+  g.strokeStyle="rgba(124,252,155,0.08)";
+  for(let t=0;t<=ST.epochMs;t+=50){ g.beginPath(); g.moveTo(x(t),TOP); g.lineTo(x(t),BOT); g.stroke(); }
+  for(let k=-2;k<=2;k++){ g.beginPath(); g.moveTo(L,yv(span*k/2)); g.lineTo(R,yv(span*k/2)); g.stroke(); }
+  g.strokeStyle="rgba(124,252,155,0.26)"; g.beginPath(); g.moveTo(L,yv(0)); g.lineTo(R,yv(0)); g.stroke();
+
+  // trazo base atenuado
+  g.strokeStyle="rgba(124,252,155,0.30)"; g.lineWidth=1; g.beginPath();
+  const nmax=Math.round(upTo/DT);
+  for(let i=0;i<nmax;i++){ const px=x(i*DT), py=yv(ST.sig[i]); i?g.lineTo(px,py):g.moveTo(px,py); }
+  g.stroke();
+
+  // segmentos coloreados
+  g.lineWidth=1.6;
+  for(const s of ST.res.segs){
+    if(s.i0*DT > upTo) break;
+    g.strokeStyle=segColor(s); g.beginPath();
+    const iEnd=Math.min(s.i1, nmax-1);
+    for(let i=s.i0;i<=iEnd;i++){ const px=x(i*DT), py=yv(ST.sig[i]); i===s.i0?g.moveTo(px,py):g.lineTo(px,py); }
+    g.stroke();
+  }
+  // giros
+  g.fillStyle="rgba(255,255,255,0.85)";
+  for(const t of ST.res.turns){
+    if(t.i*DT > upTo) break;
+    g.beginPath(); g.arc(x(t.i*DT), yv(t.v), 1.5, 0, 6.283); g.fill();
+  }
+  // ventana de detalle
+  const z0=ST.zoom, z1=Math.min(ST.epochMs, z0+40);
+  g.strokeStyle="#3aa0ff"; g.lineWidth=1.4;
+  g.strokeRect(x(z0), TOP+2, x(z1)-x(z0), BOT-TOP-4);
+
+  // barrido
+  if(revealMs!==undefined && upTo<ST.epochMs){
+    g.strokeStyle="rgba(255,255,255,0.55)"; g.lineWidth=1;
+    g.beginPath(); g.moveTo(x(upTo),TOP); g.lineTo(x(upTo),BOT); g.stroke();
+  }
+
+  g.fillStyle="#9fb2cc"; g.font="11px -apple-system,sans-serif"; g.textAlign="center";
+  for(let t=0;t<=ST.epochMs;t+=100) g.fillText(t+" ms", x(t), H-9);
+  g.textAlign="right";
+  g.fillText("+"+(span/1000).toFixed(1)+" mV", L-6, yv(span)+10);
+  g.fillText("0", L-6, yv(0)+4);
+  g.fillText("−"+(span/1000).toFixed(1)+" mV", L-6, yv(-span)-3);
+}
+
+function drawZoom(){
+  const c=$("zoomC"), g=c.getContext("2d");
+  const W=c.width,H=c.height,L=52,R=W-12,TOP=14,BOT=H-26;
+  g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
+  if(!ST.sig) return;
+  const t0=ST.zoom, t1=Math.min(ST.epochMs, t0+40);
+  const i0=Math.round(t0/DT), i1=Math.round(t1/DT);
+  let peak=0; for(let i=i0;i<i1;i++) peak=Math.max(peak,Math.abs(ST.sig[i]));
+  const span=Math.max(400, Math.ceil(peak/200)*200);
+  const x=t=>L+(t-t0)/(t1-t0)*(R-L);
+  const yv=v=>(TOP+BOT)/2 - v/span*((BOT-TOP)/2);
+
+  g.strokeStyle="rgba(58,160,255,0.12)";
+  for(let t=Math.ceil(t0/5)*5;t<=t1;t+=5){ g.beginPath(); g.moveTo(x(t),TOP); g.lineTo(x(t),BOT); g.stroke(); }
+  g.strokeStyle="rgba(58,160,255,0.30)"; g.beginPath(); g.moveTo(L,yv(0)); g.lineTo(R,yv(0)); g.stroke();
+
+  g.strokeStyle="rgba(124,252,155,0.35)"; g.lineWidth=1.2; g.beginPath();
+  for(let i=i0;i<=i1 && i<ST.sig.length;i++){ const px=x(i*DT),py=yv(ST.sig[i]); i===i0?g.moveTo(px,py):g.lineTo(px,py); }
+  g.stroke();
+
+  let k=0;
+  g.lineWidth=2.6;
+  for(const s of ST.res.segs){
+    if(s.i1<i0 || s.i0>i1) continue;
+    g.strokeStyle=segColor(s); g.beginPath();
+    for(let i=Math.max(s.i0,i0);i<=Math.min(s.i1,i1);i++){ const px=x(i*DT),py=yv(ST.sig[i]); i===Math.max(s.i0,i0)?g.moveTo(px,py):g.lineTo(px,py); }
+    g.stroke();
+    if(++k<=14){
+      const mid=(Math.max(s.i0,i0)+Math.min(s.i1,i1))/2;
+      g.fillStyle=segColor(s); g.font="600 10px -apple-system,sans-serif"; g.textAlign="center";
+      g.fillText(fmt(s.amp/1000,2)+" mV · "+fmt(s.dur,1)+" ms", x(mid*DT), yv(ST.sig[Math.round(mid)])-9);
+    }
+  }
+  g.fillStyle="#fff";
+  for(const t of ST.res.turns){
+    if(t.i<i0||t.i>i1) continue;
+    g.beginPath(); g.arc(x(t.i*DT), yv(t.v), 3, 0, 6.283); g.fill();
+  }
+  g.fillStyle="#9fb2cc"; g.font="11px -apple-system,sans-serif"; g.textAlign="center";
+  for(let t=Math.ceil(t0/10)*10;t<=t1;t+=10) g.fillText(t+" ms", x(t), H-8);
+  g.textAlign="right"; g.fillText("±"+(span/1000).toFixed(1)+" mV", L-5, TOP+10);
+}
+
+function drawScatter(){
+  const c=$("scatter"), g=c.getContext("2d");
+  const W=c.width,H=c.height,L=62,R=W-18,TOP=18,BOT=H-40;
+  g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
+  const AMAX=8, DMAX=8;                             // mV, ms
+  const x=a=>L+Math.min(a,AMAX)/AMAX*(R-L);
+  const y=d=>BOT-Math.min(d,DMAX)/DMAX*(BOT-TOP);
+
+  g.strokeStyle="rgba(58,160,255,0.12)"; g.lineWidth=1;
+  for(let a=0;a<=AMAX;a++){ g.beginPath(); g.moveTo(x(a),TOP); g.lineTo(x(a),BOT); g.stroke(); }
+  for(let d=0;d<=DMAX;d++){ g.beginPath(); g.moveTo(L,y(d)); g.lineTo(R,y(d)); g.stroke(); }
+
+  // escalera del criterio
+  g.strokeStyle="#ff9d9d"; g.lineWidth=2.2; g.beginPath();
+  g.moveTo(x(0),y(1.5)); g.lineTo(x(0.5),y(1.5));
+  g.lineTo(x(0.5),y(3));  g.lineTo(x(2),y(3));
+  g.lineTo(x(2),y(5));    g.lineTo(x(AMAX),y(5));
+  g.stroke();
+  g.fillStyle="#ff9d9d"; g.font="600 11px -apple-system,sans-serif"; g.textAlign="left";
+  g.fillText("límite del criterio: por debajo, el segmento se cuenta", x(2.3), y(5)-8);
+
+  if(ST.res){
+    for(const s of ST.res.segs){
+      g.fillStyle=segColor(s);
+      g.globalAlpha = counts(s)?0.85:0.5;
+      g.beginPath(); g.arc(x(s.amp/1000), y(s.dur), 2.3, 0, 6.283); g.fill();
+    }
+    g.globalAlpha=1;
+    // UCA
+    const ux=x(ST.res.uca/1000);
+    g.strokeStyle="#3aa0ff"; g.lineWidth=1.8; g.setLineDash([5,4]);
+    g.beginPath(); g.moveTo(ux,TOP); g.lineTo(ux,BOT); g.stroke(); g.setLineDash([]);
+    g.fillStyle="#3aa0ff"; g.textAlign = ux>W*0.7?"right":"left";
+    g.fillText(" UCA = "+fmt(ST.res.uca/1000,2)+" mV", ux, TOP+12);
+  }
+
+  g.fillStyle="#9fb2cc"; g.font="11px -apple-system,sans-serif"; g.textAlign="center";
+  for(let a=0;a<=AMAX;a+=1) g.fillText(a, x(a), BOT+16);
+  g.fillText("amplitud del segmento (mV)", (L+R)/2, H-8);
+  g.textAlign="right";
+  for(let d=0;d<=DMAX;d+=1) g.fillText(d, L-6, y(d)+4);
+  g.save(); g.translate(14,(TOP+BOT)/2); g.rotate(-Math.PI/2); g.textAlign="center";
+  g.fillText("duración del segmento (ms)",0,0); g.restore();
+}
+
+/* ================================================================
+   4 · NUBES
+   ================================================================ */
+function logAxes(g, box, xr, yr, xt, yt, xlab, ylab){
+  const {L,R,TOP,BOT}=box;
+  const lx=v=>L+(Math.log10(v)-Math.log10(xr[0]))/(Math.log10(xr[1])-Math.log10(xr[0]))*(R-L);
+  const ly=v=>BOT-(Math.log10(v)-Math.log10(yr[0]))/(Math.log10(yr[1])-Math.log10(yr[0]))*(BOT-TOP);
+  g.strokeStyle="rgba(58,160,255,0.12)"; g.lineWidth=1;
+  xt.forEach(v=>{ g.beginPath(); g.moveTo(lx(v),TOP); g.lineTo(lx(v),BOT); g.stroke(); });
+  yt.forEach(v=>{ g.beginPath(); g.moveTo(L,ly(v)); g.lineTo(R,ly(v)); g.stroke(); });
+  g.fillStyle="#9fb2cc"; g.font="10.5px -apple-system,sans-serif"; g.textAlign="center";
+  xt.forEach(v=>g.fillText(v, lx(v), BOT+15));
+  g.fillText(xlab,(L+R)/2,BOT+33);
+  g.textAlign="right";
+  yt.forEach(v=>g.fillText(v, L-5, ly(v)+4));
+  g.save(); g.translate(13,(TOP+BOT)/2); g.rotate(-Math.PI/2); g.textAlign="center";
+  g.fillText(ylab,0,0); g.restore();
+  return {lx,ly};
+}
+
+function drawCloudTA(){
+  const c=$("cTA"), g=c.getContext("2d");
+  const W=c.width,H=c.height, box={L:58,R:W-16,TOP:34,BOT:H-46};
+  g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
+  const row=TA_ROWS[ST.sex+":"+ST.age];
+  const xr=[80,1400], yr=[100,4000];
+  const {lx,ly}=logAxes(g,box,xr,yr,[100,200,500,1000],[100,200,500,1000,2000],"giros por segundo","amplitud media (µV)");
+
+  g.fillStyle="#e8eef7"; g.font="700 12px -apple-system,sans-serif"; g.textAlign="left";
+  g.fillText("Nube de giros y amplitud", box.L, 20);
+
+  // nube
+  const pts=[];
+  for(let t=xr[0]; t<=Math.min(row.t99,xr[1]); t*=1.03) pts.push(t);
+  pts.push(Math.min(row.t99,xr[1]));
+  g.beginPath();
+  pts.forEach((t,i)=>{ const v=taBand(row,t).up; i?g.lineTo(lx(t),ly(v)):g.moveTo(lx(t),ly(v)); });
+  for(let i=pts.length-1;i>=0;i--){ const t=pts[i], v=taBand(row,t).lo; g.lineTo(lx(t),ly(v)); }
+  g.closePath();
+  g.fillStyle="rgba(58,160,255,0.10)"; g.fill();
+  g.strokeStyle="#3aa0ff"; g.lineWidth=1.8; g.stroke();
+
+  // borde derecho
+  g.strokeStyle="#3aa0ff"; g.setLineDash([4,4]);
+  g.beginPath(); g.moveTo(lx(row.t99),box.TOP); g.lineTo(lx(row.t99),box.BOT); g.stroke(); g.setLineDash([]);
+  g.fillStyle="#3aa0ff"; g.font="10px -apple-system,sans-serif"; g.textAlign="right";
+  g.fillText("giros p99", lx(row.t99)-4, box.TOP+11);
+
+  // puntos
+  ST.points.forEach((p,k)=>{
+    const cl=classTA(row,p.nt,p.ma);
+    g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
+    const last = k===ST.points.length-1;
+    g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],p.nt))), ly(Math.max(yr[0],Math.min(yr[1],p.ma))), last?5:3.2, 0, 6.283); g.fill();
+    if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
+  });
+
+  g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
+  g.fillText("por encima: neurógeno · por debajo o a la derecha: miógeno", box.L, 32);
+  $("capTA").innerHTML = "Nube de giros–amplitud, <i>biceps brachii</i> con aguja concéntrica: "+row.row+". Wang y cols. (2022)."+
+    (row.approx?" <b>Atención:</b> se está usando una fila de otro grupo de edad porque es la única publicada para la mujer en este músculo.":"");
+}
+
+function drawCloudNSS(){
+  const c=$("cNSS"), g=c.getContext("2d");
+  const W=c.width,H=c.height, box={L:58,R:W-16,TOP:34,BOT:H-46};
+  g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
+  const row=NSS_ROWS[ST.sex+":"+ST.age];
+  const xr=[20,1100], yr=[5,1500];
+  const {lx,ly}=logAxes(g,box,xr,yr,[20,50,100,200,500,1000],[10,50,100,500,1000],"actividad (ms/s)","NSS (segmentos/s)");
+
+  g.fillStyle="#e8eef7"; g.font="700 12px -apple-system,sans-serif"; g.textAlign="left";
+  g.fillText("Nube de NSS y actividad", box.L, 20);
+
+  const pts=[];
+  for(let a=xr[0]; a<=1000; a*=1.03) pts.push(a);
+  pts.push(1000);
+  g.beginPath();
+  pts.forEach((a,i)=>{ const v=nssBand(row,a).up; i?g.lineTo(lx(a),ly(v)):g.moveTo(lx(a),ly(v)); });
+  for(let i=pts.length-1;i>=0;i--){ const a=pts[i], v=nssBand(row,a).lo; g.lineTo(lx(a),ly(v)); }
+  g.closePath();
+  g.fillStyle="rgba(255,200,87,0.10)"; g.fill();
+  g.strokeStyle="#ffc857"; g.lineWidth=1.8; g.stroke();
+
+  g.strokeStyle="#ffc857"; g.setLineDash([4,4]);
+  g.beginPath(); g.moveTo(lx(1000),box.TOP); g.lineTo(lx(1000),box.BOT); g.stroke(); g.setLineDash([]);
+  g.fillStyle="#ffc857"; g.font="10px -apple-system,sans-serif"; g.textAlign="right";
+  g.fillText("techo de la actividad", lx(1000)-4, box.TOP+11);
+
+  ST.points.forEach((p,k)=>{
+    const cl=classNSS(row,p.act,p.nss);
+    g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
+    const last=k===ST.points.length-1;
+    g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],p.act))), ly(Math.max(yr[0],Math.min(yr[1],p.nss))), last?5:3.2,0,6.283); g.fill();
+    if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
+  });
+
+  g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
+  g.fillText("por encima: miógeno · por debajo: neurógeno", box.L, 32);
+  $("capNSS").innerHTML = "Nube de NSS–actividad, <i>biceps brachii</i> (cabeza larga) con aguja concéntrica: "+row.row+
+    ". Pendiente "+row.sl.toFixed(3)+", intercepto "+row.ic.toFixed(3)+", DE residual "+row.sd.toFixed(3)+"; bordes a ±2 DE. Li y cols. (2020).";
+}
+
+function drawCloudUCA(){
+  const c=$("cUCA"), g=c.getContext("2d");
+  const W=c.width,H=c.height, box={L:58,R:W-16,TOP:34,BOT:H-46};
+  g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
+  const xr=[20,1100], yr=[200,20000];
+  const {lx,ly}=logAxes(g,box,xr,yr,[20,50,100,200,500,1000],[500,1000,5000,10000],"actividad (ms/s)","envolvente UCA (µV)");
+  g.fillStyle="#e8eef7"; g.font="700 12px -apple-system,sans-serif"; g.textAlign="left";
+  g.fillText("Envolvente y actividad · sin nube normativa publicada", box.L, 20);
+
+  // umbrales de llenado
+  [[320,"#a07d1f"],[500,"#1f9d57"]].forEach(([a,col])=>{
+    g.strokeStyle=col; g.setLineDash([4,4]); g.lineWidth=1.4;
+    g.beginPath(); g.moveTo(lx(a),box.TOP); g.lineTo(lx(a),box.BOT); g.stroke(); g.setLineDash([]);
+    g.fillStyle=col; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
+    g.fillText(a+" ms/s", lx(a)+3, box.BOT-6);
+  });
+
+  g.strokeStyle="rgba(58,160,255,0.45)"; g.lineWidth=1.2; g.beginPath();
+  ST.points.forEach((p,i)=>{ const px=lx(Math.max(xr[0],Math.min(xr[1],p.act))), py=ly(Math.max(yr[0],Math.min(yr[1],p.uca))); i?g.lineTo(px,py):g.moveTo(px,py); });
+  g.stroke();
+  ST.points.forEach((p,k)=>{
+    const last=k===ST.points.length-1;
+    g.fillStyle="#3aa0ff";
+    g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],p.act))), ly(Math.max(yr[0],Math.min(yr[1],p.uca))), last?5:3.2,0,6.283); g.fill();
+    if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
+  });
+}
+
+/* ================================================================
+   LECTURAS, VEREDICTOS
+   ================================================================ */
+function fullState(act){
+  if(act > 500) return {cls:"b-ok",  t:"patrón completo"};
+  if(act >= 320) return {cls:"b-mid", t:"llenado dudoso"};
+  return {cls:"b-no", t:"patrón incompleto"};
+}
+
+function updateReadouts(){
+  if(!ST.res) return;
+  const r=ST.res;
+  $("mNT").textContent  = Math.round(r.nt);
+  $("mMA").textContent  = Math.round(r.ma);
+  $("mACT").textContent = Math.round(r.act);
+  $("mUCA").textContent = fmt(r.uca/1000,2);
+  $("mNSS").textContent = Math.round(r.nss);
+  $("mSEG").textContent = r.segs.length;
+  const st=fullState(r.act);
+  const nAct=r.segs.filter(counts).length, nSm=r.segs.filter(isSmall).length;
+  $("fullBox").innerHTML =
+    "<span class='badge "+st.cls+"'>"+st.t+"</span> &nbsp;Actividad de <b>"+Math.round(r.act)+" ms/s</b> a una fuerza del "+ST.force+" % del máximo. "+
+    "De los "+r.segs.length+" segmentos de la época, "+nAct+" cumplen el criterio y entran en la actividad, y "+nSm+" de ellos miden menos de 2 mV y cuentan además como segmentos pequeños. "+
+    (r.act<=320
+      ? "Un músculo cuyos registros no superan 320 ms/s no ha sido explorado en el rango de fuerza en que las nubes discriminan mejor: su normalidad debe informarse como provisional."
+      : (r.act<500
+        ? "Entre 320 y 500 ms/s el patrón puede estar lleno o no a la vista del examinador. Conviene alcanzar en algunos registros más de 500 ms/s."
+        : "Por encima de 500 ms/s el patrón está lleno a la inspección visual en todos los registros de la serie original."));
+}
+
+function updateVerdict(){
+  const rowTA=TA_ROWS[ST.sex+":"+ST.age], rowNSS=NSS_ROWS[ST.sex+":"+ST.age];
+  const n=ST.points.length;
+  if(n<2){ $("verdict").innerHTML="Registre varias épocas —o pulse «Estudio de 20 épocas»— para valorar las nubes. El criterio no se aplica a un punto aislado."; return; }
+  let taUp=0,taLo=0,nsUp=0,nsLo=0;
+  ST.points.forEach(p=>{
+    const a=classTA(rowTA,p.nt,p.ma); if(a===1)taUp++; else if(a===-1||a===2)taLo++;
+    const b=classNSS(rowNSS,p.act,p.nss); if(b===1)nsUp++; else if(b===-1)nsLo++;
+  });
+  const pc=v=>Math.round(v/n*100);
+  const flags=[];
+  if(pc(taUp)>25) flags.push("nube de giros–amplitud: "+pc(taUp)+" % de los puntos por encima del borde superior (umbral de 25 %) → <b>patrón neurógeno</b>");
+  if(pc(taLo)>18) flags.push("nube de giros–amplitud: "+pc(taLo)+" % por debajo del borde inferior o a la derecha (umbral de 18 %) → <b>patrón miógeno</b>");
+  if(pc(nsUp)>15) flags.push("nube de NSS–actividad: "+pc(nsUp)+" % por encima (umbral de 15 %) → <b>patrón miógeno</b>");
+  if(pc(nsLo)>15) flags.push("nube de NSS–actividad: "+pc(nsLo)+" % por debajo (umbral de 15 %) → <b>patrón neurógeno</b>");
+  const maxAct=Math.max(...ST.points.map(p=>p.act));
+
+  let html="<b>"+n+" épocas registradas.</b> Giros–amplitud: "+pc(taUp)+" % por encima, "+pc(taLo)+" % por debajo o a la derecha. "+
+           "NSS–actividad: "+pc(nsUp)+" % por encima, "+pc(nsLo)+" % por debajo. Actividad máxima alcanzada: "+Math.round(maxAct)+" ms/s.";
+  html += flags.length ? "<br><br>"+flags.map(f=>"• "+f).join("<br>")
+                       : "<br><br>Ningún criterio de anormalidad se cumple: las nubes son normales.";
+  const marginal = flags.length && Math.max(pc(taUp),pc(taLo),pc(nsUp),pc(nsLo)) < 30;
+  if(marginal) html += "<br><br>El porcentaje queda apenas por encima del umbral. Con puntos dispersos, y sobre todo en los registros de baja actividad —donde el número de eventos contados es pequeño—, esa situación obedece con más frecuencia a causas técnicas que a enfermedad: aguja en aponeurosis o en tejido graso, contracción no isométrica, filtros mal ajustados o interferencia de la red.";
+  if(maxAct<500) html += "<br><br><span class='badge b-mid'>muestreo insuficiente</span> Ningún registro superó 500 ms/s. El músculo no puede informarse como normal: consígnelo como muestreo insuficiente.";
+  if(flags.length>1){
+    const contradictory = (pc(taUp)>25 && pc(nsUp)>15);
+    if(contradictory) html += "<br><br>Las dos nubes apuntan en direcciones opuestas (envolvente alta con NSS alto). Esa combinación apunta antes a un problema técnico —aguja muy próxima a las fibras, ruido de alta frecuencia— que a enfermedad.";
+  }
+  html += "<br><br>Con umbrales fijados para una especificidad superior al 94 %, ninguna de estas técnicas detecta más de la mitad de los músculos afectados: el análisis del patrón de interferencia confirma, no excluye.";
+  $("verdict").innerHTML=html;
+}
+
+function updateCorr(){
+  const n=ST.points.length;
+  if(n<5){ $("corrBox").innerHTML="Con cinco o más épocas a fuerzas distintas se puede comprobar aquí la correlación de la actividad y de los giros con la fuerza de contracción."; return; }
+  const f=ST.points.map(p=>p.force);
+  const rAct=pearson(f, ST.points.map(p=>p.act));
+  const rNT =pearson(f, ST.points.map(p=>p.nt));
+  const rUCA=pearson(f, ST.points.map(p=>Math.log10(Math.max(1,p.uca))));
+  $("corrBox").innerHTML =
+    "<b>Comprobación.</b> En estas "+n+" épocas, la correlación con el porcentaje de la fuerza máxima es de <b>r = "+fmt(rAct,2)+"</b> para la actividad, "+
+    "<b>r = "+fmt(rNT,2)+"</b> para el número de giros y <b>r = "+fmt(rUCA,2)+"</b> para el logaritmo de la envolvente. "+
+    "En el trabajo original, con 12 músculos normales, fueron 0,78, 0,61 y 0,75. En la simulación las tres salen más altas y más parecidas entre sí, "+
+    "porque el modelo no incorpora la variabilidad entre sujetos —doce músculos con fuerzas máximas distintas— que dispersa los datos reales. "+
+    "Lo que el modelo sí reproduce es la razón de fondo por la que la actividad va en la abscisa: crece con la fuerza hasta su techo de 1000 ms/s, "+
+    "mientras que el número de giros se queda atrás cuando los potenciales grandes empiezan a enmascarar a los pequeños.";
+}
+
+function redrawAll(){
+  drawEpoch(); drawZoom(); drawScatter();
+  drawCloudTA(); drawCloudNSS(); drawCloudUCA();
+  updateReadouts(); updateVerdict(); updateCorr();
+}
+
+function pushPoint(){
+  const r=ST.res;
+  ST.points.push({nt:r.nt, ma:r.ma, act:r.act, uca:r.uca, nss:r.nss, force:ST.force});
+  if(ST.points.length>60) ST.points.shift();
+}
+
+/* ================================================================
+   ANIMACION
+   ================================================================ */
+function animateEpoch(after){
+  if(ST.anim) cancelAnimationFrame(ST.anim);
+  const t0=performance.now(), DUR=1400;
+  const step=(now)=>{
+    const k=Math.min(1,(now-t0)/DUR);
+    const ms=k*ST.epochMs;
+    ST.zoom = Math.max(0, Math.min(ST.epochMs-40, ms-40));
+    $("zoom").value = Math.round(ST.zoom);
+    $("vZoom").textContent = Math.round(ST.zoom)+" ms";
+    drawEpoch(ms); drawZoom();
+    if(k<1){ ST.anim=requestAnimationFrame(step); }
+    else { ST.anim=null; redrawAll(); if(after) after(); }
+  };
+  ST.anim=requestAnimationFrame(step);
+}
+
+const STUDY_FORCES=[15,30,50,70,85];
+function runStudy(){
+  ST.points=[]; let site=0, lvl=0;
+  const next=()=>{
+    if(site>=4){ redrawAll(); $("study").disabled=false; $("run").disabled=false; return; }
+    if(lvl===0) newSite();
+    ST.force = STUDY_FORCES[lvl];
+    $("force").value=ST.force; $("vForce").textContent=ST.force+" %";
+    newEpoch(ST.force);
+    animateEpoch(()=>{ pushPoint(); redrawAll();
+      lvl++; if(lvl>=STUDY_FORCES.length){ lvl=0; site++; }
+      setTimeout(next, 120);
+    });
+  };
+  $("study").disabled=true; $("run").disabled=true;
+  next();
+}
+
+/* ================================================================
+   EVENTOS
+   ================================================================ */
+$("schPrev").onclick=()=>schStep(-1);
+$("schNext").onclick=()=>schStep(+1);
+$("schAuto").onclick=()=>{ ST.reveal=0; schStep(0); };
+
+document.querySelectorAll("#patSeg button").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll("#patSeg button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    ST.pat=b.dataset.v; ST.points=[]; newSite(); newEpoch(); redrawAll();
+  };
+});
+$("force").oninput=e=>{ ST.force=+e.target.value; $("vForce").textContent=ST.force+" %"; newEpoch(); redrawAll(); };
+$("epms").oninput=e=>{ ST.epochMs=+e.target.value; $("vEp").textContent=ST.epochMs+" ms";
+  $("zoom").max=ST.epochMs-40; ST.zoom=Math.min(ST.zoom,ST.epochMs-40); ST.points=[]; newEpoch(); redrawAll(); };
+$("zoom").oninput=e=>{ ST.zoom=+e.target.value; $("vZoom").textContent=ST.zoom+" ms"; drawEpoch(); drawZoom(); };
+$("run").onclick=()=>{ newEpoch(); animateEpoch(()=>{ pushPoint(); redrawAll(); }); };
+$("newEp").onclick=()=>{ newEpoch(); pushPoint(); redrawAll(); };
+$("study").onclick=runStudy;
+$("clearPts").onclick=()=>{ ST.points=[]; redrawAll(); };
+$("sex").onchange=e=>{ ST.sex=e.target.value; redrawAll(); };
+$("age").onchange=e=>{ ST.age=e.target.value; redrawAll(); };
+
+/* ================================================================
+   ARRANQUE
+   ================================================================ */
+$("vForce").textContent = ST.force+" %";
+$("vEp").textContent    = ST.epochMs+" ms";
+$("vZoom").textContent  = ST.zoom+" ms";
+$("zoom").max = ST.epochMs-40;
+schStep(0);
+newSite(); newEpoch(); pushPoint(); redrawAll();
+</script>
+</body>
+</html>
