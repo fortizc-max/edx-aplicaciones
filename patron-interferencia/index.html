@@ -117,6 +117,14 @@ a{color:var(--accent)}
           <button data-v="myo">Miógeno</button>
         </div>
       </div>
+      <div class="sl">
+        <div class="top"><span class="l">Definición de la actividad y del NSS</span></div>
+        <div class="seg" id="defSeg">
+          <button data-v="li" class="on">Actual: &lt; 5 ms</button>
+          <button data-v="orig">Original: amplitud–duración</button>
+        </div>
+        <p class="note">La forma que imprime la literatura reciente ---Li (2020)--- admite en la actividad <b>todo segmento de menos de 5 ms</b>, y cuenta como segmento pequeño el que además mide menos de 2 mV. La <b>original</b> de Nandedkar (1986a) exige que los segmentos de menor amplitud sean además más breves. Todo segmento admitido por la original lo admite también la de 5 ms, de modo que ésta nunca da un valor menor.<br><br><b>Cada nube debe leerse con la definición con la que fue construida.</b> Las nubes tradicionales del apartado 4 se levantaron con el criterio original, y con él discriminan mejor: en esta simulación el patrón miógeno sale de la nube de NSS en la gran mayoría de los registros con la definición original, y apenas en una fracción pequeña con la de 5 ms, porque ésta engorda a la vez la abscisa y la ordenada y arrastra el punto a lo largo de la nube en vez de sacarlo de ella.</p>
+      </div>
       <label class="sl">
         <div class="top"><span class="l">Fuerza de contracción</span><span class="v" id="vForce">50 %</span></div>
         <input type="range" id="force" min="5" max="100" step="5" value="50">
@@ -146,13 +154,14 @@ a{color:var(--accent)}
     <div class="rd"><div class="k">NSS</div><div class="v" id="mNSS">–</div><div class="u">segmentos/s</div></div>
     <div class="rd"><div class="k">Segmentos</div><div class="v" id="mSEG">–</div><div class="u">en la época</div></div>
   </div>
+  <div class="clin" id="defBox" style="border-left-color:var(--nss)"></div>
   <div class="clin" id="fullBox"></div>
 </section>
 
 <!-- ===================== 3. DISPERSION ===================== -->
 <section>
   <h2><span class="n">3</span>El criterio de amplitud y duración</h2>
-  <p class="lead">Cada segmento de la época es un punto en el plano amplitud–duración. La escalera marca el límite: solo los segmentos que quedan por debajo de la línea correspondiente a su amplitud entran en la actividad. Es la figura con la que los autores fijaron el criterio, «por tanteo», después de comprobar que la definición inicial —todo segmento de menos de 5 ms— daba valores de actividad espuriamente altos a fuerzas bajas.</p>
+  <p class="lead">Cada segmento de la época es un punto en el plano amplitud–duración, y aquí se ven a la vez las dos definiciones. La <b>línea horizontal de 5 ms</b> es el límite de la definición vigente: por debajo, el segmento cuenta. La <b>escalera</b> es el criterio original, que exige a los segmentos de menor amplitud ser además más breves. La franja sombreada entre las dos es exactamente lo que la definición vigente añade —segmentos de baja amplitud y duración intermedia—, y es la que Nandedkar y colaboradores encontraron espuria a fuerzas bajas: procede de las oscilaciones de la línea de base y de los puntos de inflexión entre potenciales sucesivos. Los límites definitivos de la escalera, según reconocen los autores, se fijaron por tanteo.</p>
   <canvas id="scatter" class="plain" width="900" height="380"></canvas>
   <div class="legend">
     <span><i style="background:var(--act)"></i>Actividad (&gt; 2 mV)</span>
@@ -161,11 +170,12 @@ a{color:var(--accent)}
     <span><i style="background:var(--accent)"></i>Envolvente (UCA): solo el 1 % de los segmentos la supera</span>
   </div>
   <table class="mini">
-    <tr><th>Amplitud del segmento</th><th>Duración máxima admitida</th><th>Cuenta en</th></tr>
-    <tr><td>menos de 0,5 mV</td><td class="n">1,5 ms</td><td>Actividad y NSS</td></tr>
-    <tr><td>0,5 a 2 mV</td><td class="n">3 ms</td><td>Actividad y NSS</td></tr>
-    <tr><td>más de 2 mV</td><td class="n">5 ms</td><td>Actividad</td></tr>
+    <tr><th>Amplitud del segmento</th><th>Duración máxima · definición vigente</th><th>Duración máxima · definición original</th></tr>
+    <tr><td>menos de 0,5 mV</td><td class="n">5 ms</td><td class="n">1,5 ms</td></tr>
+    <tr><td>0,5 a 2 mV</td><td class="n">5 ms</td><td class="n">3 ms</td></tr>
+    <tr><td>más de 2 mV</td><td class="n">5 ms</td><td class="n">5 ms</td></tr>
   </table>
+  <p class="note">En las dos definiciones, un segmento admitido cuenta además como <b>segmento pequeño</b> (NSS) si su amplitud es menor de 2 mV. Li y cols. (2020) enuncian el NSS solo como «número de segmentos de amplitud menor de 2 mV», sin límite de duración; aquí se aplica el mismo límite de 5 ms que a la actividad, porque sin ninguno los segmentos largos de la línea de base —el problema que resolvió el criterio original— inflan el recuento a fuerzas bajas.</p>
 </section>
 
 <!-- ===================== 4. NUBES ===================== -->
@@ -174,11 +184,22 @@ a{color:var(--accent)}
   <p class="lead">Cada época aporta un punto a cada nube. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse «Estudio de 20 épocas» en el apartado 2 para construir la nube completa.</p>
 
   <div class="bar">
-    <span class="note" style="margin:0">Referencia: <b>biceps brachii</b>, aguja concéntrica</span>
+    <select id="ref">
+      <option value="rec">Serie reciente · Wang 2022 / Li 2020</option>
+      <option value="trad">Tradicional · Stålberg 1983 / Nandedkar 1986</option>
+    </select>
+    <select id="needle" disabled><option value="conc">Aguja concéntrica</option><option value="mono">Aguja monopolar</option></select>
+    <select id="musc" disabled>
+      <option value="biceps">Biceps brachii</option>
+      <option value="edc">Extensor digitorum communis</option>
+      <option value="quad">Quadriceps</option>
+      <option value="tibial">Tibialis anterior</option>
+    </select>
     <select id="sex"><option value="H">Hombre</option><option value="M">Mujer</option></select>
     <select id="age"><option value="joven">Joven</option><option value="media">Edad media</option><option value="mayor">Mayor</option></select>
     <button id="clearPts">Borrar puntos</button>
   </div>
+  <p class="note" id="refNote" style="margin:0 0 10px"></p>
 
   <div class="two">
     <div>
@@ -192,7 +213,7 @@ a{color:var(--accent)}
   </div>
   <div style="margin-top:14px">
     <canvas id="cUCA" class="plain" width="900" height="330"></canvas>
-    <p class="cap">Envolvente frente a actividad. Se representa la trayectoria de los puntos, sin nube: la nube de envolvente–actividad existe y se usa en los equipos, pero los valores normativos publicados por músculo no están disponibles en la literatura consultada, de modo que aquí no se dibuja ningún límite. La dirección de anormalidad es la misma que en la nube de giros–amplitud: por encima, patrón neurógeno; por debajo, miógeno.</p>
+    <p class="cap">Envolvente frente a actividad. Se representa la trayectoria de los puntos, sin nube. Los valores normativos de esta tercera nube sí están publicados —Choi y cols., <i>J Korean Acad Rehabil Med</i> 2007;31(2):213–219, para <i>biceps brachii</i>, <i>vastus medialis</i> y <i>tibialis anterior</i> en adultos de 20 a 59 años, por sexo—, pero no se ha podido consultar el artículo, de modo que aquí no se dibuja ningún límite. La dirección de anormalidad es la misma que en la nube de giros–amplitud: por encima, patrón neurógeno; por debajo, miógeno.</p>
   </div>
 
   <div class="clin" id="verdict"></div>
@@ -208,9 +229,9 @@ a{color:var(--accent)}
     <b>Giro:</b> mínimo o máximo local en el que la señal cambia de dirección y la amplitud cambia al menos 100 µV respecto del giro previo y del siguiente. Es un umbral más exigente que los 50 µV con que se cuentan los giros dentro de un MUP aislado.<br><br>
     <b>Segmento:</b> porción de señal comprendida entre dos giros consecutivos; su amplitud y su duración son las diferencias de amplitud y de tiempo entre los dos giros que lo delimitan.<br><br>
     <b>Giros por segundo (NT)</b> y <b>amplitud media (MA):</b> los dos parámetros del análisis clásico de Stålberg. La amplitud media de la época es la media de las amplitudes de todos sus segmentos, identidad que unifica los cinco parámetros sobre la misma entidad elemental.<br><br>
-    <b>Actividad:</b> suma de las duraciones de los segmentos que cumplen el criterio conjunto de amplitud y duración, escalada a un segundo. Mide el llenado del patrón, tiene techo teórico de 1000 ms/s y no es un parámetro de enfermedad, sino la covariable frente a la cual se juzgan los demás.<br><br>
+    <b>Actividad:</b> suma de las duraciones de los segmentos admitidos, escalada a un segundo. Mide el llenado del patrón, tiene techo teórico de 1000 ms/s y no es un parámetro de enfermedad, sino la covariable frente a la cual se juzgan los demás. <b>Hay dos definiciones de qué segmento se admite</b>, y conviene tenerlas presentes: la que imprime la literatura reciente ---todo segmento de menos de 5 ms \u2060(Li 2020)--- y la del trabajo original, que exige a los segmentos de menor amplitud ser además más breves. La segunda nació de descartar la primera: a fuerzas bajas incorporaba segmentos generados por oscilaciones de la línea de base y por los puntos de inflexión entre potenciales sucesivos, con valores de actividad espuriamente altos. Conviene añadir un matiz: los datos de Li se obtuvieron con el software de un equipo comercial, que implementa el método original, de modo que lo más probable es que la forma de «menos de 5 ms» sea un resumen impreciso del algoritmo y no un algoritmo distinto. El selector del apartado 2 permite ver cuánto se separan las dos en la misma época.<br><br>
     <b>Envolvente (UCA):</b> amplitud superada solamente por el 1 % de los segmentos de la época. Se descarta ese 1 % porque, en señales simuladas, menos del 8 % de los segmentos supera la amplitud del MUP mayor y esos coinciden con su sumación fortuita con otros potenciales; el centil 99 estima el límite superior de amplitud de los potenciales contenidos en el registro.<br><br>
-    <b>NSS:</b> número por segundo de segmentos de amplitud menor de 2 mV que cumplen el criterio de duración. Mide la complejidad del patrón, reflejo de la polifasia de los MUP que lo componen.
+    <b>NSS (segmentos pequeños):</b> número por segundo de segmentos de amplitud menor de 2 mV entre los admitidos por el criterio de duración. Mide la complejidad del patrón, reflejo de la polifasia de los MUP que lo componen. Li y cols. (2020) lo enuncian solo como «número de segmentos de amplitud menor de 2 mV», sin límite de duración; aquí se aplica el mismo límite que a la actividad, porque sin ninguno los segmentos largos de la línea de base inflan el recuento a fuerzas bajas.
     </p>
   </div>
 
@@ -237,7 +258,11 @@ a{color:var(--accent)}
     <p class="note" style="margin-top:0">
     <b>Nube de giros–amplitud:</b> Wang y cols. (2022), <i>Front Neurol</i>, aguja concéntrica, ocho músculos por sexo, edad y lado dominante. La nube es <i>A</i> = 10<sup><i>a</i></sup>·<i>T</i><sup><i>b</i></sup>, con bordes en 10<sup>(<i>a</i>±EE<sub><i>a</i></sub>)</sup>·<i>T</i><sup>(<i>b</i>±EE<sub><i>b</i></sub>)</sup> y borde derecho en el percentil 99 de los giros.<br><br>
     <b>Nube de NSS–actividad:</b> Li y cols. (2020), <i>Muscle Nerve</i>, 59 sujetos sanos de 15 a 80 años, ocho músculos con aguja concéntrica; regresión de log(NSS) sobre log(actividad) con bordes a ±2 desviaciones estándar residuales.<br><br>
-    En las dos fuentes los grupos de edad no coinciden y para el <i>biceps brachii</i> de la mujer solo hay publicada una fila de la nube de giros–amplitud; el pie de cada gráfico indica la fila exacta que se está usando. Los criterios de anormalidad por porcentaje de puntos fuera de la nube provienen de Wang (2022) para giros–amplitud y de Li (2020) para NSS–actividad.
+    En las dos fuentes los grupos de edad no coinciden y para el <i>biceps brachii</i> de la mujer solo hay publicada una fila de la nube de giros–amplitud; el pie de cada gráfico indica la fila exacta que se está usando. Los criterios de anormalidad por porcentaje de puntos fuera de la nube provienen de Wang (2022) para giros–amplitud y de Li (2020) para NSS–actividad.<br><br>
+    <b>Nubes tradicionales</b> (las de los equipos), seleccionables en el apartado 4:<br>
+    &nbsp;• <b>Giros–amplitud:</b> Stålberg y cols. (1983), <i>Electroencephalogr Clin Neurophysiol</i> 56:672–681, digitalizadas de su Fig. 3 para aguja concéntrica y monopolar, cuatro músculos y los dos sexos, con las edades menores y mayores de 60 años combinadas. Bordes 10<sup><i>a</i></sup>·<i>T</i><sup><i>b</i></sup>, con techo en el límite del eje de la figura publicada y borde derecho en T<sub>máx</sub>. Error de digitalización del orden del 10 %.<br>
+    &nbsp;• <b>NSS–actividad:</b> Nandedkar y cols. (1986b), <i>biceps brachii</i> del hombre de 20 a 58 años, digitalizada de la Fig. 2 de Li (2020), que la superpone a la suya. El borde inferior digitalizado coincide con el de Li en menos del 1 %, lo que valida la calibración.<br>
+    &nbsp;• Con la referencia tradicional se aplica el criterio original de Stålberg: dos o más puntos fuera de la nube en la misma dirección.
     </p>
   </div>
 </section>
@@ -266,13 +291,28 @@ Recurso educativo de distribución gratuita y sin fines comerciales. © 2027 Fer
 const DT = 0.05;              // ms por muestra (20 kHz)
 const TURN_THR = 100;         // uV: umbral de giro en el patron de interferencia
 
-/* --- criterio conjunto de amplitud y duracion (Tabla del capitulo) --- */
+/* --- las DOS definiciones que circulan ---------------------------------
+   "li"   : la vigente en la literatura y en los equipos. Actividad = suma de
+            las duraciones de todos los segmentos de menos de 5 ms; segmento
+            pequeno = segmento de amplitud menor de 2 mV (Li 2020, que es la
+            fuente de la nube normativa de NSS que dibuja esta aplicacion).
+   "orig" : la del trabajo original, con criterio conjunto de amplitud y
+            duracion (Nandedkar 1986a, Fig. 5).
+   El conjunto "orig" esta CONTENIDO en el conjunto "li": todo segmento que
+   admite la escalera dura menos de 5 ms. De ahi que la definicion vigente no
+   pueda dar un valor menor, y que la diferencia entre las dos sean justamente
+   los segmentos de baja amplitud y duracion intermedia. */
+let DEF_MODE = "li";
+
 function maxDur(ampUV){
   if(ampUV < 500)  return 1.5;
   if(ampUV <= 2000) return 3.0;
   return 5.0;
 }
-function counts(seg){ return seg.dur <= maxDur(seg.amp); }
+function countsIn(seg, mode){
+  return mode === "li" ? seg.dur < 5.0 : seg.dur <= maxDur(seg.amp);
+}
+function counts(seg){ return countsIn(seg, DEF_MODE); }
 function isSmall(seg){ return seg.amp < 2000 && counts(seg); }
 
 /* --- generador reproducible --- */
@@ -418,20 +458,27 @@ function analyze(sig, epochMs){
   const turns = findTurns(sig);
   const segs = makeSegments(turns);
   const scale = 1000/epochMs;                      // a un segundo de registro
-  let act = 0, nss = 0;
   const amps = [];
+  const acc = { li:{act:0,nss:0}, orig:{act:0,nss:0} };
   for(const s of segs){
     amps.push(s.amp);
-    if(counts(s)){ act += s.dur; if(s.amp < 2000) nss++; }
+    for(const m of ["li","orig"]){
+      if(countsIn(s,m)){ acc[m].act += s.dur; if(s.amp < 2000) acc[m].nss++; }
+    }
+  }
+  for(const m of ["li","orig"]){
+    acc[m].act = Math.min(1000, acc[m].act*scale);
+    acc[m].nss = acc[m].nss*scale;
   }
   const ma = segs.length ? amps.reduce((a,b)=>a+b,0)/segs.length : 0;
   return {
     turns, segs,
     nt:  turns.length*scale,
     ma:  ma,
-    act: Math.min(1000, act*scale),
     uca: percentile(amps, 0.99),
-    nss: nss*scale
+    li:  acc.li, orig: acc.orig,
+    get act(){ return acc[DEF_MODE].act; },
+    get nss(){ return acc[DEF_MODE].nss; }
   };
 }
 
@@ -455,17 +502,57 @@ const NSS_ROWS = {
   "M:mayor": {sl:0.909,ic:0.169,sd:0.087,row:"mujer, ≥ 65 años (321 registros)"}
 };
 
+/* ---------- nubes TRADICIONALES: las clasicas de los equipos ----------
+   Giros-amplitud: Stalberg y cols. (1983), digitalizadas de su Fig. 3 -la misma
+   digitalizacion que reproduce el libro-, para aguja concentrica y monopolar,
+   cuatro musculos y los dos sexos, con las edades <60 y >=60 combinadas.
+   Bordes: up = 10^ua * T^ub (con techo Umax, que es el limite del eje de la
+   figura publicada), lo = 10^la * T^lb, borde derecho Tmax.
+   NSS-actividad: Nandedkar y cols. (1986b), biceps brachii del hombre,
+   digitalizada de la Fig. 2 de Li 2020, que la superpone a la propia. El borde
+   inferior digitalizado coincide con el de Li en menos del 1 %, tal como
+   afirma su texto, lo que valida la calibracion de la digitalizacion. */
+const TRAD_TA = {
+  "conc:biceps:H":{ua:3.051,ub:-0.075,la:1.530,lb:0.356,tmax: 894,umax:1134},
+  "conc:edc:H":   {ua:3.541,ub:-0.293,la:1.368,lb:0.403,tmax:1019,umax:1136},
+  "conc:quad:H":  {ua:3.666,ub:-0.366,la:2.041,lb:0.213,tmax: 789,umax:1128},
+  "conc:tibial:H":{ua:3.438,ub:-0.290,la:1.728,lb:0.324,tmax: 751,umax:1132},
+  "conc:biceps:M":{ua:2.120,ub: 0.326,la:1.503,lb:0.346,tmax: 750,umax:1136},
+  "conc:edc:M":   {ua:2.313,ub: 0.225,la:1.460,lb:0.364,tmax:1018,umax:1138},
+  "conc:quad:M":  {ua:3.718,ub:-0.395,la:1.698,lb:0.329,tmax: 719,umax:1120},
+  "conc:tibial:M":{ua:3.502,ub:-0.257,la:1.660,lb:0.363,tmax: 730,umax:1136},
+  "mono:biceps:H":{ua:2.409,ub: 0.268,la:1.892,lb:0.236,tmax: 981,umax:1560},
+  "mono:edc:H":   {ua:2.643,ub: 0.188,la:1.761,lb:0.304,tmax:1248,umax:1559},
+  "mono:quad:H":  {ua:3.420,ub:-0.218,la:1.946,lb:0.280,tmax:1066,umax:1551},
+  "mono:tibial:H":{ua:3.498,ub:-0.253,la:1.788,lb:0.347,tmax:1012,umax:1542},
+  "mono:biceps:M":{ua:2.249,ub: 0.325,la:1.673,lb:0.323,tmax: 898,umax:1560},
+  "mono:edc:M":   {ua:3.225,ub:-0.067,la:1.638,lb:0.335,tmax:1189,umax:1559},
+  "mono:quad:M":  {ua:3.919,ub:-0.414,la:1.721,lb:0.357,tmax: 744,umax:1551},
+  "mono:tibial:M":{ua:3.731,ub:-0.312,la:1.832,lb:0.315,tmax: 944,umax:1555}
+};
+const TRAD_NSS = {ua:0.393,ub:0.858, la:-0.026,lb:0.875,
+  row:"biceps brachii, hombre de 20 a 58 años"};
+
+const MUSC_NAME = {biceps:"biceps brachii", edc:"extensor digitorum communis",
+                   quad:"quadriceps", tibial:"tibialis anterior"};
+const NEEDLE_NAME = {conc:"aguja concéntrica", mono:"aguja monopolar"};
+
 function taBand(row, T){
+  if(row.trad) return { up: Math.min(row.umax, Math.pow(10,row.ua)*Math.pow(T,row.ub)),
+                        lo: Math.pow(10,row.la)*Math.pow(T,row.lb) };
   return { up: Math.pow(10,row.a+row.ea)*Math.pow(T,row.b+row.eb),
            lo: Math.pow(10,row.a-row.ea)*Math.pow(T,row.b-row.eb) };
 }
+function taRight(row){ return row.trad ? row.tmax : row.t99; }
 function nssBand(row, A){
+  if(row.trad) return { up: Math.pow(10, row.ua + row.ub*Math.log10(A)),
+                        lo: Math.pow(10, row.la + row.lb*Math.log10(A)) };
   const c = row.ic + row.sl*Math.log10(A);
   return { up: Math.pow(10, c+2*row.sd), lo: Math.pow(10, c-2*row.sd) };
 }
 /* clasificacion de un punto: 0 dentro, +1 por encima, -1 por debajo, 2 a la derecha */
 function classTA(row, nt, ma){
-  if(nt > row.t99) return 2;
+  if(nt > taRight(row)) return 2;
   const b = taBand(row, Math.max(1,nt));
   if(ma > b.up) return 1;
   if(ma < b.lo) return -1;
@@ -477,6 +564,15 @@ function classNSS(row, act, nss){
   if(nss > b.up) return 1;
   if(nss < b.lo) return -1;
   return 0;
+}
+/* fila de referencia activa segun el selector */
+function refTA(){
+  if(ST.ref==="trad") return Object.assign({trad:true}, TRAD_TA[ST.needle+":"+ST.musc+":"+ST.sex]);
+  return TA_ROWS[ST.sex+":"+ST.age];
+}
+function refNSS(){
+  if(ST.ref==="trad") return Object.assign({trad:true}, TRAD_NSS);
+  return NSS_ROWS[ST.sex+":"+ST.age];
 }
 function pearson(xs, ys){
   const n=xs.length; if(n<3) return NaN;
@@ -492,6 +588,7 @@ function pearson(xs, ys){
    ================================================================ */
 const ST = {
   pat:"normal", force:50, epochMs:500, sex:"H", age:"joven",
+  ref:"rec", needle:"conc", musc:"biceps",
   site:null, sig:null, res:null, zoom:0, reveal:1,
   points:[], anim:null, studyLeft:0, seedN:1
 };
@@ -790,14 +887,33 @@ function drawScatter(){
   for(let a=0;a<=AMAX;a++){ g.beginPath(); g.moveTo(x(a),TOP); g.lineTo(x(a),BOT); g.stroke(); }
   for(let d=0;d<=DMAX;d++){ g.beginPath(); g.moveTo(L,y(d)); g.lineTo(R,y(d)); g.stroke(); }
 
-  // escalera del criterio
-  g.strokeStyle="#ff9d9d"; g.lineWidth=2.2; g.beginPath();
+  // franja que la definicion vigente anade sobre la original
+  g.fillStyle="rgba(255,157,157,0.10)";
+  g.beginPath();
+  g.moveTo(x(0),y(1.5)); g.lineTo(x(0.5),y(1.5)); g.lineTo(x(0.5),y(3));
+  g.lineTo(x(2),y(3));   g.lineTo(x(2),y(5));     g.lineTo(x(AMAX),y(5));
+  g.lineTo(x(AMAX),y(5)); g.lineTo(x(0),y(5)); g.closePath(); g.fill();
+  g.fillStyle="#ff9d9d"; g.font="600 10.5px -apple-system,sans-serif"; g.textAlign="center";
+  g.fillText("lo que añade la definición de < 5 ms", x(1.15), y(4.0));
+
+  const activeLi = DEF_MODE==="li";
+  // linea de 5 ms (definicion vigente)
+  g.strokeStyle="#7CFC9B"; g.lineWidth=activeLi?2.6:1.4;
+  g.setLineDash(activeLi?[]:[5,4]);
+  g.beginPath(); g.moveTo(x(0),y(5)); g.lineTo(x(AMAX),y(5)); g.stroke(); g.setLineDash([]);
+  g.fillStyle="#7CFC9B"; g.font=(activeLi?"700 ":"600 ")+"11px -apple-system,sans-serif"; g.textAlign="right";
+  g.fillText("< 5 ms"+(activeLi?" (activa)":""), x(AMAX)-4, y(5)-7);
+
+  // escalera del criterio original
+  g.strokeStyle="#ff9d9d"; g.lineWidth=activeLi?1.4:2.6;
+  g.setLineDash(activeLi?[5,4]:[]);
+  g.beginPath();
   g.moveTo(x(0),y(1.5)); g.lineTo(x(0.5),y(1.5));
   g.lineTo(x(0.5),y(3));  g.lineTo(x(2),y(3));
   g.lineTo(x(2),y(5));    g.lineTo(x(AMAX),y(5));
-  g.stroke();
-  g.fillStyle="#ff9d9d"; g.font="600 11px -apple-system,sans-serif"; g.textAlign="left";
-  g.fillText("límite del criterio: por debajo, el segmento se cuenta", x(2.3), y(5)-8);
+  g.stroke(); g.setLineDash([]);
+  g.fillStyle="#ff9d9d"; g.font=(activeLi?"600 ":"700 ")+"11px -apple-system,sans-serif"; g.textAlign="left";
+  g.fillText("escalera original"+(activeLi?"":" (activa)"), x(2.3), y(3)-8);
 
   if(ST.res){
     for(const s of ST.res.segs){
@@ -847,7 +963,7 @@ function drawCloudTA(){
   const c=$("cTA"), g=c.getContext("2d");
   const W=c.width,H=c.height, box={L:58,R:W-16,TOP:34,BOT:H-46};
   g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
-  const row=TA_ROWS[ST.sex+":"+ST.age];
+  const row=refTA();
   const xr=[80,1400], yr=[100,4000];
   const {lx,ly}=logAxes(g,box,xr,yr,[100,200,500,1000],[100,200,500,1000,2000],"giros por segundo","amplitud media (µV)");
 
@@ -856,8 +972,9 @@ function drawCloudTA(){
 
   // nube
   const pts=[];
-  for(let t=xr[0]; t<=Math.min(row.t99,xr[1]); t*=1.03) pts.push(t);
-  pts.push(Math.min(row.t99,xr[1]));
+  const TR=taRight(row);
+  for(let t=xr[0]; t<=Math.min(TR,xr[1]); t*=1.03) pts.push(t);
+  pts.push(Math.min(TR,xr[1]));
   g.beginPath();
   pts.forEach((t,i)=>{ const v=taBand(row,t).up; i?g.lineTo(lx(t),ly(v)):g.moveTo(lx(t),ly(v)); });
   for(let i=pts.length-1;i>=0;i--){ const t=pts[i], v=taBand(row,t).lo; g.lineTo(lx(t),ly(v)); }
@@ -867,9 +984,9 @@ function drawCloudTA(){
 
   // borde derecho
   g.strokeStyle="#3aa0ff"; g.setLineDash([4,4]);
-  g.beginPath(); g.moveTo(lx(row.t99),box.TOP); g.lineTo(lx(row.t99),box.BOT); g.stroke(); g.setLineDash([]);
+  g.beginPath(); g.moveTo(lx(TR),box.TOP); g.lineTo(lx(TR),box.BOT); g.stroke(); g.setLineDash([]);
   g.fillStyle="#3aa0ff"; g.font="10px -apple-system,sans-serif"; g.textAlign="right";
-  g.fillText("giros p99", lx(row.t99)-4, box.TOP+11);
+  g.fillText(row.trad?"Tmáx":"giros p99", lx(TR)-4, box.TOP+11);
 
   // puntos
   ST.points.forEach((p,k)=>{
@@ -882,15 +999,18 @@ function drawCloudTA(){
 
   g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
   g.fillText("por encima: neurógeno · por debajo o a la derecha: miógeno", box.L, 32);
-  $("capTA").innerHTML = "Nube de giros–amplitud, <i>biceps brachii</i> con aguja concéntrica: "+row.row+". Wang y cols. (2022)."+
-    (row.approx?" <b>Atención:</b> se está usando una fila de otro grupo de edad porque es la única publicada para la mujer en este músculo.":"");
+  $("capTA").innerHTML = row.trad
+    ? "Nube <b>tradicional</b> de giros–amplitud: <i>"+MUSC_NAME[ST.musc]+"</i> con "+NEEDLE_NAME[ST.needle]+", "+
+      (ST.sex==="H"?"hombre":"mujer")+". Digitalizada de \u2060Stålberg y cols. (1983), Fig.\u00a03; edades menores y mayores de 60 años combinadas, con un error de digitalización del orden del 10\u00a0%. El techo de "+row.umax+"\u00a0µV es el límite del eje de la figura publicada, no un valor fisiológico."
+    : "Nube de giros–amplitud, <i>biceps brachii</i> con aguja concéntrica: "+row.row+". Wang y cols. (2022)."+
+      (row.approx?" <b>Atención:</b> se está usando una fila de otro grupo de edad porque es la única publicada para la mujer en este músculo.":"");
 }
 
 function drawCloudNSS(){
   const c=$("cNSS"), g=c.getContext("2d");
   const W=c.width,H=c.height, box={L:58,R:W-16,TOP:34,BOT:H-46};
   g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
-  const row=NSS_ROWS[ST.sex+":"+ST.age];
+  const row=refNSS();
   const xr=[20,1100], yr=[5,1500];
   const {lx,ly}=logAxes(g,box,xr,yr,[20,50,100,200,500,1000],[10,50,100,500,1000],"actividad (ms/s)","NSS (segmentos/s)");
 
@@ -913,17 +1033,20 @@ function drawCloudNSS(){
   g.fillText("techo de la actividad", lx(1000)-4, box.TOP+11);
 
   ST.points.forEach((p,k)=>{
-    const cl=classNSS(row,p.act,p.nss);
+    const cl=classNSS(row,pd(p).act,pd(p).nss);
     g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
     const last=k===ST.points.length-1;
-    g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],p.act))), ly(Math.max(yr[0],Math.min(yr[1],p.nss))), last?5:3.2,0,6.283); g.fill();
+    g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), ly(Math.max(yr[0],Math.min(yr[1],pd(p).nss))), last?5:3.2,0,6.283); g.fill();
     if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
   });
 
   g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
   g.fillText("por encima: miógeno · por debajo: neurógeno", box.L, 32);
-  $("capNSS").innerHTML = "Nube de NSS–actividad, <i>biceps brachii</i> (cabeza larga) con aguja concéntrica: "+row.row+
-    ". Pendiente "+row.sl.toFixed(3)+", intercepto "+row.ic.toFixed(3)+", DE residual "+row.sd.toFixed(3)+"; bordes a ±2 DE. Li y cols. (2020).";
+  $("capNSS").innerHTML = row.trad
+    ? "Nube <b>tradicional</b> de NSS–actividad: "+row.row+" con aguja concéntrica. Nandedkar y cols. (1986b), digitalizada de la Fig.\u00a02 de Li (2020), que la superpone a la suya; el borde inferior digitalizado coincide con el de Li en menos del 1\u00a0%."+
+      (ST.sex==="M" ? " <b>Atención:</b> la única nube tradicional recuperable es la del hombre; el trabajo original construyó nubes separadas por sexo." : "")
+    : "Nube de NSS–actividad, <i>biceps brachii</i> (cabeza larga) con aguja concéntrica: "+row.row+
+      ". Pendiente "+row.sl.toFixed(3)+", intercepto "+row.ic.toFixed(3)+", DE residual "+row.sd.toFixed(3)+"; bordes a ±2 DE. Li y cols. (2020).";
 }
 
 function drawCloudUCA(){
@@ -944,12 +1067,12 @@ function drawCloudUCA(){
   });
 
   g.strokeStyle="rgba(58,160,255,0.45)"; g.lineWidth=1.2; g.beginPath();
-  ST.points.forEach((p,i)=>{ const px=lx(Math.max(xr[0],Math.min(xr[1],p.act))), py=ly(Math.max(yr[0],Math.min(yr[1],p.uca))); i?g.lineTo(px,py):g.moveTo(px,py); });
+  ST.points.forEach((p,i)=>{ const px=lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), py=ly(Math.max(yr[0],Math.min(yr[1],p.uca))); i?g.lineTo(px,py):g.moveTo(px,py); });
   g.stroke();
   ST.points.forEach((p,k)=>{
     const last=k===ST.points.length-1;
     g.fillStyle="#3aa0ff";
-    g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],p.act))), ly(Math.max(yr[0],Math.min(yr[1],p.uca))), last?5:3.2,0,6.283); g.fill();
+    g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), ly(Math.max(yr[0],Math.min(yr[1],p.uca))), last?5:3.2,0,6.283); g.fill();
     if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
   });
 }
@@ -972,6 +1095,14 @@ function updateReadouts(){
   $("mUCA").textContent = fmt(r.uca/1000,2);
   $("mNSS").textContent = Math.round(r.nss);
   $("mSEG").textContent = r.segs.length;
+  const other = DEF_MODE==="li" ? "orig" : "li";
+  const nm = {li:"actual (&lt; 5 ms)", orig:"original (amplitud–duración)"};
+  $("defBox").innerHTML =
+    "<b>Definición "+nm[DEF_MODE]+".</b> Actividad <b>"+Math.round(r[DEF_MODE].act)+" ms/s</b> y NSS <b>"+Math.round(r[DEF_MODE].nss)+"/s</b>. "+
+    "Con la definición "+nm[other]+", la misma época daría actividad "+Math.round(r[other].act)+" ms/s y NSS "+Math.round(r[other].nss)+"/s. "+
+    (r.li.act>r.orig.act
+      ? "La diferencia son los "+(r.segs.filter(x=>countsIn(x,"li")&&!countsIn(x,"orig")).length)+" segmentos de baja amplitud y duración intermedia que la escalera excluye por proceder de la línea de base y de los puntos de inflexión entre potenciales."
+      : "En esta época las dos definiciones coinciden.");
   const st=fullState(r.act);
   const nAct=r.segs.filter(counts).length, nSm=r.segs.filter(isSmall).length;
   $("fullBox").innerHTML =
@@ -985,28 +1116,38 @@ function updateReadouts(){
 }
 
 function updateVerdict(){
-  const rowTA=TA_ROWS[ST.sex+":"+ST.age], rowNSS=NSS_ROWS[ST.sex+":"+ST.age];
+  const rowTA=refTA(), rowNSS=refNSS();
   const n=ST.points.length;
   if(n<2){ $("verdict").innerHTML="Registre varias épocas —o pulse «Estudio de 20 épocas»— para valorar las nubes. El criterio no se aplica a un punto aislado."; return; }
   let taUp=0,taLo=0,nsUp=0,nsLo=0;
   ST.points.forEach(p=>{
     const a=classTA(rowTA,p.nt,p.ma); if(a===1)taUp++; else if(a===-1||a===2)taLo++;
-    const b=classNSS(rowNSS,p.act,p.nss); if(b===1)nsUp++; else if(b===-1)nsLo++;
+    const b=classNSS(rowNSS,pd(p).act,pd(p).nss); if(b===1)nsUp++; else if(b===-1)nsLo++;
   });
   const pc=v=>Math.round(v/n*100);
+  const trad = ST.ref==="trad";
   const flags=[];
-  if(pc(taUp)>25) flags.push("nube de giros–amplitud: "+pc(taUp)+" % de los puntos por encima del borde superior (umbral de 25 %) → <b>patrón neurógeno</b>");
-  if(pc(taLo)>18) flags.push("nube de giros–amplitud: "+pc(taLo)+" % por debajo del borde inferior o a la derecha (umbral de 18 %) → <b>patrón miógeno</b>");
-  if(pc(nsUp)>15) flags.push("nube de NSS–actividad: "+pc(nsUp)+" % por encima (umbral de 15 %) → <b>patrón miógeno</b>");
-  if(pc(nsLo)>15) flags.push("nube de NSS–actividad: "+pc(nsLo)+" % por debajo (umbral de 15 %) → <b>patrón neurógeno</b>");
-  const maxAct=Math.max(...ST.points.map(p=>p.act));
+  if(trad){
+    // criterio original de Stalberg: dos o mas puntos fuera en la misma direccion
+    if(taUp>=2) flags.push("nube de giros–amplitud: "+taUp+" puntos por encima del borde superior (criterio de Stålberg: dos o más en la misma dirección) → <b>patrón neurógeno</b>");
+    if(taLo>=2) flags.push("nube de giros–amplitud: "+taLo+" puntos por debajo del borde inferior o a la derecha → <b>patrón miógeno</b>");
+    if(nsUp>=2) flags.push("nube de NSS–actividad: "+nsUp+" puntos por encima → <b>patrón miógeno</b>");
+    if(nsLo>=2) flags.push("nube de NSS–actividad: "+nsLo+" puntos por debajo → <b>patrón neurógeno</b>");
+  } else {
+    if(pc(taUp)>25) flags.push("nube de giros–amplitud: "+pc(taUp)+" % de los puntos por encima del borde superior (umbral de 25 %) → <b>patrón neurógeno</b>");
+    if(pc(taLo)>18) flags.push("nube de giros–amplitud: "+pc(taLo)+" % por debajo del borde inferior o a la derecha (umbral de 18 %) → <b>patrón miógeno</b>");
+    if(pc(nsUp)>15) flags.push("nube de NSS–actividad: "+pc(nsUp)+" % por encima (umbral de 15 %) → <b>patrón miógeno</b>");
+    if(pc(nsLo)>15) flags.push("nube de NSS–actividad: "+pc(nsLo)+" % por debajo (umbral de 15 %) → <b>patrón neurógeno</b>");
+  }
+  const maxAct=Math.max(...ST.points.map(p=>pd(p).act));
 
   let html="<b>"+n+" épocas registradas.</b> Giros–amplitud: "+pc(taUp)+" % por encima, "+pc(taLo)+" % por debajo o a la derecha. "+
            "NSS–actividad: "+pc(nsUp)+" % por encima, "+pc(nsLo)+" % por debajo. Actividad máxima alcanzada: "+Math.round(maxAct)+" ms/s.";
   html += flags.length ? "<br><br>"+flags.map(f=>"• "+f).join("<br>")
                        : "<br><br>Ningún criterio de anormalidad se cumple: las nubes son normales.";
   const marginal = flags.length && Math.max(pc(taUp),pc(taLo),pc(nsUp),pc(nsLo)) < 30;
-  if(marginal) html += "<br><br>El porcentaje queda apenas por encima del umbral. Con puntos dispersos, y sobre todo en los registros de baja actividad —donde el número de eventos contados es pequeño—, esa situación obedece con más frecuencia a causas técnicas que a enfermedad: aguja en aponeurosis o en tejido graso, contracción no isométrica, filtros mal ajustados o interferencia de la red.";
+  if(trad && ST.pat==="normal" && flags.length) html += "<br><br><b>Ojo con la referencia.</b> El patrón simulado es normal y la nube tradicional lo señala como anormal. No es un fallo de la simulación: las dos referencias no coinciden. El borde superior de la nube concéntrica de 1983 es casi plano y se topa en torno a 1,1 mV —el límite del eje de la figura publicada—, mientras que la serie reciente llega a unos 2 mV a 700 giros/s. Distinto amplificador, distintos filtros y distinto protocolo de fuerza. Es exactamente la razón por la que cada laboratorio debería construir sus propios valores y por la que el informe tiene que consignar la fuente normativa empleada.";
+  if(marginal && !trad) html += "<br><br>El porcentaje queda apenas por encima del umbral. Con puntos dispersos, y sobre todo en los registros de baja actividad —donde el número de eventos contados es pequeño—, esa situación obedece con más frecuencia a causas técnicas que a enfermedad: aguja en aponeurosis o en tejido graso, contracción no isométrica, filtros mal ajustados o interferencia de la red.";
   if(maxAct<500) html += "<br><br><span class='badge b-mid'>muestreo insuficiente</span> Ningún registro superó 500 ms/s. El músculo no puede informarse como normal: consígnelo como muestreo insuficiente.";
   if(flags.length>1){
     const contradictory = (pc(taUp)>25 && pc(nsUp)>15);
@@ -1020,7 +1161,7 @@ function updateCorr(){
   const n=ST.points.length;
   if(n<5){ $("corrBox").innerHTML="Con cinco o más épocas a fuerzas distintas se puede comprobar aquí la correlación de la actividad y de los giros con la fuerza de contracción."; return; }
   const f=ST.points.map(p=>p.force);
-  const rAct=pearson(f, ST.points.map(p=>p.act));
+  const rAct=pearson(f, ST.points.map(p=>pd(p).act));
   const rNT =pearson(f, ST.points.map(p=>p.nt));
   const rUCA=pearson(f, ST.points.map(p=>Math.log10(Math.max(1,p.uca))));
   $("corrBox").innerHTML =
@@ -1038,11 +1179,15 @@ function redrawAll(){
   updateReadouts(); updateVerdict(); updateCorr();
 }
 
+/* cada punto guarda las dos definiciones, para que al cambiar de definicion
+   se recoloquen tambien los puntos ya registrados */
 function pushPoint(){
   const r=ST.res;
-  ST.points.push({nt:r.nt, ma:r.ma, act:r.act, uca:r.uca, nss:r.nss, force:ST.force});
+  ST.points.push({nt:r.nt, ma:r.ma, uca:r.uca, force:ST.force,
+                  li:{act:r.li.act, nss:r.li.nss}, orig:{act:r.orig.act, nss:r.orig.nss}});
   if(ST.points.length>60) ST.points.shift();
 }
+const pd = p => p[DEF_MODE];        // definicion activa de un punto guardado
 
 /* ================================================================
    ANIMACION
@@ -1095,6 +1240,13 @@ document.querySelectorAll("#patSeg button").forEach(b=>{
     ST.pat=b.dataset.v; ST.points=[]; newSite(); newEpoch(); redrawAll();
   };
 });
+document.querySelectorAll("#defSeg button").forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll("#defSeg button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on");
+    DEF_MODE=b.dataset.v; redrawAll();
+  };
+});
 $("force").oninput=e=>{ ST.force=+e.target.value; $("vForce").textContent=ST.force+" %"; newEpoch(); redrawAll(); };
 $("epms").oninput=e=>{ ST.epochMs=+e.target.value; $("vEp").textContent=ST.epochMs+" ms";
   $("zoom").max=ST.epochMs-40; ST.zoom=Math.min(ST.zoom,ST.epochMs-40); ST.points=[]; newEpoch(); redrawAll(); };
@@ -1105,6 +1257,19 @@ $("study").onclick=runStudy;
 $("clearPts").onclick=()=>{ ST.points=[]; redrawAll(); };
 $("sex").onchange=e=>{ ST.sex=e.target.value; redrawAll(); };
 $("age").onchange=e=>{ ST.age=e.target.value; redrawAll(); };
+$("ref").onchange=e=>{ ST.ref=e.target.value; syncRef(); redrawAll(); };
+$("needle").onchange=e=>{ ST.needle=e.target.value; redrawAll(); };
+$("musc").onchange=e=>{ ST.musc=e.target.value; redrawAll(); };
+
+function syncRef(){
+  const trad = ST.ref==="trad";
+  $("needle").disabled = !trad;
+  $("musc").disabled   = !trad;
+  $("age").disabled    = trad;
+  $("refNote").innerHTML = trad
+    ? "Las nubes clásicas, las que traen los equipos: giros–amplitud de Stålberg (1983) para dos agujas, cuatro músculos y los dos sexos, y NSS–actividad de Nandedkar (1986b). Combinan las edades menores y mayores de 60 años, de modo que el selector de edad queda inactivo. Se construyeron con el <b>criterio original</b> de amplitud y duración, así que conviene seleccionar esa definición en el apartado 2 para leerlas. La simulación está calibrada contra la serie reciente, de modo que al cambiar de referencia el mismo registro puede cambiar de veredicto: eso es el problema de transferibilidad, no un fallo."
+    : "Serie reciente, con aguja concéntrica y estratificada por sexo y edad. Es la referencia contra la que está calibrada la simulación. Los selectores de aguja y de músculo solo se aplican a las nubes tradicionales.";
+}
 
 /* ================================================================
    ARRANQUE
@@ -1113,6 +1278,7 @@ $("vForce").textContent = ST.force+" %";
 $("vEp").textContent    = ST.epochMs+" ms";
 $("vZoom").textContent  = ST.zoom+" ms";
 $("zoom").max = ST.epochMs-40;
+syncRef();
 schStep(0);
 newSite(); newEpoch(); pushPoint(); redrawAll();
 </script>
