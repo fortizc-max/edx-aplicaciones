@@ -104,7 +104,14 @@ a{color:var(--accent)}
     <button id="run" class="play">▶ Animar época</button>
     <button id="newEp">↻ Nueva época</button>
     <button id="study">▶ Estudio de 20 épocas</button>
+    <button id="spot">◆ Destacar segmentos pequeños</button>
+    <select id="speed" title="Velocidad del barrido">
+      <option value="1400">Rápido</option>
+      <option value="3000" selected>Normal</option>
+      <option value="6500">Lento</option>
+    </select>
   </div>
+  <p class="note" id="spotNote" style="margin:2px 0 0"></p>
 
   <div class="grid">
     <div class="panel">
@@ -588,7 +595,7 @@ function pearson(xs, ys){
    ================================================================ */
 const ST = {
   pat:"normal", force:50, epochMs:500, sex:"H", age:"joven",
-  ref:"rec", needle:"conc", musc:"biceps",
+  ref:"rec", needle:"conc", musc:"biceps", spot:false, speed:3000,
   site:null, sig:null, res:null, zoom:0, reveal:1,
   points:[], anim:null, studyLeft:0, seedN:1
 };
@@ -771,9 +778,11 @@ function newSite(){
 }
 
 function segColor(s){
+  if(ST.spot) return isSmall(s) ? "#ffc857" : "rgba(90,107,133,0.35)";
   if(!counts(s)) return "#5a6b85";
   return s.amp < 2000 ? "#ffc857" : "#7CFC9B";
 }
+function segWidth(s, base){ return ST.spot && isSmall(s) ? base*1.7 : base; }
 
 function drawEpoch(revealMs){
   const c=$("epoch"), g=c.getContext("2d");
@@ -799,9 +808,9 @@ function drawEpoch(revealMs){
   g.stroke();
 
   // segmentos coloreados
-  g.lineWidth=1.6;
   for(const s of ST.res.segs){
     if(s.i0*DT > upTo) break;
+    g.lineWidth=segWidth(s,1.6);
     g.strokeStyle=segColor(s); g.beginPath();
     const iEnd=Math.min(s.i1, nmax-1);
     for(let i=s.i0;i<=iEnd;i++){ const px=x(i*DT), py=yv(ST.sig[i]); i===s.i0?g.moveTo(px,py):g.lineTo(px,py); }
@@ -853,9 +862,9 @@ function drawZoom(){
   g.stroke();
 
   let k=0;
-  g.lineWidth=2.6;
   for(const s of ST.res.segs){
     if(s.i1<i0 || s.i0>i1) continue;
+    g.lineWidth=segWidth(s,2.6);
     g.strokeStyle=segColor(s); g.beginPath();
     for(let i=Math.max(s.i0,i0);i<=Math.min(s.i1,i1);i++){ const px=x(i*DT),py=yv(ST.sig[i]); i===Math.max(s.i0,i0)?g.moveTo(px,py):g.lineTo(px,py); }
     g.stroke();
@@ -875,6 +884,7 @@ function drawZoom(){
   g.textAlign="right"; g.fillText("±"+(span/1000).toFixed(1)+" mV", L-5, TOP+10);
 }
 
+function drawScatterUpTo(upToMs){ ST._upTo=upToMs; drawScatter(); ST._upTo=undefined; }
 function drawScatter(){
   const c=$("scatter"), g=c.getContext("2d");
   const W=c.width,H=c.height,L=62,R=W-18,TOP=18,BOT=H-40;
@@ -917,6 +927,7 @@ function drawScatter(){
 
   if(ST.res){
     for(const s of ST.res.segs){
+      if(ST._upTo!==undefined && s.i1*DT>ST._upTo) continue;
       g.fillStyle=segColor(s);
       g.globalAlpha = counts(s)?0.85:0.5;
       g.beginPath(); g.arc(x(s.amp/1000), y(s.dur), 2.3, 0, 6.283); g.fill();
@@ -1086,15 +1097,36 @@ function fullState(act){
   return {cls:"b-no", t:"patrón incompleto"};
 }
 
-function updateReadouts(){
+/* Métricas acumuladas hasta un instante de la época, escaladas con la longitud
+   COMPLETA: así los contadores suben durante el barrido hasta el valor final,
+   en lugar de aparecer de golpe al terminar. */
+function partial(upToMs){
+  const r=ST.res, scale=1000/ST.epochMs;
+  const turns=r.turns.filter(t=>t.i*DT<=upToMs);
+  const segs =r.segs.filter(s=>s.i1*DT<=upToMs);
+  let act=0,nss=0; const amps=[];
+  for(const s of segs){ amps.push(s.amp); if(counts(s)){ act+=s.dur; if(s.amp<2000) nss++; } }
+  return { nt:turns.length*scale, segs:segs.length,
+           ma: amps.length ? amps.reduce((a,b)=>a+b,0)/amps.length : 0,
+           act: Math.min(1000, act*scale), nss: nss*scale,
+           uca: percentile(amps,0.99) };
+}
+
+function updateReadouts(upToMs){
   if(!ST.res) return;
-  const r=ST.res;
-  $("mNT").textContent  = Math.round(r.nt);
-  $("mMA").textContent  = Math.round(r.ma);
-  $("mACT").textContent = Math.round(r.act);
-  $("mUCA").textContent = fmt(r.uca/1000,2);
-  $("mNSS").textContent = Math.round(r.nss);
-  $("mSEG").textContent = r.segs.length;
+  const parcial = upToMs!==undefined && upToMs < ST.epochMs;
+  const r=ST.res, v = parcial ? partial(upToMs) : null;
+  $("mNT").textContent  = Math.round(v ? v.nt  : r.nt);
+  $("mMA").textContent  = Math.round(v ? v.ma  : r.ma);
+  $("mACT").textContent = Math.round(v ? v.act : r.act);
+  $("mUCA").textContent = fmt((v ? v.uca : r.uca)/1000,2);
+  $("mNSS").textContent = Math.round(v ? v.nss : r.nss);
+  $("mSEG").textContent = v ? v.segs : r.segs.length;
+  if(parcial){
+    // durante el barrido no se muestra el veredicto de la epoca anterior
+    $("fullBox").innerHTML = "<span class='badge b-mid'>registrando</span> &nbsp;Barrido en curso: los contadores suben a medida que el trazo revela nuevos giros y segmentos.";
+    return;
+  }
   const other = DEF_MODE==="li" ? "orig" : "li";
   const nm = {li:"actual (&lt; 5 ms)", orig:"original (amplitud–duración)"};
   $("defBox").innerHTML =
@@ -1192,16 +1224,16 @@ const pd = p => p[DEF_MODE];        // definicion activa de un punto guardado
 /* ================================================================
    ANIMACION
    ================================================================ */
-function animateEpoch(after){
+function animateEpoch(after, fast){
   if(ST.anim) cancelAnimationFrame(ST.anim);
-  const t0=performance.now(), DUR=1400;
+  const t0=performance.now(), DUR = fast ? 900 : ST.speed;
   const step=(now)=>{
     const k=Math.min(1,(now-t0)/DUR);
     const ms=k*ST.epochMs;
     ST.zoom = Math.max(0, Math.min(ST.epochMs-40, ms-40));
     $("zoom").value = Math.round(ST.zoom);
     $("vZoom").textContent = Math.round(ST.zoom)+" ms";
-    drawEpoch(ms); drawZoom();
+    drawEpoch(ms); drawZoom(); drawScatterUpTo(ms); updateReadouts(ms);
     if(k<1){ ST.anim=requestAnimationFrame(step); }
     else { ST.anim=null; redrawAll(); if(after) after(); }
   };
@@ -1220,7 +1252,7 @@ function runStudy(){
     animateEpoch(()=>{ pushPoint(); redrawAll();
       lvl++; if(lvl>=STUDY_FORCES.length){ lvl=0; site++; }
       setTimeout(next, 120);
-    });
+    }, true);
   };
   $("study").disabled=true; $("run").disabled=true;
   next();
@@ -1252,6 +1284,18 @@ $("epms").oninput=e=>{ ST.epochMs=+e.target.value; $("vEp").textContent=ST.epoch
   $("zoom").max=ST.epochMs-40; ST.zoom=Math.min(ST.zoom,ST.epochMs-40); ST.points=[]; newEpoch(); redrawAll(); };
 $("zoom").oninput=e=>{ ST.zoom=+e.target.value; $("vZoom").textContent=ST.zoom+" ms"; drawEpoch(); drawZoom(); };
 $("run").onclick=()=>{ newEpoch(); animateEpoch(()=>{ pushPoint(); redrawAll(); }); };
+$("speed").onchange=e=>{ ST.speed=+e.target.value; };
+$("spot").onclick=()=>{ ST.spot=!ST.spot; syncSpot(); redrawAll(); };
+
+function syncSpot(){
+  const b=$("spot");
+  b.textContent = ST.spot ? "◆ Quitar el foco" : "◆ Destacar segmentos pequeños";
+  b.style.background = ST.spot ? "var(--nss)" : "";
+  b.style.color      = ST.spot ? "#2a2205" : "";
+  $("spotNote").innerHTML = ST.spot
+    ? "Solo quedan a la vista los segmentos que cuenta el NSS: amplitud menor de 2 mV y duración dentro del criterio. En el patrón miógeno ocupan casi todo el trazado; en el neurógeno, los potenciales grandes los enmascaran y quedan pocos."
+    : "";
+}
 $("newEp").onclick=()=>{ newEpoch(); pushPoint(); redrawAll(); };
 $("study").onclick=runStudy;
 $("clearPts").onclick=()=>{ ST.points=[]; redrawAll(); };
@@ -1278,7 +1322,7 @@ $("vForce").textContent = ST.force+" %";
 $("vEp").textContent    = ST.epochMs+" ms";
 $("vZoom").textContent  = ST.zoom+" ms";
 $("zoom").max = ST.epochMs-40;
-syncRef();
+syncRef(); syncSpot();
 schStep(0);
 newSite(); newEpoch(); pushPoint(); redrawAll();
 </script>
