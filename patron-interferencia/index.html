@@ -103,7 +103,7 @@ a{color:var(--accent)}
   <div class="bar">
     <button id="run" class="play">▶ Animar época</button>
     <button id="newEp">↻ Nueva época</button>
-    <button id="study">▶ Estudio de 20 épocas</button>
+    <button id="seq" class="play">▶ Reproducir el estudio completo</button>
     <button id="spot">◆ Destacar segmentos pequeños</button>
     <select id="speed" title="Velocidad del barrido">
       <option value="1400">Rápido</option>
@@ -112,6 +112,7 @@ a{color:var(--accent)}
     </select>
   </div>
   <p class="note" id="spotNote" style="margin:2px 0 0"></p>
+  <p class="note" id="seqNote" style="margin:2px 0 0"></p>
 
   <div class="grid">
     <div class="panel">
@@ -213,7 +214,8 @@ a{color:var(--accent)}
   </div>
   <p class="note" id="refNote" style="margin:0 0 10px"></p>
   <div class="bar">
-    <button id="play4" class="play">▶ Reproducir punto a punto</button>
+    <button id="seq2" class="play">▶ Reproducir el estudio completo</button>
+    <button id="play4">▶ Solo las nubes, punto a punto</button>
     <button id="rew4">↺ Reiniciar</button>
     <select id="sp4" title="Ritmo">
       <option value="900">Pausado</option>
@@ -657,7 +659,7 @@ function pearson(xs, ys){
 const ST = {
   pat:"normal", force:50, epochMs:500, sex:"H", age:"joven",
   ref:"rec", needle:"conc", musc:"biceps", spot:false, speed:3000, data:"sim",
-  shown:null, ghost:[], play4:null, sp4:560,
+  shown:null, ghost:[], play4:null, sp4:560, seq:false, seqT:null, seqFast:true,
   site:null, sig:null, res:null, zoom:0, reveal:1,
   points:[], anim:null, studyLeft:0, seedN:1
 };
@@ -705,8 +707,61 @@ const SCH_STEPS = [
   {t:"<b>Los segmentos (S1–S4).</b> Cinco giros definen cuatro segmentos. El segmento es la porción de señal comprendida entre dos giros consecutivos, y es la entidad elemental de todo el análisis."},
   {t:"<b>Las duraciones (D1–D4).</b> La duración de un segmento es la diferencia de tiempo entre los dos giros que lo delimitan. La suma de las duraciones de los segmentos que cumplen el criterio de amplitud y duración es la <i>actividad</i>."},
   {t:"<b>Las amplitudes (A1–A4).</b> La amplitud de un segmento es la diferencia de amplitud entre los dos giros que lo delimitan. La media de las amplitudes de todos los segmentos de la época es la <i>amplitud media</i> del análisis clásico; el centil 99 de esas amplitudes es la <i>envolvente</i>."},
-  {t:"<b>De cuatro números a cinco parámetros.</b> Contando los giros se obtiene NT; promediando las amplitudes, MA; sumando las duraciones admitidas, la actividad; tomando el centil 99 de las amplitudes, la envolvente; y contando los segmentos de menos de 2 mV admitidos, el NSS. Los cinco salen del mismo registro, sin prolongarlo ni aumentar la molestia del paciente."}
+  {t:"<b>De cuatro números a cinco parámetros.</b> Contando los giros se obtiene NT; promediando las amplitudes, MA; sumando las duraciones admitidas, la actividad; tomando el centil 99 de las amplitudes, la envolvente; y contando los segmentos de menos de 2 mV admitidos, el NSS. Los cinco salen del mismo registro, sin prolongarlo ni aumentar la molestia del paciente."},
+  {t:"<b>Y por qué el segmento discrimina.</b> Los mismos 45 ms en los tres patrones, contados por el mismo detector. En el <b>neurógeno</b> hay pocos segmentos, grandes y largos: pocas unidades supervivientes, de gran amplitud. En el <b>miógeno</b> hay muchos, pequeños y breves: muchas unidades diminutas y polifásicas reclutadas temprano. El normal queda en medio. Los dos números del análisis ---giros y NSS--- no hacen otra cosa que poner cifra a esa diferencia."}
 ];
+
+/* tres fragmentos de 45 ms, uno por patron, para el ultimo paso del esquema */
+let TRES=null;
+function tresPatrones(){
+  if(TRES) return TRES;
+  const MS=45;
+  TRES=["neuro","normal","myo"].map((k,i)=>{
+    const site=makePool(k, 90210+i*577); site.patKey=k;
+    const sig=synth(site, 0.50, MS, 4242+i*131);
+    return {pat:k, label:PATTERNS[k].label, sig, res:analyze(sig,MS), ms:MS};
+  });
+  return TRES;
+}
+
+function drawTres(g,W,H){
+  const T=tresPatrones();
+  const pad=26, gap=18, wCol=(W-2*pad-2*gap)/3;
+  let peak=0; T.forEach(t=>{ for(let i=0;i<t.sig.length;i++) peak=Math.max(peak,Math.abs(t.sig[i])); });
+  const span=Math.max(1000, Math.ceil(peak/500)*500);
+  T.forEach((t,i)=>{
+    const L=pad+i*(wCol+gap), R=L+wCol, TOP=64, BOT=H-96;
+    const x=ms=>L+ms/t.ms*(R-L), yv=v=>(TOP+BOT)/2 - v/span*((BOT-TOP)/2);
+    g.strokeStyle="rgba(124,252,155,0.08)";
+    for(let k=-2;k<=2;k++){ g.beginPath(); g.moveTo(L,yv(span*k/2)); g.lineTo(R,yv(span*k/2)); g.stroke(); }
+    g.strokeStyle="rgba(124,252,155,0.22)"; g.beginPath(); g.moveTo(L,yv(0)); g.lineTo(R,yv(0)); g.stroke();
+    // segmentos coloreados con el mismo criterio
+    for(const sg of t.res.segs){
+      g.strokeStyle = isSmall(sg) ? "#ffc857" : (counts(sg) ? "#7CFC9B" : "#5a6b85");
+      g.lineWidth=1.7; g.beginPath();
+      for(let k=sg.i0;k<=sg.i1;k++){ const px=x(k*DT), py=yv(t.sig[k]); k===sg.i0?g.moveTo(px,py):g.lineTo(px,py); }
+      g.stroke();
+    }
+    g.strokeStyle="rgba(124,252,155,0.30)"; g.lineWidth=0.8; g.beginPath();
+    for(let k=0;k<t.sig.length;k++){ const px=x(k*DT), py=yv(t.sig[k]); k?g.lineTo(px,py):g.moveTo(px,py); }
+    g.stroke();
+    g.fillStyle="#fff";
+    for(const tu of t.res.turns){ g.beginPath(); g.arc(x(tu.i*DT), yv(tu.v), 1.9, 0, 6.283); g.fill(); }
+    // rotulos
+    const col = t.pat==="normal" ? "#7CFC9B" : (t.pat==="neuro" ? "#ff6b6b" : "#ffc857");
+    g.fillStyle=col; g.font="700 14px -apple-system,sans-serif"; g.textAlign="center";
+    g.fillText(t.label, (L+R)/2, 42);
+    const sc=1000/t.ms, pq=t.res.segs.filter(isSmall).length;
+    g.fillStyle="#9fb2cc"; g.font="11.5px -apple-system,sans-serif";
+    g.fillText(t.res.turns.length+" giros · "+t.res.segs.length+" segmentos", (L+R)/2, BOT+22);
+    g.fillStyle="#ffc857";
+    g.fillText(pq+" pequeños  ("+Math.round(pq*sc)+"/s)", (L+R)/2, BOT+40);
+    g.fillStyle="#9fb2cc";
+    g.fillText("amplitud media "+Math.round(t.res.ma)+" µV", (L+R)/2, BOT+58);
+  });
+  g.fillStyle="#9fb2cc"; g.font="11px -apple-system,sans-serif"; g.textAlign="center";
+  g.fillText("45 ms · misma escala vertical ("+(span/1000).toFixed(1)+" mV) · mismo umbral de giro de 100 µV", W/2, H-14);
+}
 
 function drawSchematic(){
   const c=$("schem"), g=c.getContext("2d");
@@ -714,6 +769,7 @@ function drawSchematic(){
   const L=118, R=W-24, TOP=30, BOT=H-58;
   g.clearRect(0,0,W,H);
   g.fillStyle="#08130c"; g.fillRect(0,0,W,H);
+  if(ST.reveal===SCH_STEPS.length-1){ drawTres(g,W,H); return; }
 
   const x = t => L + t/20*(R-L);
   const yv = v => (TOP+BOT)/2 - v/1500*((BOT-TOP)/2);
@@ -814,8 +870,14 @@ function drawSchematic(){
 function schStep(d){
   ST.reveal = Math.min(SCH_STEPS.length-1, Math.max(0, ST.reveal+d));
   $("schTxt").innerHTML = SCH_STEPS[ST.reveal].t;
-  $("schCount").textContent = "Paso "+(ST.reveal+1)+" de "+SCH_STEPS.length+
+  if(ST.reveal===SCH_STEPS.length-1){
+    const T=tresPatrones();
+    $("schCount").textContent = "Paso "+(ST.reveal+1)+" de "+SCH_STEPS.length+" · segmentos pequeños: "+
+      T.map(t=>t.label.toLowerCase()+" "+t.res.segs.filter(isSmall).length).join(" · ");
+  } else {
+    $("schCount").textContent = "Paso "+(ST.reveal+1)+" de "+SCH_STEPS.length+
      " · el detector encuentra "+SCH.turns.length+" giros y "+SCH.segs.length+" segmentos";
+  }
   $("schPrev").disabled = ST.reveal===0;
   $("schNext").disabled = ST.reveal===SCH_STEPS.length-1;
   drawSchematic();
@@ -1373,22 +1435,49 @@ function animateEpoch(after, fast){
 }
 
 const STUDY_FORCES=[15,30,50,70,85];
-function runStudy(){
-  ST.points=[]; let site=0, lvl=0;
+
+/* ================================================================
+   SECUENCIA ENLAZADA — un solo gesto mueve todo
+   Reinicia, y por cada una de las veinte epocas barre la ventana de la senal
+   con sus contadores y deja caer el punto en las dos nubes. El patron elegido
+   manda sobre las dos cosas: ventana miopatica con nube miopatica, y ventana
+   neurogena con nube neurogena.
+   ================================================================ */
+function secuenciaViva(){
+  if(ST.seq){ pararSecuencia(); return; }
+  play4Stop();
+  if(casoActivo()){   // los patrones son de la simulacion, no del caso real
+    ST.data="sim"; $("data").value="sim"; syncRef(); sincronizarBotones();
+  }
+  guardarFantasma();
+  ST.points=[]; ST.shown=null; ST.seq=true;
+  $("seq").textContent="⏸ Detener"; $("seq").classList.remove("play");
+  $("seqNote").innerHTML = "Reproduciendo el patrón <b>"+PATTERNS[ST.pat].label.toLowerCase()+
+    "</b>: la ventana de la señal y las dos nubes avanzan juntas, época por época.";
+  let site=0, lvl=0;
   const next=()=>{
-    if(site>=4){ redrawAll(); $("study").disabled=false; $("run").disabled=false; return; }
+    if(!ST.seq) return;
+    if(site>=4){ pararSecuencia(); redrawAll(); return; }
     if(lvl===0) newSite();
     ST.force = STUDY_FORCES[lvl];
     $("force").value=ST.force; $("vForce").textContent=ST.force+" %";
     newEpoch(ST.force);
-    animateEpoch(()=>{ pushPoint(); redrawAll();
+    animateEpoch(()=>{
+      pushPoint(); redrawAll();
       lvl++; if(lvl>=STUDY_FORCES.length){ lvl=0; site++; }
-      setTimeout(next, 120);
-    }, true);
+      ST.seqT=setTimeout(next, 140);
+    }, ST.seqFast);
   };
-  $("study").disabled=true; $("run").disabled=true;
   next();
 }
+function pararSecuencia(){
+  ST.seq=false;
+  if(ST.seqT){ clearTimeout(ST.seqT); ST.seqT=null; }
+  if(ST.anim){ cancelAnimationFrame(ST.anim); ST.anim=null; }
+  $("seq").textContent="▶ Reproducir el estudio completo"; $("seq").classList.add("play");
+  $("seqNote").innerHTML="";
+}
+function runStudy(){ secuenciaViva(); }
 
 /* ================================================================
    EVENTOS
@@ -1401,8 +1490,9 @@ document.querySelectorAll("#patSeg button").forEach(b=>{
   b.onclick=()=>{
     document.querySelectorAll("#patSeg button").forEach(x=>x.classList.remove("on"));
     b.classList.add("on");
-    play4Stop(); guardarFantasma();
-    ST.pat=b.dataset.v; ST.points=[]; ST.shown=null; newSite(); newEpoch(); redrawAll();
+    pararSecuencia(); play4Stop();
+    ST.pat=b.dataset.v;
+    secuenciaViva();          // el patron manda sobre la ventana y sobre las nubes
   };
 });
 document.querySelectorAll("#defSeg button").forEach(b=>{
@@ -1416,8 +1506,8 @@ $("force").oninput=e=>{ ST.force=+e.target.value; $("vForce").textContent=ST.for
 $("epms").oninput=e=>{ ST.epochMs=+e.target.value; $("vEp").textContent=ST.epochMs+" ms";
   $("zoom").max=ST.epochMs-40; ST.zoom=Math.min(ST.zoom,ST.epochMs-40); ST.points=[]; newEpoch(); redrawAll(); };
 $("zoom").oninput=e=>{ ST.zoom=+e.target.value; $("vZoom").textContent=ST.zoom+" ms"; drawEpoch(); drawZoom(); };
-$("run").onclick=()=>{ newEpoch(); animateEpoch(()=>{ pushPoint(); redrawAll(); }); };
-$("speed").onchange=e=>{ ST.speed=+e.target.value; };
+$("run").onclick=()=>{ pararSecuencia(); play4Stop(); newEpoch(); animateEpoch(()=>{ pushPoint(); redrawAll(); }); };
+$("speed").onchange=e=>{ ST.speed=+e.target.value; ST.seqFast = ST.speed<=1400; };
 $("spot").onclick=()=>{ ST.spot=!ST.spot; syncSpot(); redrawAll(); };
 
 function syncSpot(){
@@ -1430,13 +1520,10 @@ function syncSpot(){
     : "";
 }
 $("newEp").onclick=()=>{ newEpoch(); pushPoint(); redrawAll(); };
-$("study").onclick=()=>{
-  play4Stop(); ST.ghost=[];
-  if(casoActivo()){ ST.data="sim"; $("data").value="sim"; ST.points=[]; syncRef(); sincronizarBotones(); }
-  runStudy();
-};
+$("seq").onclick=secuenciaViva;
+$("seq2").onclick=secuenciaViva;
 $("clearPts").onclick=()=>{ play4Stop(); ST.points=[]; ST.ghost=[]; ST.shown=null; redrawAll(); };
-$("play4").onclick=()=>{ ST.play4 ? play4Stop() : play4Start(); };
+$("play4").onclick=()=>{ pararSecuencia(); ST.play4 ? play4Stop() : play4Start(); };
 $("rew4").onclick=()=>{ play4Stop(); ST.shown=0; redrawAll(); };
 $("sp4").onchange=e=>{ ST.sp4=+e.target.value; };
 $("sex").onchange=e=>{ ST.sex=e.target.value; redrawAll(); };
