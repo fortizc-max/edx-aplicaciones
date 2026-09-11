@@ -125,6 +125,11 @@ a{color:var(--accent)}
           <button data-v="myo">Miopático</button>
         </div>
       </div>
+      <label class="sl" id="slGrado">
+        <div class="top"><span class="l">Grado de afectación</span><span class="v" id="vGrado">10 / 10</span></div>
+        <input type="range" id="grado" min="0" max="10" step="1" value="10">
+        <p class="note" id="gradoNote" style="margin:4px 0 0"></p>
+      </label>
       <div class="sl">
         <div class="top"><span class="l">Definición de la actividad y del NSS</span></div>
         <div class="seg" id="defSeg">
@@ -398,17 +403,31 @@ function makeTemplate(pat, r){
   return y;
 }
 
-/* pool de unidades motoras de un sitio de insercion */
-function makePool(patKey, seed){
-  const pat = PATTERNS[patKey];
+/* pool de unidades motoras de un sitio de insercion.
+   GRADO (0 a 1) gradua la afectacion de forma continua: es la FRACCION de
+   unidades motoras enfermas del reservorio, que es como se comporta un musculo
+   real -no todas las unidades se afectan a la vez-. Ademas interpola el tamano
+   del reservorio, la frecuencia maxima de descarga y la curva de reclutamiento
+   entre el patron normal y el patologico. Con grado 0 el resultado es
+   indistinguible de un musculo normal; con grado 1, el patron florido. */
+function makePool(patKey, seed, grado){
+  const N = PATTERNS.normal, P = PATTERNS[patKey];
+  const g = (patKey==="normal") ? 0
+          : (grado===undefined ? 1 : Math.max(0, Math.min(1, grado)));
+  const mix = (a,b)=> a + (b-a)*g;
   const r = rng(seed);
-  const pool = [];
   // ganancia del sitio: la punta de la aguja no queda a la misma distancia de las
   // fibras en cada insercion, y de ahi buena parte de la dispersion de un estudio real
   const siteGain = Math.exp(0.33*gaussOf(r));
-  for(let i=0;i<pat.nMax;i++){
-    const amp = pat.ampMed*siteGain*Math.exp(pat.ampSig*gaussOf(r));
-    pool.push({ amp:Math.min(amp, pat.ampMed*8), tpl:makeTemplate(pat,r), ph:r() });
+  const nMax = Math.max(3, Math.round(mix(N.nMax, P.nMax)));
+  const pat = { label:P.label, nMax,
+                rateMax: mix(N.rateMax, P.rateMax),
+                expo:    mix(N.expo,    P.expo), grado:g };
+  const pool = [];
+  for(let i=0;i<nMax;i++){
+    const src = (r() < g) ? P : N;             // ¿esta unidad esta afectada?
+    const amp = src.ampMed*siteGain*Math.exp(src.ampSig*gaussOf(r));
+    pool.push({ amp:Math.min(amp, src.ampMed*8), tpl:makeTemplate(src,r), ph:r() });
   }
   pool.sort((a,b)=>a.amp-b.amp);              // principio del tamano: pequenas primero
   return { pat, pool, seed };
@@ -659,7 +678,7 @@ function pearson(xs, ys){
 const ST = {
   pat:"normal", force:50, epochMs:500, sex:"H", age:"joven",
   ref:"rec", needle:"conc", musc:"biceps", spot:false, speed:3000, data:"sim",
-  shown:null, ghost:[], play4:null, sp4:560, seq:false, seqT:null, seqFast:true, ciclo:1,
+  shown:null, ghost:[], play4:null, sp4:560, seq:false, seqT:null, seqFast:true, ciclo:1, grado:10,
   site:null, sig:null, res:null, zoom:0, reveal:1,
   points:[], anim:null, studyLeft:0, seedN:1
 };
@@ -888,17 +907,17 @@ function schStep(d){
    ================================================================ */
 function newEpoch(force){
   const f = (force!==undefined?force:ST.force)/100;
-  if(!ST.site || ST.site.patKey!==ST.pat){
-    ST.site = makePool(ST.pat, 20250905 + ST.seedN*977);
-    ST.site.patKey = ST.pat;
+  if(!ST.site || ST.site.patKey!==ST.pat || ST.site.grado!==ST.grado){
+    ST.site = makePool(ST.pat, 20250905 + ST.seedN*977, ST.grado/10);
+    ST.site.patKey = ST.pat; ST.site.grado = ST.grado;
   }
   ST.sig = synth(ST.site, f, ST.epochMs, 4711 + (ST.seedN++)*131);
   ST.res = analyze(ST.sig, ST.epochMs);
   return ST.res;
 }
 function newSite(){
-  ST.site = makePool(ST.pat, 20250905 + (ST.seedN++)*977);
-  ST.site.patKey = ST.pat;
+  ST.site = makePool(ST.pat, 20250905 + (ST.seedN++)*977, ST.grado/10);
+  ST.site.patKey = ST.pat; ST.site.grado = ST.grado;
 }
 
 function segColor(s){
@@ -1455,6 +1474,7 @@ function secuenciaViva(){
   let site=0, lvl=0;
   const nota=()=>{
     $("seqNote").innerHTML = "Registrando el patrón <b>"+PATTERNS[ST.pat].label.toLowerCase()+
+      (ST.pat==="normal" ? "" : "</b> en grado <b>"+ST.grado+"/10")+
       "</b> · estudio "+ST.ciclo+" · época "+ST.points.length+" de 20 · la ventana de la señal y las dos nubes avanzan juntas, "+
       "y al completar veinte épocas el registro empieza otro estudio sin detenerse.";
   };
@@ -1498,7 +1518,7 @@ document.querySelectorAll("#patSeg button").forEach(b=>{
     document.querySelectorAll("#patSeg button").forEach(x=>x.classList.remove("on"));
     b.classList.add("on");
     pararSecuencia(); play4Stop();
-    ST.pat=b.dataset.v;
+    ST.pat=b.dataset.v; syncGrado();
     secuenciaViva();          // el patron manda sobre la ventana y sobre las nubes
   };
 });
@@ -1515,6 +1535,11 @@ $("epms").oninput=e=>{ ST.epochMs=+e.target.value; $("vEp").textContent=ST.epoch
 $("zoom").oninput=e=>{ ST.zoom=+e.target.value; $("vZoom").textContent=ST.zoom+" ms"; drawEpoch(); drawZoom(); };
 $("run").onclick=()=>{ pararSecuencia(); play4Stop(); newEpoch(); animateEpoch(()=>{ pushPoint(); redrawAll(); }); };
 $("speed").onchange=e=>{ ST.speed=+e.target.value; ST.seqFast = ST.speed<=1400; };
+$("grado").oninput=e=>{
+  ST.grado=+e.target.value; syncGrado();
+  if(ST.seq){ pararSecuencia(); secuenciaViva(); }      // rearranca con el grado nuevo
+  else { newSite(); newEpoch(); redrawAll(); }
+};
 $("spot").onclick=()=>{ ST.spot=!ST.spot; syncSpot(); redrawAll(); };
 
 function syncSpot(){
@@ -1544,6 +1569,22 @@ $("data").onchange=e=>{
   redrawAll();
   if(casoActivo()) setTimeout(play4Start, 400);   // y acto seguido se reproduce
 };
+
+function syncGrado(){
+  const normal = ST.pat==="normal";
+  $("grado").disabled = normal;
+  $("slGrado").style.opacity = normal ? .45 : 1;
+  $("vGrado").textContent = normal ? "—" : ST.grado+" / 10";
+  const g=ST.grado;
+  const texto = normal
+    ? "Con el patrón normal no se aplica. Elija neurógeno o miopático para graduar la afectación."
+    : (g===0 ? "Grado 0: el músculo es indistinguible de uno normal y todos los puntos caen dentro de las nubes."
+      : g<=3 ? "Afectación leve: solo unas pocas épocas salen de la nube, y casi siempre de una sola de las dos."
+      : g<=6 ? "Afectación moderada: la mayoría de los puntos ya sale en la nube de giros–amplitud; la de NSS empieza a moverse después."
+      : "Afectación florida: prácticamente todas las épocas salen, y las dos nubes coinciden en la dirección.");
+  $("gradoNote").innerHTML = texto + (normal ? "" :
+    " El grado es la <b>fracción de unidades motoras enfermas</b> del músculo, que es como progresa una enfermedad real: no todas se afectan a la vez.");
+}
 
 function sincronizarBotones(){
   const caso = casoActivo()!==null;
@@ -1578,7 +1619,7 @@ $("vForce").textContent = ST.force+" %";
 $("vEp").textContent    = ST.epochMs+" ms";
 $("vZoom").textContent  = ST.zoom+" ms";
 $("zoom").max = ST.epochMs-40;
-syncSpot();
+syncSpot(); syncGrado();
 schStep(0);
 newSite(); newEpoch();                       // la señal de los apartados 2 y 3
 ST.data="biceps"; $("data").value="biceps";  // arranca con el caso real del capítulo
