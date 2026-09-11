@@ -128,10 +128,10 @@ a{color:var(--accent)}
       <div class="sl">
         <div class="top"><span class="l">Definición de la actividad y del NSS</span></div>
         <div class="seg" id="defSeg">
-          <button data-v="li" class="on">Actual: &lt; 5 ms</button>
-          <button data-v="orig">Original: amplitud–duración</button>
+          <button data-v="orig" class="on">Original: amplitud–duración</button>
+          <button data-v="li">Simplificada: &lt; 5 ms</button>
         </div>
-        <p class="note">La forma que imprime la literatura reciente ---Li (2020)--- admite en la actividad <b>todo segmento de menos de 5 ms</b>, y cuenta como segmento pequeño el que además mide menos de 2 mV. La <b>original</b> de Nandedkar (1986a) exige que los segmentos de menor amplitud sean además más breves. Todo segmento admitido por la original lo admite también la de 5 ms, de modo que ésta nunca da un valor menor.<br><br><b>Cada nube debe leerse con la definición con la que fue construida.</b> Las nubes tradicionales del apartado 4 se levantaron con el criterio original, y con él discriminan mejor: en esta simulación el patrón miopático sale de la nube de NSS en la gran mayoría de los registros con la definición original, y apenas en una fracción pequeña con la de 5 ms, porque ésta engorda a la vez la abscisa y la ordenada y arrastra el punto a lo largo de la nube en vez de sacarlo de ella.</p>
+        <p class="note">La <b>original</b> de Nandedkar (1986a) exige que los segmentos de menor amplitud sean además más breves; viene seleccionada por defecto porque es la que implementa el software de los equipos y con la que se levantaron las nubes del apartado 4. La forma <b>simplificada</b> que imprime la literatura reciente ---Li (2020)--- admite en la actividad todo segmento de menos de 5 ms. Todo segmento que admite la original lo admite también la simplificada, de modo que ésta nunca da un valor menor.<br><br><b>Cada nube debe leerse con la definición con la que fue construida</b>, y la diferencia no es cosmética. Pruebe a cambiar de definición con el patrón miopático en marcha: con la original sus puntos salen por encima de la nube de NSS en cerca de dos tercios de los registros, y con la de 5 ms apenas en una séptima parte. La razón es que la forma simplificada engorda a la vez la abscisa y la ordenada, y arrastra el punto <i>a lo largo</i> de la nube en lugar de sacarlo de ella.</p>
       </div>
       <label class="sl">
         <div class="top"><span class="l">Fuerza de contracción</span><span class="v" id="vForce">50 %</span></div>
@@ -334,7 +334,7 @@ const TURN_THR = 100;         // uV: umbral de giro en el patron de interferenci
    admite la escalera dura menos de 5 ms. De ahi que la definicion vigente no
    pueda dar un valor menor, y que la diferencia entre las dos sean justamente
    los segmentos de baja amplitud y duracion intermedia. */
-let DEF_MODE = "li";
+let DEF_MODE = "orig";
 
 function maxDur(ampUV){
   if(ampUV < 500)  return 1.5;
