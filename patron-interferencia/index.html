@@ -101,9 +101,9 @@ a{color:var(--accent)}
   </div>
 
   <div class="bar">
-    <button id="run" class="play">▶ Animar época</button>
+    <button id="seq" class="play">▶ Registro continuo</button>
+    <button id="run">▶ Una sola época</button>
     <button id="newEp">↻ Nueva época</button>
-    <button id="seq" class="play">▶ Reproducir el estudio completo</button>
     <button id="spot">◆ Destacar segmentos pequeños</button>
     <select id="speed" title="Velocidad del barrido">
       <option value="1400">Rápido</option>
@@ -122,7 +122,7 @@ a{color:var(--accent)}
         <div class="seg" id="patSeg">
           <button data-v="normal" class="on">Normal</button>
           <button data-v="neuro">Neurógeno</button>
-          <button data-v="myo">Miógeno</button>
+          <button data-v="myo">Miopático</button>
         </div>
       </div>
       <div class="sl">
@@ -131,7 +131,7 @@ a{color:var(--accent)}
           <button data-v="li" class="on">Actual: &lt; 5 ms</button>
           <button data-v="orig">Original: amplitud–duración</button>
         </div>
-        <p class="note">La forma que imprime la literatura reciente ---Li (2020)--- admite en la actividad <b>todo segmento de menos de 5 ms</b>, y cuenta como segmento pequeño el que además mide menos de 2 mV. La <b>original</b> de Nandedkar (1986a) exige que los segmentos de menor amplitud sean además más breves. Todo segmento admitido por la original lo admite también la de 5 ms, de modo que ésta nunca da un valor menor.<br><br><b>Cada nube debe leerse con la definición con la que fue construida.</b> Las nubes tradicionales del apartado 4 se levantaron con el criterio original, y con él discriminan mejor: en esta simulación el patrón miógeno sale de la nube de NSS en la gran mayoría de los registros con la definición original, y apenas en una fracción pequeña con la de 5 ms, porque ésta engorda a la vez la abscisa y la ordenada y arrastra el punto a lo largo de la nube en vez de sacarlo de ella.</p>
+        <p class="note">La forma que imprime la literatura reciente ---Li (2020)--- admite en la actividad <b>todo segmento de menos de 5 ms</b>, y cuenta como segmento pequeño el que además mide menos de 2 mV. La <b>original</b> de Nandedkar (1986a) exige que los segmentos de menor amplitud sean además más breves. Todo segmento admitido por la original lo admite también la de 5 ms, de modo que ésta nunca da un valor menor.<br><br><b>Cada nube debe leerse con la definición con la que fue construida.</b> Las nubes tradicionales del apartado 4 se levantaron con el criterio original, y con él discriminan mejor: en esta simulación el patrón miopático sale de la nube de NSS en la gran mayoría de los registros con la definición original, y apenas en una fracción pequeña con la de 5 ms, porque ésta engorda a la vez la abscisa y la ordenada y arrastra el punto a lo largo de la nube en vez de sacarlo de ella.</p>
       </div>
       <label class="sl">
         <div class="top"><span class="l">Fuerza de contracción</span><span class="v" id="vForce">50 %</span></div>
@@ -189,7 +189,7 @@ a{color:var(--accent)}
 <!-- ===================== 4. NUBES ===================== -->
 <section>
   <h2><span class="n">4</span>Las nubes</h2>
-  <p class="lead">Cada época aporta un punto a cada nube, y el mismo registro alimenta las dos: no hay que prolongar el estudio para tener la segunda. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse <b>«Reproducir punto a punto»</b> para verlas construirse época por época —con los datos de la simulación o con los de un caso real— o «Estudio de 20 épocas» en el apartado 2 para generar un estudio nuevo.</p>
+  <p class="lead">Cada época aporta un punto a cada nube, y el mismo registro alimenta las dos: no hay que prolongar el estudio para tener la segunda. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse <b>«Registro continuo»</b> para explorar la señal y las nubes a la vez, sin interrupción, o <b>«Solo las nubes, punto a punto»</b> para verlas construirse época por época —con los datos de la simulación o con los de un caso real— o «Estudio de 20 épocas» en el apartado 2 para generar un estudio nuevo.</p>
 
   <div class="bar">
     <select id="data">
@@ -214,7 +214,7 @@ a{color:var(--accent)}
   </div>
   <p class="note" id="refNote" style="margin:0 0 10px"></p>
   <div class="bar">
-    <button id="seq2" class="play">▶ Reproducir el estudio completo</button>
+    <button id="seq2" class="play">▶ Registro continuo</button>
     <button id="play4">▶ Solo las nubes, punto a punto</button>
     <button id="rew4">↺ Reiniciar</button>
     <select id="sp4" title="Ritmo">
@@ -222,7 +222,7 @@ a{color:var(--accent)}
       <option value="560" selected>Normal</option>
       <option value="300">Rápido</option>
     </select>
-    <span class="note" style="margin:0">Cada punto es una época: entra a la vez en las dos nubes.</span>
+    <span class="note" style="margin:0">El registro continuo no se detiene: al completar veinte épocas empieza otro estudio y el anterior queda en gris.</span>
   </div>
   <div class="read" id="read4">
     <div class="rd"><div class="k">Época</div><div class="v" id="rEp">–</div><div class="u" id="rEpU">de 0</div></div>
@@ -245,7 +245,7 @@ a{color:var(--accent)}
   </div>
   <div style="margin-top:14px">
     <canvas id="cUCA" class="plain" width="900" height="330"></canvas>
-    <p class="cap">Envolvente frente a actividad. Se representa la trayectoria de los puntos, sin nube. Los valores normativos de esta tercera nube sí están publicados —Choi y cols., <i>J Korean Acad Rehabil Med</i> 2007;31(2):213–219, para <i>biceps brachii</i>, <i>vastus medialis</i> y <i>tibialis anterior</i> en adultos de 20 a 59 años, por sexo—, pero no se ha podido consultar el artículo, de modo que aquí no se dibuja ningún límite. La dirección de anormalidad es la misma que en la nube de giros–amplitud: por encima, patrón neurógeno; por debajo, miógeno.</p>
+    <p class="cap">Envolvente frente a actividad. Se representa la trayectoria de los puntos, sin nube. Los valores normativos de esta tercera nube sí están publicados —Choi y cols., <i>J Korean Acad Rehabil Med</i> 2007;31(2):213–219, para <i>biceps brachii</i>, <i>vastus medialis</i> y <i>tibialis anterior</i> en adultos de 20 a 59 años, por sexo—, pero no se ha podido consultar el artículo, de modo que aquí no se dibuja ningún límite. La dirección de anormalidad es la misma que en la nube de giros–amplitud: por encima, patrón neurógeno; por debajo, miopático.</p>
   </div>
 
   <div class="clin" id="verdict"></div>
@@ -361,7 +361,7 @@ function gaussOf(r){
 const PATTERNS = {
   normal:{ label:"Normal",     nMax:30, ampMed: 900, ampSig:0.32, dur:10.0, shape:"muap",  rateMax:32, expo:0.95 },
   neuro: { label:"Neurógeno",  nMax: 9,  ampMed:3600, ampSig:0.38, dur:15.0, shape:"neuro", rateMax:45, expo:0.70 },
-  myo:   { label:"Miógeno",    nMax:38, ampMed: 430, ampSig:0.50, dur: 5.0, shape:"poly",  rateMax:28, expo:0.55 }
+  myo:   { label:"Miopático",    nMax:38, ampMed: 430, ampSig:0.50, dur: 5.0, shape:"poly",  rateMax:28, expo:0.55 }
 };
 
 function shapeComps(kind, r){
@@ -659,7 +659,7 @@ function pearson(xs, ys){
 const ST = {
   pat:"normal", force:50, epochMs:500, sex:"H", age:"joven",
   ref:"rec", needle:"conc", musc:"biceps", spot:false, speed:3000, data:"sim",
-  shown:null, ghost:[], play4:null, sp4:560, seq:false, seqT:null, seqFast:true,
+  shown:null, ghost:[], play4:null, sp4:560, seq:false, seqT:null, seqFast:true, ciclo:1,
   site:null, sig:null, res:null, zoom:0, reveal:1,
   points:[], anim:null, studyLeft:0, seedN:1
 };
@@ -708,7 +708,7 @@ const SCH_STEPS = [
   {t:"<b>Las duraciones (D1–D4).</b> La duración de un segmento es la diferencia de tiempo entre los dos giros que lo delimitan. La suma de las duraciones de los segmentos que cumplen el criterio de amplitud y duración es la <i>actividad</i>."},
   {t:"<b>Las amplitudes (A1–A4).</b> La amplitud de un segmento es la diferencia de amplitud entre los dos giros que lo delimitan. La media de las amplitudes de todos los segmentos de la época es la <i>amplitud media</i> del análisis clásico; el centil 99 de esas amplitudes es la <i>envolvente</i>."},
   {t:"<b>De cuatro números a cinco parámetros.</b> Contando los giros se obtiene NT; promediando las amplitudes, MA; sumando las duraciones admitidas, la actividad; tomando el centil 99 de las amplitudes, la envolvente; y contando los segmentos de menos de 2 mV admitidos, el NSS. Los cinco salen del mismo registro, sin prolongarlo ni aumentar la molestia del paciente."},
-  {t:"<b>Y por qué el segmento discrimina.</b> Los mismos 45 ms en los tres patrones, contados por el mismo detector. En el <b>neurógeno</b> hay pocos segmentos, grandes y largos: pocas unidades supervivientes, de gran amplitud. En el <b>miógeno</b> hay muchos, pequeños y breves: muchas unidades diminutas y polifásicas reclutadas temprano. El normal queda en medio. Los dos números del análisis ---giros y NSS--- no hacen otra cosa que poner cifra a esa diferencia."}
+  {t:"<b>Y por qué el segmento discrimina.</b> Los mismos 45 ms en los tres patrones, contados por el mismo detector. En el <b>neurógeno</b> hay pocos segmentos, grandes y largos: pocas unidades supervivientes, de gran amplitud. En el <b>miopático</b> hay muchos, pequeños y breves: muchas unidades diminutas y polifásicas reclutadas temprano. El normal queda en medio. Los dos números del análisis ---giros y NSS--- no hacen otra cosa que poner cifra a esa diferencia."}
 ];
 
 /* tres fragmentos de 45 ms, uno por patron, para el ultimo paso del esquema */
@@ -1140,7 +1140,7 @@ function drawCloudTA(){
   });
 
   g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
-  g.fillText("por encima: neurógeno · por debajo o a la derecha: miógeno", box.L, 32);
+  g.fillText("por encima: neurógeno · por debajo o a la derecha: miopático", box.L, 32);
   $("capTA").innerHTML = _c
     ? "Nube de giros–amplitud <b>del propio equipo</b> del caso EDX-019, digitalizada de la figura del informe: <i>"+_c.nom+"</i>, aguja monopolar. Borde derecho en "+Math.round(TR)+" giros/s."
     : (row.trad
@@ -1180,7 +1180,7 @@ function drawCloudNSS(){
   });
 
   g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
-  g.fillText("por encima: miógeno · por debajo: neurógeno", box.L, 32);
+  g.fillText("por encima: miopático · por debajo: neurógeno", box.L, 32);
   $("capNSS").innerHTML = _c2
     ? "Nube de NSS–actividad de <i>"+_c2.nom+"</i>, "+row.row+". El equipo del caso <b>no dibuja</b> esta nube: los puntos se grafican aquí sobre la referencia publicada que corresponde al paciente."
     : (row.trad
@@ -1299,13 +1299,13 @@ function updateVerdict(){
   if(trad){
     // criterio original de Stalberg: dos o mas puntos fuera en la misma direccion
     if(taUp>=2) flags.push("nube de giros–amplitud: "+taUp+" puntos por encima del borde superior (criterio de Stålberg: dos o más en la misma dirección) → <b>patrón neurógeno</b>");
-    if(taLo>=2) flags.push("nube de giros–amplitud: "+taLo+" puntos por debajo del borde inferior o a la derecha → <b>patrón miógeno</b>");
-    if(nsUp>=2) flags.push("nube de NSS–actividad: "+nsUp+" puntos por encima → <b>patrón miógeno</b>");
+    if(taLo>=2) flags.push("nube de giros–amplitud: "+taLo+" puntos por debajo del borde inferior o a la derecha → <b>patrón miopático</b>");
+    if(nsUp>=2) flags.push("nube de NSS–actividad: "+nsUp+" puntos por encima → <b>patrón miopático</b>");
     if(nsLo>=2) flags.push("nube de NSS–actividad: "+nsLo+" puntos por debajo → <b>patrón neurógeno</b>");
   } else {
     if(pc(taUp)>25) flags.push("nube de giros–amplitud: "+pc(taUp)+" % de los puntos por encima del borde superior (umbral de 25 %) → <b>patrón neurógeno</b>");
-    if(pc(taLo)>18) flags.push("nube de giros–amplitud: "+pc(taLo)+" % por debajo del borde inferior o a la derecha (umbral de 18 %) → <b>patrón miógeno</b>");
-    if(pc(nsUp)>15) flags.push("nube de NSS–actividad: "+pc(nsUp)+" % por encima (umbral de 15 %) → <b>patrón miógeno</b>");
+    if(pc(taLo)>18) flags.push("nube de giros–amplitud: "+pc(taLo)+" % por debajo del borde inferior o a la derecha (umbral de 18 %) → <b>patrón miopático</b>");
+    if(pc(nsUp)>15) flags.push("nube de NSS–actividad: "+pc(nsUp)+" % por encima (umbral de 15 %) → <b>patrón miopático</b>");
     if(pc(nsLo)>15) flags.push("nube de NSS–actividad: "+pc(nsLo)+" % por debajo (umbral de 15 %) → <b>patrón neurógeno</b>");
   }
   const maxAct=Math.max(...visibles().map(p=>pd(p).act));
@@ -1450,31 +1450,38 @@ function secuenciaViva(){
     ST.data="sim"; $("data").value="sim"; syncRef(); sincronizarBotones();
   }
   guardarFantasma();
-  ST.points=[]; ST.shown=null; ST.seq=true;
-  $("seq").textContent="⏸ Detener"; $("seq").classList.remove("play");
-  $("seqNote").innerHTML = "Reproduciendo el patrón <b>"+PATTERNS[ST.pat].label.toLowerCase()+
-    "</b>: la ventana de la señal y las dos nubes avanzan juntas, época por época.";
+  ST.points=[]; ST.shown=null; ST.seq=true; ST.ciclo=1;
+  ["seq","seq2"].forEach(id=>{ $(id).textContent="⏸ Detener"; $(id).classList.remove("play"); });
   let site=0, lvl=0;
+  const nota=()=>{
+    $("seqNote").innerHTML = "Registrando el patrón <b>"+PATTERNS[ST.pat].label.toLowerCase()+
+      "</b> · estudio "+ST.ciclo+" · época "+ST.points.length+" de 20 · la ventana de la señal y las dos nubes avanzan juntas, "+
+      "y al completar veinte épocas el registro empieza otro estudio sin detenerse.";
+  };
   const next=()=>{
     if(!ST.seq) return;
-    if(site>=4){ pararSecuencia(); redrawAll(); return; }
+    if(site>=4){                       // estudio completo: se guarda en gris y sigue
+      ST.ciclo++; guardarFantasma(); ST.points=[]; ST.shown=null;
+      site=0; lvl=0; newSite(); redrawAll(); nota();
+      ST.seqT=setTimeout(next, 900); return;
+    }
     if(lvl===0) newSite();
     ST.force = STUDY_FORCES[lvl];
     $("force").value=ST.force; $("vForce").textContent=ST.force+" %";
     newEpoch(ST.force);
     animateEpoch(()=>{
-      pushPoint(); redrawAll();
+      pushPoint(); redrawAll(); nota();
       lvl++; if(lvl>=STUDY_FORCES.length){ lvl=0; site++; }
       ST.seqT=setTimeout(next, 140);
     }, ST.seqFast);
   };
-  next();
+  nota(); next();
 }
 function pararSecuencia(){
   ST.seq=false;
   if(ST.seqT){ clearTimeout(ST.seqT); ST.seqT=null; }
   if(ST.anim){ cancelAnimationFrame(ST.anim); ST.anim=null; }
-  $("seq").textContent="▶ Reproducir el estudio completo"; $("seq").classList.add("play");
+  ["seq","seq2"].forEach(id=>{ $(id).textContent="▶ Registro continuo"; $(id).classList.add("play"); });
   $("seqNote").innerHTML="";
 }
 function runStudy(){ secuenciaViva(); }
@@ -1516,7 +1523,7 @@ function syncSpot(){
   b.style.background = ST.spot ? "var(--nss)" : "";
   b.style.color      = ST.spot ? "#2a2205" : "";
   $("spotNote").innerHTML = ST.spot
-    ? "Solo quedan a la vista los segmentos que cuenta el NSS: amplitud menor de 2 mV y duración dentro del criterio. En el patrón miógeno ocupan casi todo el trazado; en el neurógeno, los potenciales grandes los enmascaran y quedan pocos."
+    ? "Solo quedan a la vista los segmentos que cuenta el NSS: amplitud menor de 2 mV y duración dentro del criterio. En el patrón miopático ocupan casi todo el trazado; en el neurógeno, los potenciales grandes los enmascaran y quedan pocos."
     : "";
 }
 $("newEp").onclick=()=>{ newEpoch(); pushPoint(); redrawAll(); };
