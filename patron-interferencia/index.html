@@ -188,7 +188,7 @@ a{color:var(--accent)}
 <!-- ===================== 4. NUBES ===================== -->
 <section>
   <h2><span class="n">4</span>Las nubes</h2>
-  <p class="lead">Cada época aporta un punto a cada nube. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse «Estudio de 20 épocas» en el apartado 2 para construir la nube completa.</p>
+  <p class="lead">Cada época aporta un punto a cada nube, y el mismo registro alimenta las dos: no hay que prolongar el estudio para tener la segunda. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse <b>«Reproducir punto a punto»</b> para verlas construirse época por época —con los datos de la simulación o con los de un caso real— o «Estudio de 20 épocas» en el apartado 2 para generar un estudio nuevo.</p>
 
   <div class="bar">
     <select id="data">
@@ -212,6 +212,24 @@ a{color:var(--accent)}
     <button id="clearPts">Borrar puntos</button>
   </div>
   <p class="note" id="refNote" style="margin:0 0 10px"></p>
+  <div class="bar">
+    <button id="play4" class="play">▶ Reproducir punto a punto</button>
+    <button id="rew4">↺ Reiniciar</button>
+    <select id="sp4" title="Ritmo">
+      <option value="900">Pausado</option>
+      <option value="560" selected>Normal</option>
+      <option value="300">Rápido</option>
+    </select>
+    <span class="note" style="margin:0">Cada punto es una época: entra a la vez en las dos nubes.</span>
+  </div>
+  <div class="read" id="read4">
+    <div class="rd"><div class="k">Época</div><div class="v" id="rEp">–</div><div class="u" id="rEpU">de 0</div></div>
+    <div class="rd"><div class="k">Giros</div><div class="v" id="rNT">–</div><div class="u">por segundo</div></div>
+    <div class="rd"><div class="k">Amplitud media</div><div class="v" id="rMA">–</div><div class="u">µV</div></div>
+    <div class="rd"><div class="k">Actividad</div><div class="v" id="rACT">–</div><div class="u">ms/s</div></div>
+    <div class="rd"><div class="k">NSS</div><div class="v" id="rNSS">–</div><div class="u">segmentos/s</div></div>
+    <div class="rd"><div class="k">Fuera de nube</div><div class="v" id="rOUT">–</div><div class="u">giros/amp · NSS</div></div>
+  </div>
 
   <div class="two">
     <div>
@@ -639,6 +657,7 @@ function pearson(xs, ys){
 const ST = {
   pat:"normal", force:50, epochMs:500, sex:"H", age:"joven",
   ref:"rec", needle:"conc", musc:"biceps", spot:false, speed:3000, data:"sim",
+  shown:null, ghost:[], play4:null, sp4:560,
   site:null, sig:null, res:null, zoom:0, reveal:1,
   points:[], anim:null, studyLeft:0, seedN:1
 };
@@ -1043,10 +1062,12 @@ function drawCloudTA(){
   g.fillText(row.trad?"Tmáx":"giros p99", lx(TR)-4, box.TOP+11);
 
   // puntos
-  ST.points.forEach((p,k)=>{
+  ghostDots(g,lx,ly,xr,yr,p=>p.nt,p=>p.ma);
+  const VIS=visibles();
+  VIS.forEach((p,k)=>{
     const cl=classTA(row,p.nt,p.ma);
     g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
-    const last = k===ST.points.length-1;
+    const last = k===VIS.length-1;
     g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],p.nt))), ly(Math.max(yr[0],Math.min(yr[1],p.ma))), last?5:3.2, 0, 6.283); g.fill();
     if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
   });
@@ -1091,10 +1112,12 @@ function drawCloudNSS(){
   g.fillStyle="#ffc857"; g.font="10px -apple-system,sans-serif"; g.textAlign="right";
   g.fillText("techo de la actividad", lx(1000)-4, box.TOP+11);
 
-  ST.points.forEach((p,k)=>{
+  ghostDots(g,lx,ly,xr,yr,p=>pd(p).act,p=>pd(p).nss);
+  const VIS=visibles();
+  VIS.forEach((p,k)=>{
     const cl=classNSS(row,pd(p).act,pd(p).nss);
     g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
-    const last=k===ST.points.length-1;
+    const last=k===VIS.length-1;
     g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), ly(Math.max(yr[0],Math.min(yr[1],pd(p).nss))), last?5:3.2,0,6.283); g.fill();
     if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
   });
@@ -1129,7 +1152,7 @@ function drawCloudUCA(){
   });
 
   g.strokeStyle="rgba(58,160,255,0.45)"; g.lineWidth=1.2; g.beginPath();
-  const conUCA=ST.points.filter(p=>p.uca>0);
+  const conUCA=visibles().filter(p=>p.uca>0);
   conUCA.forEach((p,i)=>{ const px=lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), py=ly(Math.max(yr[0],Math.min(yr[1],p.uca))); i?g.lineTo(px,py):g.moveTo(px,py); });
   g.stroke();
   if(casoActivo()){
@@ -1205,10 +1228,10 @@ function updateReadouts(upToMs){
 
 function updateVerdict(){
   const rowTA=refTA(), rowNSS=refNSS();
-  const n=ST.points.length;
+  const n=visibles().length;
   if(n<2){ $("verdict").innerHTML="Registre varias épocas —o pulse «Estudio de 20 épocas»— para valorar las nubes. El criterio no se aplica a un punto aislado."; return; }
   let taUp=0,taLo=0,nsUp=0,nsLo=0;
-  ST.points.forEach(p=>{
+  visibles().forEach(p=>{
     const a=classTA(rowTA,p.nt,p.ma); if(a===1)taUp++; else if(a===-1||a===2)taLo++;
     const b=classNSS(rowNSS,pd(p).act,pd(p).nss); if(b===1)nsUp++; else if(b===-1)nsLo++;
   });
@@ -1227,7 +1250,7 @@ function updateVerdict(){
     if(pc(nsUp)>15) flags.push("nube de NSS–actividad: "+pc(nsUp)+" % por encima (umbral de 15 %) → <b>patrón miógeno</b>");
     if(pc(nsLo)>15) flags.push("nube de NSS–actividad: "+pc(nsLo)+" % por debajo (umbral de 15 %) → <b>patrón neurógeno</b>");
   }
-  const maxAct=Math.max(...ST.points.map(p=>pd(p).act));
+  const maxAct=Math.max(...visibles().map(p=>pd(p).act));
 
   let html="<b>"+n+" épocas registradas.</b> Giros–amplitud: "+pc(taUp)+" % por encima, "+pc(taLo)+" % por debajo o a la derecha. "+
            "NSS–actividad: "+pc(nsUp)+" % por encima, "+pc(nsLo)+" % por debajo. Actividad máxima alcanzada: "+Math.round(maxAct)+" ms/s.";
@@ -1246,12 +1269,14 @@ function updateVerdict(){
 }
 
 function updateCorr(){
-  const n=ST.points.length;
+  const n=visibles().length;
   if(n<5){ $("corrBox").innerHTML="Con cinco o más épocas a fuerzas distintas se puede comprobar aquí la correlación de la actividad y de los giros con la fuerza de contracción."; return; }
-  const f=ST.points.map(p=>p.force);
-  const rAct=pearson(f, ST.points.map(p=>pd(p).act));
-  const rNT =pearson(f, ST.points.map(p=>p.nt));
-  const rUCA=pearson(f, ST.points.map(p=>Math.log10(Math.max(1,p.uca))));
+  const P4=visibles().filter(p=>p.force!==null);
+  if(P4.length<5){ $("corrBox").innerHTML="Las correlaciones con la fuerza se calculan solo sobre la simulación, que es la que conoce el esfuerzo con que se registró cada época."; return; }
+  const f=P4.map(p=>p.force);
+  const rAct=pearson(f, P4.map(p=>pd(p).act));
+  const rNT =pearson(f, P4.map(p=>p.nt));
+  const rUCA=pearson(f, P4.map(p=>Math.log10(Math.max(1,p.uca))));
   $("corrBox").innerHTML =
     "<b>Comprobación.</b> En estas "+n+" épocas, la correlación con el porcentaje de la fuerza máxima es de <b>r = "+fmt(rAct,2)+"</b> para la actividad, "+
     "<b>r = "+fmt(rNT,2)+"</b> para el número de giros y <b>r = "+fmt(rUCA,2)+"</b> para el logaritmo de la envolvente. "+
@@ -1261,10 +1286,48 @@ function updateCorr(){
     "mientras que el número de giros se queda atrás cuando los potenciales grandes empiezan a enmascarar a los pequeños.";
 }
 
+function updateRead4(){
+  const V=visibles(), N=ST.points.length;
+  $("rEpU").textContent = "de "+N;
+  if(!V.length){ ["rEp","rNT","rMA","rACT","rNSS","rOUT"].forEach(i=>{$(i).textContent="–"; $(i).style.color="";}); return; }
+  const rowTA=refTA(), rowNSS=refNSS(), p=V[V.length-1];
+  const cTA=classTA(rowTA,p.nt,p.ma), cNS=classNSS(rowNSS,pd(p).act,pd(p).nss);
+  $("rEp").textContent  = V.length;
+  $("rNT").textContent  = Math.round(p.nt);
+  $("rMA").textContent  = Math.round(p.ma);
+  $("rACT").textContent = Math.round(pd(p).act);
+  $("rNSS").textContent = Math.round(pd(p).nss);
+  $("rMA").style.color  = cTA!==0 ? "var(--bad)" : "";
+  $("rNSS").style.color = cNS!==0 ? "var(--bad)" : "";
+  let kT=0,kN=0;
+  V.forEach(q=>{ if(classTA(rowTA,q.nt,q.ma)!==0) kT++; if(classNSS(rowNSS,pd(q).act,pd(q).nss)!==0) kN++; });
+  $("rOUT").textContent = kT+" · "+kN;
+  $("rOUT").style.color = (kT||kN) ? "var(--bad)" : "";
+}
+
 function redrawAll(){
   drawEpoch(); drawZoom(); drawScatter();
   drawCloudTA(); drawCloudNSS(); drawCloudUCA();
-  updateReadouts(); updateVerdict(); updateCorr();
+  updateReadouts(); updateVerdict(); updateCorr(); updateRead4();
+}
+
+/* ---------- reproduccion punto a punto de las nubes ---------- */
+function play4Stop(){
+  if(ST.play4){ clearTimeout(ST.play4); ST.play4=null; }
+  $("play4").textContent="▶ Reproducir punto a punto"; $("play4").classList.add("play");
+}
+function play4Step(){
+  if(ST.shown===null || ST.shown>=ST.points.length){ ST.shown=ST.points.length; play4Stop(); redrawAll(); return; }
+  ST.shown++;
+  redrawAll();
+  if(ST.shown>=ST.points.length){ play4Stop(); return; }
+  ST.play4=setTimeout(play4Step, ST.sp4);
+}
+function play4Start(){
+  if(!ST.points.length) return;
+  if(ST.shown===null || ST.shown>=ST.points.length) ST.shown=0;
+  $("play4").textContent="⏸ Pausar"; $("play4").classList.remove("play");
+  play4Step();
 }
 
 /* cada punto guarda las dos definiciones, para que al cambiar de definicion
@@ -1274,8 +1337,24 @@ function pushPoint(){
   ST.points.push({nt:r.nt, ma:r.ma, uca:r.uca, force:ST.force,
                   li:{act:r.li.act, nss:r.li.nss}, orig:{act:r.orig.act, nss:r.orig.nss}});
   if(ST.points.length>60) ST.points.shift();
+  ST.shown=null;
 }
 const pd = p => p[DEF_MODE];        // definicion activa de un punto guardado
+
+/* --- reproduccion punto a punto de las nubes ------------------------------
+   ST.shown = cuantas epocas estan a la vista (null = todas). ST.ghost guarda
+   el conjunto anterior para compararlo en gris al cambiar de patron o de
+   fuente de datos, como en las animaciones de la charla. */
+function visibles(){ return ST.shown===null ? ST.points : ST.points.slice(0, ST.shown); }
+function guardarFantasma(){ ST.ghost = ST.points.length>1 ? ST.points.slice() : []; }
+function ghostDots(g,lx,ly,xr,yr,fx,fy){
+  g.fillStyle="rgba(159,178,204,0.38)";
+  ST.ghost.forEach(p=>{
+    g.beginPath();
+    g.arc(lx(Math.max(xr[0],Math.min(xr[1],fx(p)))), ly(Math.max(yr[0],Math.min(yr[1],fy(p)))), 3, 0, 6.283);
+    g.fill();
+  });
+}
 
 /* ================================================================
    ANIMACION
@@ -1325,7 +1404,8 @@ document.querySelectorAll("#patSeg button").forEach(b=>{
   b.onclick=()=>{
     document.querySelectorAll("#patSeg button").forEach(x=>x.classList.remove("on"));
     b.classList.add("on");
-    ST.pat=b.dataset.v; ST.points=[]; newSite(); newEpoch(); redrawAll();
+    play4Stop(); guardarFantasma();
+    ST.pat=b.dataset.v; ST.points=[]; ST.shown=null; newSite(); newEpoch(); redrawAll();
   };
 });
 document.querySelectorAll("#defSeg button").forEach(b=>{
@@ -1353,13 +1433,17 @@ function syncSpot(){
     : "";
 }
 $("newEp").onclick=()=>{ newEpoch(); pushPoint(); redrawAll(); };
-$("study").onclick=runStudy;
-$("clearPts").onclick=()=>{ ST.points=[]; redrawAll(); };
+$("study").onclick=()=>{ play4Stop(); ST.ghost=[]; runStudy(); };
+$("clearPts").onclick=()=>{ play4Stop(); ST.points=[]; ST.ghost=[]; ST.shown=null; redrawAll(); };
+$("play4").onclick=()=>{ ST.play4 ? play4Stop() : play4Start(); };
+$("rew4").onclick=()=>{ play4Stop(); ST.shown=0; redrawAll(); };
+$("sp4").onchange=e=>{ ST.sp4=+e.target.value; };
 $("sex").onchange=e=>{ ST.sex=e.target.value; redrawAll(); };
 $("age").onchange=e=>{ ST.age=e.target.value; redrawAll(); };
 $("ref").onchange=e=>{ ST.ref=e.target.value; syncRef(); redrawAll(); };
 $("data").onchange=e=>{
-  ST.data=e.target.value; cargarCaso(); syncRef();
+  play4Stop(); guardarFantasma();
+  ST.data=e.target.value; ST.shown=null; cargarCaso(); syncRef();
   ["run","newEp","study","clearPts"].forEach(id=>{ $(id).disabled = ST.data!=="sim"; });
   redrawAll();
 };
