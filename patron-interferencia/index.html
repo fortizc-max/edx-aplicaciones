@@ -191,6 +191,11 @@ a{color:var(--accent)}
   <p class="lead">Cada época aporta un punto a cada nube. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse «Estudio de 20 épocas» en el apartado 2 para construir la nube completa.</p>
 
   <div class="bar">
+    <select id="data">
+      <option value="sim">Datos: simulación</option>
+      <option value="biceps">Caso real EDX-019 · biceps brachii</option>
+      <option value="tibial">Caso real EDX-019 · tibialis anterior</option>
+    </select>
     <select id="ref">
       <option value="rec">Serie reciente · Wang 2022 / Li 2020</option>
       <option value="trad">Tradicional · Stålberg 1983 / Nandedkar 1986</option>
@@ -540,6 +545,42 @@ const TRAD_TA = {
 const TRAD_NSS = {ua:0.393,ub:0.858, la:-0.026,lb:0.875,
   row:"biceps brachii, hombre de 20 a 58 años"};
 
+/* ---------- CASO REAL EDX-019 ----------------------------------------
+   Mujer de 65 años, enfermedad primaria de la fibra muscular, aguja
+   monopolar. Es el caso que el capítulo de electromiografía reproduce en la
+   sección del análisis del patrón de interferencia.
+   Cada época: [giros/s, amplitud media µV, actividad ms/s, NSS/s].
+   Giros, amplitud y NSS salen de la tabla de IPA del informe; la ACTIVIDAD se
+   midió sobre la abscisa del panel de NSS del propio informe y se emparejó con
+   su época por el valor de NSS (error máximo por debajo del 1 %). Quedan fuera
+   las dos épocas casi vacías, que el equipo grafica sobre el origen.
+   La nube de giros–amplitud es la que dibujó el equipo, digitalizada de cada
+   figura; la de NSS–actividad es la fila de Li 2020 que corresponde al caso
+   (mujer de 65 años o más), porque el equipo no dibuja esa segunda nube. */
+const CASO = {
+  biceps:{ nom:"biceps brachii", fuerza:"4/5",
+    ta:{trad:true,ua:2.059,ub:0.355,la:1.834,lb:0.233,tmax:738,umax:1e9},
+    ns:{sl:0.909,ic:0.169,sd:0.087,row:"mujer de 65 años o más (Li 2020)"},
+    ep:[[408,983,237,190],[602,748,440,414],[622,536,539,458],[696,782,600,524],
+        [686,649,456,518],[334,385,201,206],[684,614,519,560],[658,592,539,530],
+        [532,804,635,400],[656,431,435,486],[1072,350,616,942],[974,374,513,814],
+        [970,368,551,824],[1002,356,520,820],[964,365,482,782],[942,358,450,766],
+        [1114,355,567,966],[1124,438,581,990],[1140,415,564,988],[176,312,118,102]]},
+  tibial:{ nom:"tibialis anterior", fuerza:"4/5",
+    ta:{trad:true,ua:2.049,ub:0.448,la:1.715,lb:0.366,tmax:712,umax:1e9},
+    ns:{sl:0.948,ic:0.015,sd:0.094,row:"mujer de 65 años o más (Li 2020)"},
+    ep:[[440,346,233,282],[466,413,257,330],[328,351,190,174],[658,497,469,518],
+        [546,437,370,366],[890,607,609,768],[414,571,276,268],[398,582,281,228],
+        [638,338,316,498],[660,353,381,548],[552,359,345,426],[370,339,210,272],
+        [634,431,391,466],[586,442,321,424],[680,340,365,548],[312,374,197,246]]}
+};
+function casoActivo(){ return ST.data!=="sim" ? CASO[ST.data] : null; }
+function cargarCaso(){
+  const c=casoActivo(); if(!c){ ST.points=[]; return; }
+  ST.points = c.ep.map(e=>({nt:e[0], ma:e[1], uca:0, force:null,
+                            li:{act:e[2],nss:e[3]}, orig:{act:e[2],nss:e[3]}}));
+}
+
 const MUSC_NAME = {biceps:"biceps brachii", edc:"extensor digitorum communis",
                    quad:"quadriceps", tibial:"tibialis anterior"};
 const NEEDLE_NAME = {conc:"aguja concéntrica", mono:"aguja monopolar"};
@@ -574,10 +615,12 @@ function classNSS(row, act, nss){
 }
 /* fila de referencia activa segun el selector */
 function refTA(){
+  const c=casoActivo(); if(c) return c.ta;
   if(ST.ref==="trad") return Object.assign({trad:true}, TRAD_TA[ST.needle+":"+ST.musc+":"+ST.sex]);
   return TA_ROWS[ST.sex+":"+ST.age];
 }
 function refNSS(){
+  const c=casoActivo(); if(c) return c.ns;
   if(ST.ref==="trad") return Object.assign({trad:true}, TRAD_NSS);
   return NSS_ROWS[ST.sex+":"+ST.age];
 }
@@ -595,7 +638,7 @@ function pearson(xs, ys){
    ================================================================ */
 const ST = {
   pat:"normal", force:50, epochMs:500, sex:"H", age:"joven",
-  ref:"rec", needle:"conc", musc:"biceps", spot:false, speed:3000,
+  ref:"rec", needle:"conc", musc:"biceps", spot:false, speed:3000, data:"sim",
   site:null, sig:null, res:null, zoom:0, reveal:1,
   points:[], anim:null, studyLeft:0, seedN:1
 };
@@ -1010,6 +1053,10 @@ function drawCloudTA(){
 
   g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
   g.fillText("por encima: neurógeno · por debajo o a la derecha: miógeno", box.L, 32);
+  const _c=casoActivo();
+  if(_c){
+    $("capTA").innerHTML = "Nube de giros–amplitud <b>del propio equipo</b> del caso EDX-019, digitalizada de la figura del informe: <i>"+_c.nom+"</i>, aguja monopolar. Borde derecho en "+Math.round(row.tmax)+" giros/s.";
+  } else
   $("capTA").innerHTML = row.trad
     ? "Nube <b>tradicional</b> de giros–amplitud: <i>"+MUSC_NAME[ST.musc]+"</i> con "+NEEDLE_NAME[ST.needle]+", "+
       (ST.sex==="H"?"hombre":"mujer")+". Digitalizada de \u2060Stålberg y cols. (1983), Fig.\u00a03; edades menores y mayores de 60 años combinadas, con un error de digitalización del orden del 10\u00a0%. El techo de "+row.umax+"\u00a0µV es el límite del eje de la figura publicada, no un valor fisiológico."
@@ -1018,6 +1065,7 @@ function drawCloudTA(){
 }
 
 function drawCloudNSS(){
+  const _c2=casoActivo();
   const c=$("cNSS"), g=c.getContext("2d");
   const W=c.width,H=c.height, box={L:58,R:W-16,TOP:34,BOT:H-46};
   g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
@@ -1053,6 +1101,9 @@ function drawCloudNSS(){
 
   g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
   g.fillText("por encima: miógeno · por debajo: neurógeno", box.L, 32);
+  if(_c2){
+    $("capNSS").innerHTML = "Nube de NSS–actividad de <i>"+_c2.nom+"</i>, "+row.row+". El equipo del caso <b>no dibuja</b> esta nube: los puntos se grafican aquí sobre la referencia publicada que corresponde al paciente.";
+  } else
   $("capNSS").innerHTML = row.trad
     ? "Nube <b>tradicional</b> de NSS–actividad: "+row.row+" con aguja concéntrica. Nandedkar y cols. (1986b), digitalizada de la Fig.\u00a02 de Li (2020), que la superpone a la suya; el borde inferior digitalizado coincide con el de Li en menos del 1\u00a0%."+
       (ST.sex==="M" ? " <b>Atención:</b> la única nube tradicional recuperable es la del hombre; el trabajo original construyó nubes separadas por sexo." : "")
@@ -1078,10 +1129,15 @@ function drawCloudUCA(){
   });
 
   g.strokeStyle="rgba(58,160,255,0.45)"; g.lineWidth=1.2; g.beginPath();
-  ST.points.forEach((p,i)=>{ const px=lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), py=ly(Math.max(yr[0],Math.min(yr[1],p.uca))); i?g.lineTo(px,py):g.moveTo(px,py); });
+  const conUCA=ST.points.filter(p=>p.uca>0);
+  conUCA.forEach((p,i)=>{ const px=lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), py=ly(Math.max(yr[0],Math.min(yr[1],p.uca))); i?g.lineTo(px,py):g.moveTo(px,py); });
   g.stroke();
-  ST.points.forEach((p,k)=>{
-    const last=k===ST.points.length-1;
+  if(casoActivo()){
+    g.fillStyle="#9fb2cc"; g.font="12px -apple-system,sans-serif"; g.textAlign="center";
+    g.fillText("El informe del caso no reporta la envolvente: el equipo imprime giros, amplitud y NSS.", (box.L+box.R)/2, (box.TOP+box.BOT)/2);
+  }
+  conUCA.forEach((p,k)=>{
+    const last=k===conUCA.length-1;
     g.fillStyle="#3aa0ff";
     g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), ly(Math.max(yr[0],Math.min(yr[1],p.uca))), last?5:3.2,0,6.283); g.fill();
     if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
@@ -1157,7 +1213,7 @@ function updateVerdict(){
     const b=classNSS(rowNSS,pd(p).act,pd(p).nss); if(b===1)nsUp++; else if(b===-1)nsLo++;
   });
   const pc=v=>Math.round(v/n*100);
-  const trad = ST.ref==="trad";
+  const trad = ST.ref==="trad" || casoActivo()!==null;
   const flags=[];
   if(trad){
     // criterio original de Stalberg: dos o mas puntos fuera en la misma direccion
@@ -1302,6 +1358,11 @@ $("clearPts").onclick=()=>{ ST.points=[]; redrawAll(); };
 $("sex").onchange=e=>{ ST.sex=e.target.value; redrawAll(); };
 $("age").onchange=e=>{ ST.age=e.target.value; redrawAll(); };
 $("ref").onchange=e=>{ ST.ref=e.target.value; syncRef(); redrawAll(); };
+$("data").onchange=e=>{
+  ST.data=e.target.value; cargarCaso(); syncRef();
+  ["run","newEp","study","clearPts"].forEach(id=>{ $(id).disabled = ST.data!=="sim"; });
+  redrawAll();
+};
 $("needle").onchange=e=>{ ST.needle=e.target.value; redrawAll(); };
 $("musc").onchange=e=>{ ST.musc=e.target.value; redrawAll(); };
 
@@ -1310,6 +1371,14 @@ function syncRef(){
   $("needle").disabled = !trad;
   $("musc").disabled   = !trad;
   $("age").disabled    = trad;
+  const cc=casoActivo();
+  if(cc){
+    $("refNote").innerHTML = "<b>Caso real EDX-019</b> · mujer de 65 años con enfermedad primaria de la fibra muscular, <i>"+cc.nom+"</i> derecho con fuerza "+cc.fuerza+" y aguja monopolar. "+
+      cc.ep.length+" épocas del informe: giros, amplitud y NSS de su tabla de IPA, y la actividad medida sobre el panel del propio informe. "+
+      "Las nubes son las que le corresponden al paciente, no las de la simulación, y el criterio aplicado es el original de Stålberg (dos o más puntos fuera en la misma dirección). "+
+      "Los apartados 1 a 3 siguen mostrando la simulación, porque de este caso solo se conservan las cifras por época, no la señal cruda.";
+    return;
+  }
   $("refNote").innerHTML = trad
     ? "Las nubes clásicas, las que traen los equipos: giros–amplitud de Stålberg (1983) para dos agujas, cuatro músculos y los dos sexos, y NSS–actividad de Nandedkar (1986b). Combinan las edades menores y mayores de 60 años, de modo que el selector de edad queda inactivo. Se construyeron con el <b>criterio original</b> de amplitud y duración, así que conviene seleccionar esa definición en el apartado 2 para leerlas. La simulación está calibrada contra la serie reciente, de modo que al cambiar de referencia el mismo registro puede cambiar de veredicto: eso es el problema de transferibilidad, no un fallo."
     : "Serie reciente, con aguja concéntrica y estratificada por sexo y edad. Es la referencia contra la que está calibrada la simulación. Los selectores de aguja y de músculo solo se aplican a las nubes tradicionales.";
