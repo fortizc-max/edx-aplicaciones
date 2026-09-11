@@ -1015,135 +1015,130 @@ function drawScatter(){
 /* ================================================================
    4 · NUBES
    ================================================================ */
-function logAxes(g, box, xr, yr, xt, yt, xlab, ylab){
+/* ================================================================
+   NUBES — en ejes LINEALES, como las dibujan los equipos de EMG.
+   (Antes se trazaban en log-log: matematicamente equivalente, pero la nube
+   pierde su forma reconocible y no se parece a la de la pantalla del equipo.)
+   ================================================================ */
+function linAxes(g, box, xr, yr, xstep, ystep, xlab, ylab){
   const {L,R,TOP,BOT}=box;
-  const lx=v=>L+(Math.log10(v)-Math.log10(xr[0]))/(Math.log10(xr[1])-Math.log10(xr[0]))*(R-L);
-  const ly=v=>BOT-(Math.log10(v)-Math.log10(yr[0]))/(Math.log10(yr[1])-Math.log10(yr[0]))*(BOT-TOP);
-  g.strokeStyle="rgba(58,160,255,0.12)"; g.lineWidth=1;
-  xt.forEach(v=>{ g.beginPath(); g.moveTo(lx(v),TOP); g.lineTo(lx(v),BOT); g.stroke(); });
-  yt.forEach(v=>{ g.beginPath(); g.moveTo(L,ly(v)); g.lineTo(R,ly(v)); g.stroke(); });
+  const lx=v=>L+(v-xr[0])/(xr[1]-xr[0])*(R-L);
+  const ly=v=>BOT-(v-yr[0])/(yr[1]-yr[0])*(BOT-TOP);
+  g.strokeStyle="rgba(58,160,255,0.10)"; g.lineWidth=1;
+  for(let v=xr[0]; v<=xr[1]+1e-6; v+=xstep){ g.beginPath(); g.moveTo(lx(v),TOP); g.lineTo(lx(v),BOT); g.stroke(); }
+  for(let v=yr[0]; v<=yr[1]+1e-6; v+=ystep){ g.beginPath(); g.moveTo(L,ly(v)); g.lineTo(R,ly(v)); g.stroke(); }
+  g.strokeStyle="#5a6b85"; g.lineWidth=1.1;
+  g.beginPath(); g.moveTo(L,TOP); g.lineTo(L,BOT); g.lineTo(R,BOT); g.stroke();
   g.fillStyle="#9fb2cc"; g.font="10.5px -apple-system,sans-serif"; g.textAlign="center";
-  xt.forEach(v=>g.fillText(v, lx(v), BOT+15));
+  for(let v=xr[0]; v<=xr[1]+1e-6; v+=xstep) g.fillText(Math.round(v), lx(v), BOT+15);
   g.fillText(xlab,(L+R)/2,BOT+33);
   g.textAlign="right";
-  yt.forEach(v=>g.fillText(v, L-5, ly(v)+4));
+  for(let v=yr[0]; v<=yr[1]+1e-6; v+=ystep) g.fillText(Math.round(v), L-5, ly(v)+4);
   g.save(); g.translate(13,(TOP+BOT)/2); g.rotate(-Math.PI/2); g.textAlign="center";
   g.fillText(ylab,0,0); g.restore();
   return {lx,ly};
 }
+const techo=(v,paso,min)=>Math.max(min, Math.ceil(v/paso)*paso);
 
 function drawCloudTA(){
   const c=$("cTA"), g=c.getContext("2d");
-  const W=c.width,H=c.height, box={L:58,R:W-16,TOP:34,BOT:H-46};
+  const W=c.width,H=c.height, box={L:62,R:W-16,TOP:34,BOT:H-46};
   g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
-  const row=refTA();
-  const xr=[80,1400], yr=[100,4000];
-  const {lx,ly}=logAxes(g,box,xr,yr,[100,200,500,1000],[100,200,500,1000,2000],"giros por segundo","amplitud media (µV)");
+  const row=refTA(), _c=casoActivo(), V=visibles(), TR=taRight(row);
+  const todos=V.concat(ST.ghost);
+  const xmax=techo(Math.max(TR, ...todos.map(p=>p.nt), 0)*1.04, 250, 1250);
+  const ymax=techo(Math.max(...todos.map(p=>p.ma), 0)*1.10, 500, 2500);
+  const xr=[0,xmax], yr=[0,ymax];
+  const {lx,ly}=linAxes(g,box,xr,yr,250,500,"giros por segundo","amplitud media (µV)");
 
   g.fillStyle="#e8eef7"; g.font="700 12px -apple-system,sans-serif"; g.textAlign="left";
-  g.fillText("Nube de giros y amplitud", box.L, 20);
+  g.fillText("Amp (µV)  v  Giros/s", box.L, 20);
 
-  // nube
-  const pts=[];
-  const TR=taRight(row);
-  for(let t=xr[0]; t<=Math.min(TR,xr[1]); t*=1.03) pts.push(t);
-  pts.push(Math.min(TR,xr[1]));
+  // la nube, con el borde derecho vertical
+  const pts=[]; const N=90;
+  for(let k=0;k<=N;k++) pts.push(1+(Math.min(TR,xmax)-1)*k/N);
   g.beginPath();
-  pts.forEach((t,i)=>{ const v=taBand(row,t).up; i?g.lineTo(lx(t),ly(v)):g.moveTo(lx(t),ly(v)); });
-  for(let i=pts.length-1;i>=0;i--){ const t=pts[i], v=taBand(row,t).lo; g.lineTo(lx(t),ly(v)); }
+  pts.forEach((t,i)=>{ const v=Math.min(taBand(row,t).up,ymax); i?g.lineTo(lx(t),ly(v)):g.moveTo(lx(t),ly(v)); });
+  for(let i=pts.length-1;i>=0;i--) g.lineTo(lx(pts[i]), ly(taBand(row,pts[i]).lo));
   g.closePath();
-  g.fillStyle="rgba(58,160,255,0.10)"; g.fill();
+  g.fillStyle="rgba(58,160,255,0.12)"; g.fill();
   g.strokeStyle="#3aa0ff"; g.lineWidth=1.8; g.stroke();
-
-  // borde derecho
-  g.strokeStyle="#3aa0ff"; g.setLineDash([4,4]);
+  g.setLineDash([4,4]);
   g.beginPath(); g.moveTo(lx(TR),box.TOP); g.lineTo(lx(TR),box.BOT); g.stroke(); g.setLineDash([]);
   g.fillStyle="#3aa0ff"; g.font="10px -apple-system,sans-serif"; g.textAlign="right";
   g.fillText(row.trad?"Tmáx":"giros p99", lx(TR)-4, box.TOP+11);
 
-  // puntos
   ghostDots(g,lx,ly,xr,yr,p=>p.nt,p=>p.ma);
-  const VIS=visibles();
-  VIS.forEach((p,k)=>{
+  V.forEach((p,k)=>{
     const cl=classTA(row,p.nt,p.ma);
     g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
-    const last = k===VIS.length-1;
-    g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],p.nt))), ly(Math.max(yr[0],Math.min(yr[1],p.ma))), last?5:3.2, 0, 6.283); g.fill();
-    if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
+    const last = k===V.length-1;
+    g.beginPath(); g.arc(lx(Math.min(p.nt,xmax)), ly(Math.min(p.ma,ymax)), last?6:4, 0, 6.283); g.fill();
+    if(last){ g.strokeStyle="#fff"; g.lineWidth=1.6; g.stroke(); }
   });
 
   g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
   g.fillText("por encima: neurógeno · por debajo o a la derecha: miógeno", box.L, 32);
-  const _c=casoActivo();
-  if(_c){
-    $("capTA").innerHTML = "Nube de giros–amplitud <b>del propio equipo</b> del caso EDX-019, digitalizada de la figura del informe: <i>"+_c.nom+"</i>, aguja monopolar. Borde derecho en "+Math.round(row.tmax)+" giros/s.";
-  } else
-  $("capTA").innerHTML = row.trad
-    ? "Nube <b>tradicional</b> de giros–amplitud: <i>"+MUSC_NAME[ST.musc]+"</i> con "+NEEDLE_NAME[ST.needle]+", "+
-      (ST.sex==="H"?"hombre":"mujer")+". Digitalizada de \u2060Stålberg y cols. (1983), Fig.\u00a03; edades menores y mayores de 60 años combinadas, con un error de digitalización del orden del 10\u00a0%. El techo de "+row.umax+"\u00a0µV es el límite del eje de la figura publicada, no un valor fisiológico."
-    : "Nube de giros–amplitud, <i>biceps brachii</i> con aguja concéntrica: "+row.row+". Wang y cols. (2022)."+
-      (row.approx?" <b>Atención:</b> se está usando una fila de otro grupo de edad porque es la única publicada para la mujer en este músculo.":"");
+  $("capTA").innerHTML = _c
+    ? "Nube de giros–amplitud <b>del propio equipo</b> del caso EDX-019, digitalizada de la figura del informe: <i>"+_c.nom+"</i>, aguja monopolar. Borde derecho en "+Math.round(TR)+" giros/s."
+    : (row.trad
+      ? "Nube <b>tradicional</b> de giros–amplitud: <i>"+MUSC_NAME[ST.musc]+"</i> con "+NEEDLE_NAME[ST.needle]+", "+(ST.sex==="H"?"hombre":"mujer")+". Digitalizada de Stålberg y cols. (1983), Fig. 3; edades menores y mayores de 60 años combinadas."
+      : "Nube de giros–amplitud, <i>biceps brachii</i> con aguja concéntrica: "+row.row+". Wang y cols. (2022)."+
+        (row.approx?" <b>Atención:</b> es la única fila publicada para la mujer en este músculo.":""));
 }
 
 function drawCloudNSS(){
-  const _c2=casoActivo();
   const c=$("cNSS"), g=c.getContext("2d");
-  const W=c.width,H=c.height, box={L:58,R:W-16,TOP:34,BOT:H-46};
+  const W=c.width,H=c.height, box={L:62,R:W-16,TOP:34,BOT:H-46};
   g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
-  const row=refNSS();
-  const xr=[20,1100], yr=[5,1500];
-  const {lx,ly}=logAxes(g,box,xr,yr,[20,50,100,200,500,1000],[10,50,100,500,1000],"actividad (ms/s)","NSS (segmentos/s)");
+  const row=refNSS(), _c2=casoActivo(), V=visibles();
+  const todos=V.concat(ST.ghost);
+  const ymax=techo(Math.max(...todos.map(p=>pd(p).nss), 0)*1.10, 200, 1000);
+  const xr=[0,1000], yr=[0,ymax];
+  const {lx,ly}=linAxes(g,box,xr,yr,200,ymax<=1000?200:400,"actividad (ms/s)","NSS (segmentos/s)");
 
   g.fillStyle="#e8eef7"; g.font="700 12px -apple-system,sans-serif"; g.textAlign="left";
-  g.fillText("Nube de NSS y actividad", box.L, 20);
+  g.fillText("NSS/s  v  Act. (ms)", box.L, 20);
 
-  const pts=[];
-  for(let a=xr[0]; a<=1000; a*=1.03) pts.push(a);
-  pts.push(1000);
+  const A=[]; for(let k=0;k<=90;k++) A.push(10+990*k/90);
   g.beginPath();
-  pts.forEach((a,i)=>{ const v=nssBand(row,a).up; i?g.lineTo(lx(a),ly(v)):g.moveTo(lx(a),ly(v)); });
-  for(let i=pts.length-1;i>=0;i--){ const a=pts[i], v=nssBand(row,a).lo; g.lineTo(lx(a),ly(v)); }
+  A.forEach((a,i)=>{ const v=Math.min(nssBand(row,a).up,ymax); i?g.lineTo(lx(a),ly(v)):g.moveTo(lx(a),ly(v)); });
+  for(let i=A.length-1;i>=0;i--) g.lineTo(lx(A[i]), ly(nssBand(row,A[i]).lo));
   g.closePath();
-  g.fillStyle="rgba(255,200,87,0.10)"; g.fill();
+  g.fillStyle="rgba(255,200,87,0.12)"; g.fill();
   g.strokeStyle="#ffc857"; g.lineWidth=1.8; g.stroke();
 
-  g.strokeStyle="#ffc857"; g.setLineDash([4,4]);
-  g.beginPath(); g.moveTo(lx(1000),box.TOP); g.lineTo(lx(1000),box.BOT); g.stroke(); g.setLineDash([]);
-  g.fillStyle="#ffc857"; g.font="10px -apple-system,sans-serif"; g.textAlign="right";
-  g.fillText("techo de la actividad", lx(1000)-4, box.TOP+11);
-
   ghostDots(g,lx,ly,xr,yr,p=>pd(p).act,p=>pd(p).nss);
-  const VIS=visibles();
-  VIS.forEach((p,k)=>{
+  V.forEach((p,k)=>{
     const cl=classNSS(row,pd(p).act,pd(p).nss);
     g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
-    const last=k===VIS.length-1;
-    g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), ly(Math.max(yr[0],Math.min(yr[1],pd(p).nss))), last?5:3.2,0,6.283); g.fill();
-    if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
+    const last=k===V.length-1;
+    g.beginPath(); g.arc(lx(Math.min(pd(p).act,1000)), ly(Math.min(pd(p).nss,ymax)), last?6:4,0,6.283); g.fill();
+    if(last){ g.strokeStyle="#fff"; g.lineWidth=1.6; g.stroke(); }
   });
 
   g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
   g.fillText("por encima: miógeno · por debajo: neurógeno", box.L, 32);
-  if(_c2){
-    $("capNSS").innerHTML = "Nube de NSS–actividad de <i>"+_c2.nom+"</i>, "+row.row+". El equipo del caso <b>no dibuja</b> esta nube: los puntos se grafican aquí sobre la referencia publicada que corresponde al paciente.";
-  } else
-  $("capNSS").innerHTML = row.trad
-    ? "Nube <b>tradicional</b> de NSS–actividad: "+row.row+" con aguja concéntrica. Nandedkar y cols. (1986b), digitalizada de la Fig.\u00a02 de Li (2020), que la superpone a la suya; el borde inferior digitalizado coincide con el de Li en menos del 1\u00a0%."+
-      (ST.sex==="M" ? " <b>Atención:</b> la única nube tradicional recuperable es la del hombre; el trabajo original construyó nubes separadas por sexo." : "")
-    : "Nube de NSS–actividad, <i>biceps brachii</i> (cabeza larga) con aguja concéntrica: "+row.row+
-      ". Pendiente "+row.sl.toFixed(3)+", intercepto "+row.ic.toFixed(3)+", DE residual "+row.sd.toFixed(3)+"; bordes a ±2 DE. Li y cols. (2020).";
+  $("capNSS").innerHTML = _c2
+    ? "Nube de NSS–actividad de <i>"+_c2.nom+"</i>, "+row.row+". El equipo del caso <b>no dibuja</b> esta nube: los puntos se grafican aquí sobre la referencia publicada que corresponde al paciente."
+    : (row.trad
+      ? "Nube <b>tradicional</b> de NSS–actividad: "+row.row+" con aguja concéntrica. Nandedkar y cols. (1986b), digitalizada de la Fig. 2 de Li (2020)."+
+        (ST.sex==="M"?" <b>Atención:</b> la única nube tradicional recuperable es la del hombre.":"")
+      : "Nube de NSS–actividad, <i>biceps brachii</i> (cabeza larga) con aguja concéntrica: "+row.row+
+        ". Pendiente "+row.sl.toFixed(3)+", intercepto "+row.ic.toFixed(3)+", DE residual "+row.sd.toFixed(3)+"; bordes a ±2 DE. Li y cols. (2020).");
 }
 
 function drawCloudUCA(){
   const c=$("cUCA"), g=c.getContext("2d");
-  const W=c.width,H=c.height, box={L:58,R:W-16,TOP:34,BOT:H-46};
+  const W=c.width,H=c.height, box={L:66,R:W-16,TOP:34,BOT:H-46};
   g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
-  const xr=[20,1100], yr=[200,20000];
-  const {lx,ly}=logAxes(g,box,xr,yr,[20,50,100,200,500,1000],[500,1000,5000,10000],"actividad (ms/s)","envolvente UCA (µV)");
+  const conUCA=visibles().filter(p=>p.uca>0);
+  const ymax=techo(Math.max(...conUCA.map(p=>p.uca), 0)*1.12, 1000, 4000);
+  const xr=[0,1000], yr=[0,ymax];
+  const {lx,ly}=linAxes(g,box,xr,yr,200,ymax<=4000?1000:2000,"actividad (ms/s)","envolvente UCA (µV)");
   g.fillStyle="#e8eef7"; g.font="700 12px -apple-system,sans-serif"; g.textAlign="left";
-  g.fillText("Envolvente y actividad · sin nube normativa publicada", box.L, 20);
+  g.fillText("Envolvente y actividad · sin nube normativa dibujada", box.L, 20);
 
-  // umbrales de llenado
   [[320,"#a07d1f"],[500,"#1f9d57"]].forEach(([a,col])=>{
     g.strokeStyle=col; g.setLineDash([4,4]); g.lineWidth=1.4;
     g.beginPath(); g.moveTo(lx(a),box.TOP); g.lineTo(lx(a),box.BOT); g.stroke(); g.setLineDash([]);
@@ -1151,19 +1146,20 @@ function drawCloudUCA(){
     g.fillText(a+" ms/s", lx(a)+3, box.BOT-6);
   });
 
-  g.strokeStyle="rgba(58,160,255,0.45)"; g.lineWidth=1.2; g.beginPath();
-  const conUCA=visibles().filter(p=>p.uca>0);
-  conUCA.forEach((p,i)=>{ const px=lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), py=ly(Math.max(yr[0],Math.min(yr[1],p.uca))); i?g.lineTo(px,py):g.moveTo(px,py); });
-  g.stroke();
   if(casoActivo()){
     g.fillStyle="#9fb2cc"; g.font="12px -apple-system,sans-serif"; g.textAlign="center";
-    g.fillText("El informe del caso no reporta la envolvente: el equipo imprime giros, amplitud y NSS.", (box.L+box.R)/2, (box.TOP+box.BOT)/2);
+    g.fillText("El informe del caso no reporta la envolvente: el equipo imprime giros, amplitud y NSS.",
+               (box.L+box.R)/2, (box.TOP+box.BOT)/2);
+    return;
   }
+  g.strokeStyle="rgba(58,160,255,0.45)"; g.lineWidth=1.2; g.beginPath();
+  conUCA.forEach((p,i)=>{ const px=lx(Math.min(pd(p).act,1000)), py=ly(Math.min(p.uca,ymax)); i?g.lineTo(px,py):g.moveTo(px,py); });
+  g.stroke();
   conUCA.forEach((p,k)=>{
     const last=k===conUCA.length-1;
     g.fillStyle="#3aa0ff";
-    g.beginPath(); g.arc(lx(Math.max(xr[0],Math.min(xr[1],pd(p).act))), ly(Math.max(yr[0],Math.min(yr[1],p.uca))), last?5:3.2,0,6.283); g.fill();
-    if(last){ g.strokeStyle="#fff"; g.lineWidth=1.4; g.stroke(); }
+    g.beginPath(); g.arc(lx(Math.min(pd(p).act,1000)), ly(Math.min(p.uca,ymax)), last?6:4,0,6.283); g.fill();
+    if(last){ g.strokeStyle="#fff"; g.lineWidth=1.6; g.stroke(); }
   });
 }
 
@@ -1333,6 +1329,7 @@ function play4Start(){
 /* cada punto guarda las dos definiciones, para que al cambiar de definicion
    se recoloquen tambien los puntos ya registrados */
 function pushPoint(){
+  if(casoActivo()) return;          // los puntos son los del caso, no de la simulacion
   const r=ST.res;
   ST.points.push({nt:r.nt, ma:r.ma, uca:r.uca, force:ST.force,
                   li:{act:r.li.act, nss:r.li.nss}, orig:{act:r.orig.act, nss:r.orig.nss}});
@@ -1433,7 +1430,11 @@ function syncSpot(){
     : "";
 }
 $("newEp").onclick=()=>{ newEpoch(); pushPoint(); redrawAll(); };
-$("study").onclick=()=>{ play4Stop(); ST.ghost=[]; runStudy(); };
+$("study").onclick=()=>{
+  play4Stop(); ST.ghost=[];
+  if(casoActivo()){ ST.data="sim"; $("data").value="sim"; ST.points=[]; syncRef(); sincronizarBotones(); }
+  runStudy();
+};
 $("clearPts").onclick=()=>{ play4Stop(); ST.points=[]; ST.ghost=[]; ST.shown=null; redrawAll(); };
 $("play4").onclick=()=>{ ST.play4 ? play4Stop() : play4Start(); };
 $("rew4").onclick=()=>{ play4Stop(); ST.shown=0; redrawAll(); };
@@ -1444,9 +1445,17 @@ $("ref").onchange=e=>{ ST.ref=e.target.value; syncRef(); redrawAll(); };
 $("data").onchange=e=>{
   play4Stop(); guardarFantasma();
   ST.data=e.target.value; ST.shown=null; cargarCaso(); syncRef();
-  ["run","newEp","study","clearPts"].forEach(id=>{ $(id).disabled = ST.data!=="sim"; });
+  sincronizarBotones();
+  ST.shown = null;                       // el conjunto entero queda a la vista
   redrawAll();
+  if(casoActivo()) setTimeout(play4Start, 400);   // y acto seguido se reproduce
 };
+
+function sincronizarBotones(){
+  const caso = casoActivo()!==null;
+  $("clearPts").disabled = caso;
+  $("newEp").textContent = caso ? "↻ Nueva época (señal)" : "↻ Nueva época";
+}
 $("needle").onchange=e=>{ ST.needle=e.target.value; redrawAll(); };
 $("musc").onchange=e=>{ ST.musc=e.target.value; redrawAll(); };
 
@@ -1475,9 +1484,13 @@ $("vForce").textContent = ST.force+" %";
 $("vEp").textContent    = ST.epochMs+" ms";
 $("vZoom").textContent  = ST.zoom+" ms";
 $("zoom").max = ST.epochMs-40;
-syncRef(); syncSpot();
+syncSpot();
 schStep(0);
-newSite(); newEpoch(); pushPoint(); redrawAll();
+newSite(); newEpoch();                       // la señal de los apartados 2 y 3
+ST.data="biceps"; $("data").value="biceps";  // arranca con el caso real del capítulo
+cargarCaso(); syncRef(); sincronizarBotones();
+ST.shown=null; redrawAll();            // primero la nube completa, por si el
+setTimeout(play4Start, 1200);          // temporizador no llegara a correr
 </script>
 </body>
 </html>
