@@ -196,7 +196,7 @@ a{color:var(--accent)}
 <!-- ===================== 4. NUBES ===================== -->
 <section>
   <h2><span class="n">4</span>Las nubes</h2>
-  <p class="lead">Cada época aporta un punto a cada nube, y el mismo registro alimenta las dos: no hay que prolongar el estudio para tener la segunda. Fíjese en la abscisa de la nube de la derecha: no es una medida de enfermedad, es la <b>actividad</b>, es decir el esfuerzo con que se registró esa época. Por eso la franja sombreada de la izquierda ---por debajo de 320\u00a0ms/s--- marca los registros que no llegaron al rango de fuerza en que la nube discrimina; sus puntos se dibujan huecos y no sostienen una conclusión. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse <b>«Registro continuo»</b> para explorar la señal y las nubes a la vez, sin interrupción, o <b>«Solo las nubes, punto a punto»</b> para verlas construirse época por época —con los datos de la simulación o con los de un caso real— o «Estudio de 20 épocas» en el apartado 2 para generar un estudio nuevo.</p>
+  <p class="lead">Cada época aporta un punto a cada nube, y el mismo registro alimenta las dos: no hay que prolongar el estudio para tener la segunda. Fíjese en la abscisa de la nube de la derecha: no es una medida de enfermedad, es la <b>actividad</b>, es decir el esfuerzo con que se registró esa época. Por eso la franja sombreada de la izquierda ---por debajo de 320\u00a0ms/s--- señala las épocas de actividad baja, que admiten <b>dos lecturas</b>: un esfuerzo insuficiente, o la pérdida de unidades motoras con esfuerzo máximo, que es el patrón reducido y por tanto el hallazgo neurógeno. Lo que las separa no es la cifra de actividad sino si los otros parámetros se desplazan; solo las que no lo hacen se dibujan huecas. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse <b>«Registro continuo»</b> para explorar la señal y las nubes a la vez, sin interrupción, o <b>«Solo las nubes, punto a punto»</b> para verlas construirse época por época —con los datos de la simulación o con los de un caso real— o «Estudio de 20 épocas» en el apartado 2 para generar un estudio nuevo.</p>
 
   <div class="bar">
     <select id="data">
@@ -922,6 +922,19 @@ function newSite(){
   ST.site.patKey = ST.pat; ST.site.grado = ST.grado;
 }
 
+/* Una actividad baja tiene dos lecturas (Nandedkar y Stalberg 2008): esfuerzo
+   insuficiente, o pérdida de unidades motoras con esfuerzo máximo, que es el
+   patrón reducido y por tanto el hallazgo. Lo que las separa no es la cifra de
+   actividad, sino si los otros parámetros se desplazan: en el patrón reducido
+   la amplitud sale por encima de su nube y el NSS cae por debajo de la suya.
+   Solo se marca como dudosa la época de actividad baja SIN ese desplazamiento. */
+function epocaDudosa(p){
+  if(pd(p).act >= 320) return false;
+  const cTA=classTA(refTA(), p.nt, p.ma), cNS=classNSS(refNSS(), pd(p).act, pd(p).nss);
+  const reducido = (cTA===1) || (cNS===-1);   // amplitud alta o NSS bajo
+  return !reducido;
+}
+
 function segColor(s){
   if(ST.spot) return isSmall(s) ? "#ffc857" : "rgba(90,107,133,0.35)";
   if(!counts(s)) return "#5a6b85";
@@ -1040,7 +1053,7 @@ function drawGauge(act){
   g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
   const x=v=>L+Math.max(0,Math.min(1000,v))/1000*(R-L);
   // zonas
-  const zonas=[[0,320,"rgba(255,107,107,0.20)","incompleto"],
+  const zonas=[[0,320,"rgba(255,107,107,0.20)","actividad baja"],
                [320,500,"rgba(255,200,87,0.20)","dudoso"],
                [500,1000,"rgba(31,157,87,0.22)","completo"]];
   zonas.forEach(([a,b,col,lab])=>{
@@ -1198,7 +1211,7 @@ function drawCloudTA(){
   V.forEach((p,k)=>{
     const cl=classTA(row,p.nt,p.ma);
     g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
-    const last = k===V.length-1, flojo = pd(p).act < 320;
+    const last = k===V.length-1, flojo = epocaDudosa(p);
     g.beginPath(); g.arc(lx(Math.min(p.nt,xmax)), ly(Math.min(p.ma,ymax)), last?6:4, 0, 6.283);
     if(flojo){ g.strokeStyle=g.fillStyle; g.lineWidth=1.8; g.stroke(); }   // hueco: patrón incompleto
     else g.fill();
@@ -1206,7 +1219,7 @@ function drawCloudTA(){
   });
 
   g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
-  g.fillText("por encima: neurógeno · por debajo o a la derecha: miopático · hueco: época con actividad < 320 ms/s", box.L, 32);
+  g.fillText("por encima: neurógeno · por debajo o a la derecha: miopático · hueco: actividad < 320 ms/s sin desplazamiento de los otros parámetros", box.L, 32);
   $("capTA").innerHTML = _c
     ? "Nube de giros–amplitud <b>del propio equipo</b> del caso EDX-019, digitalizada de la figura del informe: <i>"+_c.nom+"</i>, aguja monopolar. Borde derecho en "+Math.round(TR)+" giros/s."
     : (row.trad
@@ -1229,7 +1242,7 @@ function drawCloudNSS(){
   // explorado en el rango de fuerza en que la nube discrimina
   g.fillStyle="rgba(255,107,107,0.10)";
   g.fillRect(box.L, box.TOP, lx(320)-box.L, box.BOT-box.TOP);
-  [[320,"#ff6b6b","muestreo insuficiente"],[500,"#1f9d57","patrón completo"]].forEach(([v,col,lab])=>{
+  [[320,"#ff6b6b","actividad baja"],[500,"#1f9d57","patrón completo"]].forEach(([v,col,lab])=>{
     g.strokeStyle=col; g.setLineDash([4,4]); g.lineWidth=1.4;
     g.beginPath(); g.moveTo(lx(v),box.TOP); g.lineTo(lx(v),box.BOT); g.stroke(); g.setLineDash([]);
     g.fillStyle=col; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
@@ -1251,7 +1264,7 @@ function drawCloudNSS(){
   V.forEach((p,k)=>{
     const cl=classNSS(row,pd(p).act,pd(p).nss);
     g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
-    const last=k===V.length-1, flojo = pd(p).act < 320;
+    const last=k===V.length-1, flojo = epocaDudosa(p);
     g.beginPath(); g.arc(lx(Math.min(pd(p).act,1000)), ly(Math.min(pd(p).nss,ymax)), last?6:4,0,6.283);
     if(flojo){ g.strokeStyle=g.fillStyle; g.lineWidth=1.8; g.stroke(); }
     else g.fill();
@@ -1389,7 +1402,9 @@ function updateVerdict(){
     if(pc(nsLo)>15) flags.push("nube de NSS–actividad: "+pc(nsLo)+" % por debajo (umbral de 15 %) → <b>patrón neurógeno</b>");
   }
   const maxAct=Math.max(...visibles().map(p=>pd(p).act));
-  const flojas=visibles().filter(p=>pd(p).act<320).length;
+  const bajas=visibles().filter(p=>pd(p).act<320).length;
+  const flojas=visibles().filter(epocaDudosa).length;
+  const reducidas=bajas-flojas;
 
   let html="<b>"+n+" épocas registradas.</b> Giros–amplitud: "+pc(taUp)+" % por encima, "+pc(taLo)+" % por debajo o a la derecha. "+
            "NSS–actividad: "+pc(nsUp)+" % por encima, "+pc(nsLo)+" % por debajo. Actividad máxima alcanzada: "+Math.round(maxAct)+" ms/s.";
@@ -1398,7 +1413,11 @@ function updateVerdict(){
   const marginal = flags.length && Math.max(pc(taUp),pc(taLo),pc(nsUp),pc(nsLo)) < 30;
   if(trad && ST.pat==="normal" && flags.length) html += "<br><br><b>Ojo con la referencia.</b> El patrón simulado es normal y la nube tradicional lo señala como anormal. No es un fallo de la simulación: las dos referencias no coinciden. El borde superior de la nube concéntrica de 1983 es casi plano y se topa en torno a 1,1 mV —el límite del eje de la figura publicada—, mientras que la serie reciente llega a unos 2 mV a 700 giros/s. Distinto amplificador, distintos filtros y distinto protocolo de fuerza. Es exactamente la razón por la que cada laboratorio debería construir sus propios valores y por la que el informe tiene que consignar la fuente normativa empleada.";
   if(marginal && !trad) html += "<br><br>El porcentaje queda apenas por encima del umbral. Con puntos dispersos, y sobre todo en los registros de baja actividad —donde el número de eventos contados es pequeño—, esa situación obedece con más frecuencia a causas técnicas que a enfermedad: aguja en aponeurosis o en tejido graso, contracción no isométrica, filtros mal ajustados o interferencia de la red.";
-  if(flojas) html += "<br><br><b>Actividad.</b> "+flojas+" de las "+n+" épocas quedaron por debajo de 320\u00a0ms/s ---se dibujan huecas en las dos nubes---: proceden de un patrón incompleto y no sostienen una conclusión. En la nube de NSS caen en la franja sombreada de la izquierda, donde el registro no llegó al rango de fuerza en que la nube discrimina.";
+  if(bajas){
+    html += "<br><br><b>Actividad baja: dos lecturas.</b> "+bajas+" de las "+n+" épocas quedaron por debajo de 320\u00a0ms/s, en la franja sombreada de la nube de NSS. Una actividad baja no es por sí sola un defecto del estudio: puede venir de un esfuerzo insuficiente o de la pérdida de unidades motoras con esfuerzo máximo, que es el patrón reducido y por tanto el hallazgo neurógeno.";
+    if(reducidas) html += " De esas épocas, <b>"+reducidas+"</b> traen además la amplitud por encima de su nube o el NSS por debajo de la suya: en ellas la actividad baja forma parte del hallazgo y no se descarta.";
+    if(flojas) html += " Las otras <b>"+flojas+"</b> no desplazan los demás parámetros y se dibujan huecas: ahí la lectura es que el músculo no alcanzó el rango de fuerza en que la nube discrimina.";
+  }
   if(maxAct<500) html += "<br><br><span class='badge b-mid'>muestreo insuficiente</span> Ningún registro superó 500\u00a0ms/s. El músculo no puede informarse como normal: consígnelo como muestreo insuficiente.";
   if(flags.length>1){
     const contradictory = (pc(taUp)>25 && pc(nsUp)>15);
