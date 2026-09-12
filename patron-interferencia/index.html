@@ -93,6 +93,7 @@ a{color:var(--accent)}
   <h2><span class="n">2</span>Una época de 500 ms</h2>
   <p class="lead">Señal sintética construida por suma de potenciales de unidad motora, con reclutamiento y frecuencia de descarga dependientes de la fuerza. El trazo se colorea segmento por segmento según el criterio de amplitud y duración: en verde los que entran en la actividad, en ámbar los que además cuentan como segmentos pequeños (NSS) y en gris los excluidos.</p>
   <canvas id="epoch" width="900" height="310"></canvas>
+  <canvas id="gauge" width="900" height="100" style="margin-top:8px"></canvas>
   <div class="legend">
     <span><i style="background:var(--act)"></i>Contado en la actividad</span>
     <span><i style="background:var(--nss)"></i>Contado en la actividad y en el NSS (&lt; 2 mV)</span>
@@ -141,6 +142,7 @@ a{color:var(--accent)}
       <label class="sl">
         <div class="top"><span class="l">Fuerza de contracción</span><span class="v" id="vForce">50 %</span></div>
         <input type="range" id="force" min="5" max="100" step="5" value="50">
+        <p class="note" style="margin:4px 0 0">Bájela y mire la barra de actividad: con poco esfuerzo el patrón queda incompleto y la época deja de servir, por muy patológico que sea el músculo.</p>
       </label>
       <label class="sl">
         <div class="top"><span class="l">Longitud de la época</span><span class="v" id="vEp">500 ms</span></div>
@@ -194,7 +196,7 @@ a{color:var(--accent)}
 <!-- ===================== 4. NUBES ===================== -->
 <section>
   <h2><span class="n">4</span>Las nubes</h2>
-  <p class="lead">Cada época aporta un punto a cada nube, y el mismo registro alimenta las dos: no hay que prolongar el estudio para tener la segunda. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse <b>«Registro continuo»</b> para explorar la señal y las nubes a la vez, sin interrupción, o <b>«Solo las nubes, punto a punto»</b> para verlas construirse época por época —con los datos de la simulación o con los de un caso real— o «Estudio de 20 épocas» en el apartado 2 para generar un estudio nuevo.</p>
+  <p class="lead">Cada época aporta un punto a cada nube, y el mismo registro alimenta las dos: no hay que prolongar el estudio para tener la segunda. Fíjese en la abscisa de la nube de la derecha: no es una medida de enfermedad, es la <b>actividad</b>, es decir el esfuerzo con que se registró esa época. Por eso la franja sombreada de la izquierda ---por debajo de 320\u00a0ms/s--- marca los registros que no llegaron al rango de fuerza en que la nube discrimina; sus puntos se dibujan huecos y no sostienen una conclusión. Un estudio real reúne del orden de veinte registros por músculo, en cuatro a seis sitios de inserción y con niveles crecientes de contracción en cada sitio. Pulse <b>«Registro continuo»</b> para explorar la señal y las nubes a la vez, sin interrupción, o <b>«Solo las nubes, punto a punto»</b> para verlas construirse época por época —con los datos de la simulación o con los de un caso real— o «Estudio de 20 épocas» en el apartado 2 para generar un estudio nuevo.</p>
 
   <div class="bar">
     <select id="data">
@@ -1027,6 +1029,49 @@ function drawZoom(){
   g.textAlign="right"; g.fillText("±"+(span/1000).toFixed(1)+" mV", L-5, TOP+10);
 }
 
+/* ---------- la ACTIVIDAD, hecha visible ----------------------------------
+   La actividad es el tiempo del registro ocupado por potenciales: el llenado
+   del patron. Se dibuja como una barra de 0 a 1000 ms/s con las tres zonas
+   -incompleto, dudoso y completo- para que se vea de un golpe si el musculo
+   fue explorado en el rango de fuerza en que las nubes discriminan. */
+function drawGauge(act){
+  const c=$("gauge"), g=c.getContext("2d");
+  const W=c.width,H=c.height, L=62,R=W-150, Y=30, hB=22;
+  g.clearRect(0,0,W,H); g.fillStyle="#101c30"; g.fillRect(0,0,W,H);
+  const x=v=>L+Math.max(0,Math.min(1000,v))/1000*(R-L);
+  // zonas
+  const zonas=[[0,320,"rgba(255,107,107,0.20)","incompleto"],
+               [320,500,"rgba(255,200,87,0.20)","dudoso"],
+               [500,1000,"rgba(31,157,87,0.22)","completo"]];
+  zonas.forEach(([a,b,col,lab])=>{
+    g.fillStyle=col; g.fillRect(x(a),Y,x(b)-x(a),hB);
+    g.fillStyle="#9fb2cc"; g.font="10.5px -apple-system,sans-serif"; g.textAlign="center";
+    g.fillText(lab,(x(a)+x(b))/2, Y+hB+14);
+  });
+  g.strokeStyle="#2a3a59"; g.lineWidth=1; g.strokeRect(x(0),Y,x(1000)-x(0),hB);
+  // valor
+  const st=fullState(act);
+  const col = act>500 ? "#7CFC9B" : (act>=320 ? "#ffc857" : "#ff6b6b");
+  g.fillStyle=col; g.fillRect(x(0),Y,x(act)-x(0),hB);
+  g.strokeStyle="#fff"; g.lineWidth=2;
+  g.beginPath(); g.moveTo(x(act),Y-5); g.lineTo(x(act),Y+hB+5); g.stroke();
+  // marcas
+  [320,500,1000].forEach(v=>{
+    g.strokeStyle="rgba(232,238,247,0.55)"; g.lineWidth=1;
+    g.beginPath(); g.moveTo(x(v),Y-3); g.lineTo(x(v),Y+hB+3); g.stroke();
+    g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="center";
+    g.fillText(v, x(v), Y-8);
+  });
+  g.fillStyle="#9fb2cc"; g.font="11px -apple-system,sans-serif"; g.textAlign="right";
+  g.fillText("Actividad", L-8, Y+15);
+  g.fillStyle=col; g.font="700 17px -apple-system,sans-serif"; g.textAlign="left";
+  g.fillText(Math.round(act)+" ms/s", R+14, Y+10);
+  g.fillStyle="#9fb2cc"; g.font="11.5px -apple-system,sans-serif";
+  g.fillText(st.t, R+14, Y+28);
+  g.fillStyle="#9fb2cc"; g.font="10.5px -apple-system,sans-serif"; g.textAlign="left";
+  g.fillText("techo teórico 1000 ms/s: el registro entero ocupado por potenciales", L, H-10);
+}
+
 function drawScatterUpTo(upToMs){ ST._upTo=upToMs; drawScatter(); ST._upTo=undefined; }
 function drawScatter(){
   const c=$("scatter"), g=c.getContext("2d");
@@ -1153,13 +1198,15 @@ function drawCloudTA(){
   V.forEach((p,k)=>{
     const cl=classTA(row,p.nt,p.ma);
     g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
-    const last = k===V.length-1;
-    g.beginPath(); g.arc(lx(Math.min(p.nt,xmax)), ly(Math.min(p.ma,ymax)), last?6:4, 0, 6.283); g.fill();
+    const last = k===V.length-1, flojo = pd(p).act < 320;
+    g.beginPath(); g.arc(lx(Math.min(p.nt,xmax)), ly(Math.min(p.ma,ymax)), last?6:4, 0, 6.283);
+    if(flojo){ g.strokeStyle=g.fillStyle; g.lineWidth=1.8; g.stroke(); }   // hueco: patrón incompleto
+    else g.fill();
     if(last){ g.strokeStyle="#fff"; g.lineWidth=1.6; g.stroke(); }
   });
 
   g.fillStyle="#9fb2cc"; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
-  g.fillText("por encima: neurógeno · por debajo o a la derecha: miopático", box.L, 32);
+  g.fillText("por encima: neurógeno · por debajo o a la derecha: miopático · hueco: época con actividad < 320 ms/s", box.L, 32);
   $("capTA").innerHTML = _c
     ? "Nube de giros–amplitud <b>del propio equipo</b> del caso EDX-019, digitalizada de la figura del informe: <i>"+_c.nom+"</i>, aguja monopolar. Borde derecho en "+Math.round(TR)+" giros/s."
     : (row.trad
@@ -1178,6 +1225,17 @@ function drawCloudNSS(){
   const xr=[0,1000], yr=[0,ymax];
   const {lx,ly}=linAxes(g,box,xr,yr,200,ymax<=1000?200:400,"actividad (ms/s)","NSS (segmentos/s)");
 
+  // la abscisa es la ACTIVIDAD: a la izquierda de 320 ms/s el musculo no fue
+  // explorado en el rango de fuerza en que la nube discrimina
+  g.fillStyle="rgba(255,107,107,0.10)";
+  g.fillRect(box.L, box.TOP, lx(320)-box.L, box.BOT-box.TOP);
+  [[320,"#ff6b6b","muestreo insuficiente"],[500,"#1f9d57","patrón completo"]].forEach(([v,col,lab])=>{
+    g.strokeStyle=col; g.setLineDash([4,4]); g.lineWidth=1.4;
+    g.beginPath(); g.moveTo(lx(v),box.TOP); g.lineTo(lx(v),box.BOT); g.stroke(); g.setLineDash([]);
+    g.fillStyle=col; g.font="10px -apple-system,sans-serif"; g.textAlign="left";
+    g.fillText(v+" ms/s", lx(v)+3, box.BOT-6);
+    g.fillText(lab, lx(v)+3, box.BOT-18);
+  });
   g.fillStyle="#e8eef7"; g.font="700 12px -apple-system,sans-serif"; g.textAlign="left";
   g.fillText("NSS/s  v  Act. (ms)", box.L, 20);
 
@@ -1193,8 +1251,10 @@ function drawCloudNSS(){
   V.forEach((p,k)=>{
     const cl=classNSS(row,pd(p).act,pd(p).nss);
     g.fillStyle = cl===0 ? "#7CFC9B" : (cl===1 ? "#ff6b6b" : "#ffc857");
-    const last=k===V.length-1;
-    g.beginPath(); g.arc(lx(Math.min(pd(p).act,1000)), ly(Math.min(pd(p).nss,ymax)), last?6:4,0,6.283); g.fill();
+    const last=k===V.length-1, flojo = pd(p).act < 320;
+    g.beginPath(); g.arc(lx(Math.min(pd(p).act,1000)), ly(Math.min(pd(p).nss,ymax)), last?6:4,0,6.283);
+    if(flojo){ g.strokeStyle=g.fillStyle; g.lineWidth=1.8; g.stroke(); }
+    else g.fill();
     if(last){ g.strokeStyle="#fff"; g.lineWidth=1.6; g.stroke(); }
   });
 
@@ -1278,6 +1338,7 @@ function updateReadouts(upToMs){
   $("mUCA").textContent = fmt((v ? v.uca : r.uca)/1000,2);
   $("mNSS").textContent = Math.round(v ? v.nss : r.nss);
   $("mSEG").textContent = v ? v.segs : r.segs.length;
+  drawGauge(v ? v.act : r.act);
   if(parcial){
     // durante el barrido no se muestra el veredicto de la epoca anterior
     $("fullBox").innerHTML = "<span class='badge b-mid'>registrando</span> &nbsp;Barrido en curso: los contadores suben a medida que el trazo revela nuevos giros y segmentos.";
@@ -1328,6 +1389,7 @@ function updateVerdict(){
     if(pc(nsLo)>15) flags.push("nube de NSS–actividad: "+pc(nsLo)+" % por debajo (umbral de 15 %) → <b>patrón neurógeno</b>");
   }
   const maxAct=Math.max(...visibles().map(p=>pd(p).act));
+  const flojas=visibles().filter(p=>pd(p).act<320).length;
 
   let html="<b>"+n+" épocas registradas.</b> Giros–amplitud: "+pc(taUp)+" % por encima, "+pc(taLo)+" % por debajo o a la derecha. "+
            "NSS–actividad: "+pc(nsUp)+" % por encima, "+pc(nsLo)+" % por debajo. Actividad máxima alcanzada: "+Math.round(maxAct)+" ms/s.";
@@ -1336,7 +1398,8 @@ function updateVerdict(){
   const marginal = flags.length && Math.max(pc(taUp),pc(taLo),pc(nsUp),pc(nsLo)) < 30;
   if(trad && ST.pat==="normal" && flags.length) html += "<br><br><b>Ojo con la referencia.</b> El patrón simulado es normal y la nube tradicional lo señala como anormal. No es un fallo de la simulación: las dos referencias no coinciden. El borde superior de la nube concéntrica de 1983 es casi plano y se topa en torno a 1,1 mV —el límite del eje de la figura publicada—, mientras que la serie reciente llega a unos 2 mV a 700 giros/s. Distinto amplificador, distintos filtros y distinto protocolo de fuerza. Es exactamente la razón por la que cada laboratorio debería construir sus propios valores y por la que el informe tiene que consignar la fuente normativa empleada.";
   if(marginal && !trad) html += "<br><br>El porcentaje queda apenas por encima del umbral. Con puntos dispersos, y sobre todo en los registros de baja actividad —donde el número de eventos contados es pequeño—, esa situación obedece con más frecuencia a causas técnicas que a enfermedad: aguja en aponeurosis o en tejido graso, contracción no isométrica, filtros mal ajustados o interferencia de la red.";
-  if(maxAct<500) html += "<br><br><span class='badge b-mid'>muestreo insuficiente</span> Ningún registro superó 500 ms/s. El músculo no puede informarse como normal: consígnelo como muestreo insuficiente.";
+  if(flojas) html += "<br><br><b>Actividad.</b> "+flojas+" de las "+n+" épocas quedaron por debajo de 320\u00a0ms/s ---se dibujan huecas en las dos nubes---: proceden de un patrón incompleto y no sostienen una conclusión. En la nube de NSS caen en la franja sombreada de la izquierda, donde el registro no llegó al rango de fuerza en que la nube discrimina.";
+  if(maxAct<500) html += "<br><br><span class='badge b-mid'>muestreo insuficiente</span> Ningún registro superó 500\u00a0ms/s. El músculo no puede informarse como normal: consígnelo como muestreo insuficiente.";
   if(flags.length>1){
     const contradictory = (pc(taUp)>25 && pc(nsUp)>15);
     if(contradictory) html += "<br><br>Las dos nubes apuntan en direcciones opuestas (envolvente alta con NSS alto). Esa combinación apunta antes a un problema técnico —aguja muy próxima a las fibras, ruido de alta frecuencia— que a enfermedad.";
