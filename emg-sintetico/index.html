@@ -173,25 +173,25 @@ const CFG = {
   },
   myotonic:{
     family:"myo", morph:"fib", srcMax:1,
-    rate:{min:20,max:150,step:1,def:90,label:"Frecuencia pico"},
+    rate:{min:15,max:150,step:1,def:90,label:"Frecuencia pico"},
     amp:{min:20,max:500,step:5,def:200,unit:"µV"},
     dur:{min:1,max:6,step:0.1,def:3,label:"Duración del potencial"},
     sweep:10, show:{reg:0,nsrc:0,decel:0,burst:0},
     audio:{ms:1.2,hp:520},
-    rhythm:"La frecuencia y la amplitud crecen y decrecen de forma cíclica (envolvente automática), de ahí el sonido característico.",
+    rhythm:"La frecuencia y la amplitud crecen y decrecen JUNTAS de forma cíclica (envolvente automática). Las dos tienen que hacerlo: de ese cambio de tono sale el sonido característico.",
     morphNote:"Cada potencial tiene forma de fibrilación u onda positiva; lo definitorio es el ritmo creciente-decreciente.",
-    clin:"<b>Descarga miotónica.</b> Tren de potenciales cuya frecuencia y amplitud aumentan y disminuyen (waxing-waning), 20–150 Hz. Sonido de «motocicleta acelerando y frenando» o «avión en picada». Miotonía, distrofia miotónica, miopatías."
+    clin:"<b>Descarga miotónica.</b> Tren de potenciales cuya frecuencia y amplitud aumentan y disminuyen juntas (waxing-waning): las DOS tienen que hacerlo para llamarla miotónica. Los potenciales individuales van de 10 a 1000 µV y de 15 a 150 Hz. Sonido de «motocicleta acelerando y frenando» o «avión en picada». Miotonía, distrofia miotónica, miopatías."
   },
   crd:{
     family:"crd", morph:"crd", srcMax:1,
-    rate:{min:5,max:120,step:1,def:55,label:"Frecuencia del complejo"},
-    amp:{min:100,max:2000,step:25,def:600,unit:"µV"},
-    dur:{min:6,max:16,step:0.5,def:8,label:"Duración del complejo"},
-    sweep:15, show:{reg:0,nsrc:0,decel:0,burst:0,dur:0},
+    rate:{min:5,max:100,step:1,def:55,label:"Frecuencia del complejo"},
+    amp:{min:100,max:1000,step:25,def:450,unit:"µV"},
+    dur:{min:5,max:14,step:0.5,def:9,label:"Duración del complejo"},
+    sweep:15, show:{reg:0,nsrc:0,decel:0,burst:0,dur:1},
     audio:{ms:3.5,hp:300},
-    rhythm:"La misma onda se repite a frecuencia constante, encadenada sin huecos, con inicio y fin abruptos. Sin variación de forma, tamaño ni ritmo.",
-    morphNote:"Una onda uniforme que se repite idéntica y del mismo tamaño en cada ciclo (fibras musculares enlazadas efápticamente). La onda individual tiene por lo general morfología de onda aguda positiva: deflexión positiva inicial aguda seguida de una negatividad lenta y prolongada.",
-    clin:"<b>Descarga repetitiva compleja.</b> Tren de ondas uniformes, todas iguales y del mismo tamaño, que se repiten de forma constante con arranque y parada bruscos, 5–150 Hz. La onda individual suele tener morfología de onda aguda positiva. Sonido de «máquina» o motor. Procesos crónicos (neurógenos o miopáticos)."
+    rhythm:"El mismo complejo se repite a frecuencia constante, separado por línea de base, con inicio y fin abruptos y sin decrecer nunca de forma progresiva. Cada pocos segundos salta de golpe a otra configuración y otra amplitud ---entra o sale un circuito de fibras--- y se queda ahí.",
+    morphNote:"Un potencial POLIFÁSICO o ASERRADO ---un complejo de espigas de fibra única encadenadas, no una onda aislada--- que se repite idéntico y del mismo tamaño en cada ciclo, sin jitter.",
+    clin:"<b>Descarga repetitiva compleja.</b> Potencial polifásico o aserrado que se repite con frecuencia, forma y amplitud uniformes y con arranque, parada y cambios de configuración bruscos; 5–100 Hz y 100 µV a 1 mV. Sonido de «máquina» o martillo neumático. No decrece de forma progresiva: ahí está la diferencia con la descarga miotónica, y el cambio a saltos la diferencia de la neuromiotónica. Aparece en procesos crónicos, neurógenos o miopáticos, de modo que no ayuda a clasificar el cuadro."
   },
   myokymia:{
     family:"myok", morph:"muap", srcMax:1,
@@ -313,11 +313,26 @@ function buildComps(morph,i){
     const cs=[0.16,0.30,0.42,0.54,0.66,0.78], aa=[-0.5,0.8,-0.7,1.0,-0.6,0.45];
     return cs.map((c,k)=>({a:aa[k]*(1+v(k+2,0.15)),c:c+v(k+9,0.015),w:0.022+Math.abs(v(k+3,0.004))})); }
   if(morph==="crd"){
-    // UNA onda uniforme por período, idéntica en cada ciclo: al repetirse
-    // forma un tren continuo de ondas muy parecidas y del mismo tamaño.
+    // La DRC NO es una onda simple: es un potencial POLIFÁSICO o ASERRADO
+    // (Crayle 2026), un complejo de espigas de fibra única encadenadas que se
+    // repite IDÉNTICO en cada ciclo. Sin jitter: los componentes van fijos.
     return [
-      {a:-1.0,  c:0.16, w:0.055},   // deflexión positiva inicial, aguda
-      {a:0.30,  c:0.52, w:0.28},    // onda negativa lenta y prolongada
+      {a:-0.29, c:0.16, w:0.038},
+      {a:0.59,  c:0.30, w:0.038},
+      {a:-0.68, c:0.45, w:0.038},
+      {a:0.42,  c:0.60, w:0.038},
+      {a:-0.20, c:0.75, w:0.038},
+    ]; }
+  if(morph==="crd2"){
+    // El MISMO complejo con una espiga más: es la otra configuración a la que
+    // salta de golpe cuando entra o sale un circuito de fibras.
+    return [
+      {a:-0.25, c:0.14, w:0.034},
+      {a:0.61,  c:0.27, w:0.034},
+      {a:-0.66, c:0.40, w:0.034},
+      {a:0.51,  c:0.53, w:0.034},
+      {a:-0.36, c:0.66, w:0.034},
+      {a:0.22,  c:0.80, w:0.034},
     ]; }
   if(morph==="ucomplex"){
     // unidad COMPLEJA/serrada: pico principal seguido de varias melladuras
@@ -417,6 +432,10 @@ function initFireTimes(){
 
 function triEnv(p){ return p<0.5 ? p*2 : (1-p)*2; }   // 0->1->0
 
+// DRC: cada CRD_SALTO segundos el complejo cambia de configuración de golpe
+const CRD_SALTO = 2.4;
+const crdAlt = buildComps("crd2", 0);
+
 function step(dt){
   clock += dt;
   const fam = CFG[S.pheno].family;
@@ -446,23 +465,35 @@ function step(dt){
     }
   }
   else if(fam==="myo"){
-    const s=sources[0], cyc=2.6;
+    // Waxing-waning: la frecuencia Y la amplitud recorren juntas la misma
+    // envolvente. Las DOS tienen que crecer y decrecer para llamarla
+    // miotónica (Crayle 2026); de ese cambio de tono sale el sonido de
+    // bombardero en picada. Piso de 15 Hz, el límite inferior publicado.
+    const s=sources[0], cyc=2.6, FMIN=15;
     while(clock>=s.nextFire){
       const env=triEnv(((s.nextFire)/cyc)%1);
-      const f=20 + env*(S.rate-20);
-      const ampF=0.35+0.65*env;
+      const f=FMIN + env*(S.rate-FMIN);
+      const ampF=0.25+0.75*env;
       fireBase(s,s.nextFire,ampF);
       s.nextFire += 1/Math.max(8,f);
     }
-    baseRate=20+triEnv((clock/cyc)%1)*(S.rate-20);
+    baseRate=FMIN+triEnv((clock/cyc)%1)*(S.rate-FMIN);
   }
   else if(fam==="crd"){
-    // tren CONTINUO: el complejo llena exactamente un período y se encadena
-    // con el siguiente, sin huecos (período = duración del complejo).
+    // Tren perfectamente regular: el MISMO complejo, con la MISMA amplitud, a
+    // intervalos constantes, separados por línea de base. Cada pocos segundos
+    // el complejo SALTA de golpe a otra configuración y otra amplitud y se
+    // queda ahí: es el "abrupt change in configuration" de Crayle, lo que
+    // entra o sale un circuito de fibras. Nunca decrece de forma progresiva.
     const s=sources[0]; baseRate=S.rate;
     const period=1/Math.max(1,S.rate);
+    const durS=Math.min(S.dur/1000, period*0.85);   // deja base visible
     while(clock>=s.nextFire){
-      firings.push({ t:s.nextFire, comps:s.baseComps, durMs:period*1000, ampMul:s.ampMul });
+      const paso=Math.floor(s.nextFire/CRD_SALTO)%2;  // 0 o 1: la configuración vigente
+      firings.push({ t:s.nextFire,
+                     comps: paso ? crdAlt : s.baseComps,
+                     durMs: durS*1000,
+                     ampMul: s.ampMul*(paso?1.32:1.0) });
       s.nextFire += period;
     }
   }
