@@ -109,7 +109,7 @@ Los límites de normalidad no se listan aquí: se consultan en la aplicación de
 <div class="src"><b>Cada comparación tiene su propio límite, y cambia según use latencia de inicio o de pico.</b>
 Todos son el <b>percentil 97</b> de la diferencia observada en sujetos sanos, es decir el límite superior de la
 normalidad: un valor <i>igual</i> al límite es normal y solo se considera anormal <b>por encima</b> de él.
-Mediano−radial en el pulgar: 0,5 de inicio y 0,6 de pico (Berkson y Buschbacher 2006).
+Mediano−radial en el pulgar: 0,5 de inicio y 0,6 de pico (Berkson y cols. 2006).
 Mediano−cubital en el <b>4.º dedo</b> (el mismo dedo por los dos nervios, componente del CSI): 0,5 ms para la
 latencia de inicio y para la de pico, cuando el mediano es el más lento (manual, 3.ª ed., 192 sujetos).
 Mediano (3.er dedo)−cubital (5.º dedo), que es una comparación distinta: 0,5 de inicio y 0,4 de pico
@@ -211,7 +211,7 @@ function comp(a,b,corte,titulo,nota){
 
 const TABLAS=[
  {t:"Mediano − radial, pulgar",
-  f:"Berkson EM, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):387-394.",
+  f:"Berkson A, Lohman J, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):387-394.",
   c:["Dirección","Latencia","Media","DE","Límite superior (p97)"],
   r:[["Mediano − radial","De inicio","0,1","0,2","0,5"],
      ["Mediano − radial","De pico","0,1","0,2","<b>0,6</b>"],
@@ -286,13 +286,13 @@ function calcular(){
   let html='';
   const pico = $('tipolat').value==='pico';
   const LIM = {
-    pulgar:  pico?0.6:0.5,   // Berkson y Buschbacher 2006, p97
+    pulgar:  pico?0.6:0.5,   // Berkson y cols. 2006, p97
     anular:  0.5,            // Manual 3.ª ed.: límite superior de la normalidad, inicio y pico (192 sujetos)
     palmar:  0.3,            // Buschbacher 1999, nervio mixto 8 cm, p97
     d35:     pico?0.4:0.5    // Grossart y cols. 2006, p97 (3.er vs 5.º dedo)
   };
   const FT = ' Límite = percentil 97 de la diferencia en sanos; anormal solo por encima de él.';
-  const c1=comp('m1','r1',LIM.pulgar,'Mediano − radial · pulgar','Berkson y Buschbacher 2006.'+FT);
+  const c1=comp('m1','r1',LIM.pulgar,'Mediano − radial · pulgar','Berkson y cols. 2006.'+FT);
   const c4=comp('m4','u4',LIM.anular,'Mediano − cubital · anular (4.º dedo, el mismo dedo por los dos nervios)',
         'Manual de Buschbacher, 3.ª ed., 192 sujetos: el límite superior de la normalidad es 0,5 ms cuando el mediano '
         +'tiene la latencia más larga, y vale igual para la latencia de inicio y la de pico. '
