@@ -102,8 +102,8 @@ Los límites de normalidad no se listan aquí: se consultan en la aplicación de
 Todos son el <b>percentil 97</b> de la diferencia observada en sujetos sanos, es decir el límite superior de la
 normalidad: un valor <i>igual</i> al límite es normal y solo se considera anormal <b>por encima</b> de él.
 Mediano−radial en el pulgar: 0,5 de inicio y 0,6 de pico (Berkson y Buschbacher 2006).
-Mediano−cubital en el <b>4.º dedo</b> (el mismo dedo por los dos nervios, componente del CSI): 0,5 ms, y aquí el
-criterio del manual es <b>≥</b>, de modo que 0,5 exacto ya es anormal.
+Mediano−cubital en el <b>4.º dedo</b> (el mismo dedo por los dos nervios, componente del CSI): 0,5 ms para la
+latencia de inicio y para la de pico, cuando el mediano es el más lento (manual, 3.ª ed., 192 sujetos).
 Mediano (3.er dedo)−cubital (5.º dedo), que es una comparación distinta: 0,5 de inicio y 0,4 de pico
 (Grossart, Prahlow y Buschbacher 2006).
 Mediopalmar a 8 cm: 0,3 en ambas (Buschbacher 1999, estudio de nervio mixto).</div>
@@ -186,18 +186,18 @@ const TRAT={
  6:"La liberación sigue siendo razonable, advirtiendo que las posibilidades de recuperación completa están disminuidas."
 };
 
-function comp(a,b,corte,titulo,nota,incl){
+function comp(a,b,corte,titulo,nota){
   const A=v(a),B=v(b);
   if(A===null||B===null) return {html:'<div class="res na"><div class="rt">'+titulo+'</div><div class="rn">sin datos</div></div>',dif:null,anormal:false,hecha:false};
   const dif=+(A-B).toFixed(2);
-  // incl=true: el límite mismo ya se considera anormal (criterio «≥»); si no, anormal solo por encima
-  const anormal = incl ? dif>=corte-1e-9 : dif>corte+1e-9;
+  // todos los límites son el superior de la NORMALIDAD: anormal solo por encima de él
+  const anormal = dif>corte+1e-9;
   return {dif:dif,anormal:anormal,hecha:true,
    html:'<div class="res '+(anormal?'al':'ok')+'"><div class="rt">'+titulo+'</div>'
      +'<div class="rv">Diferencia <b>'+dif.toFixed(2)+' ms</b> · límite superior de la normalidad '
      +corte.toFixed(2).replace('.',',')+' ms (percentil 97) — '
      +(anormal?'<b>anormal</b>':(Math.abs(dif-corte)<1e-9?'en el límite, todavía normal':'normal'))+'</div>'
-     +(incl?'<div class="rn"><b>Criterio «≥»:</b> aquí el valor igual al límite ya se considera anormal, a diferencia de las demás comparaciones.</div>':'')
+
      +(nota?'<div class="rn">'+nota+'</div>':'')+'</div>'};
 }
 
@@ -216,7 +216,13 @@ const TABLAS=[
      ["Cubital","De inicio","2,6","0,2","3,0"],
      ["Mediano","De pico","3,4","0,3","4,1"],
      ["Cubital","De pico","3,3","0,3","3,9"],
-     ["<b>Diferencia mediano − cubital</b>","—","0,1","—","<b>≥ 0,5 sugiere STC</b>"]]},
+     ["<b>Diferencia mediano − cubital</b> (mediano más lento)","Inicio y pico","—","—","<b>0,5</b>"],
+     ["Diferencia entre lados, mediano","Inicio y pico","—","—","0,4"],
+     ["Diferencia entre lados, cubital","Inicio y pico","—","—","0,3"],
+     ["Caída de amplitud entre lados, mediano","Inicio-pico","—","—","62 %"],
+     ["Caída de amplitud entre lados, mediano","Pico-pico","—","—","56 %"],
+     ["Caída de amplitud entre lados, cubital","Inicio-pico","—","—","63 %"],
+     ["Caída de amplitud entre lados, cubital","Pico-pico","—","—","73 %"]]},
  {t:"Mediano (3.er dedo) − cubital (5.º dedo), sensitiva a 14 cm",
   f:"Grossart EA, Prahlow ND, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):395-399.",
   c:["Dirección","Latencia","Media","DE","Límite superior (p97)"],
@@ -273,15 +279,16 @@ function calcular(){
   const pico = $('tipolat').value==='pico';
   const LIM = {
     pulgar:  pico?0.6:0.5,   // Berkson y Buschbacher 2006, p97
-    anular:  0.5,            // Manual 3.ª ed.: diferencia ≥0,5 ms sugiere STC (192 sujetos)
+    anular:  0.5,            // Manual 3.ª ed.: límite superior de la normalidad, inicio y pico (192 sujetos)
     palmar:  0.3,            // Buschbacher 1999, nervio mixto 8 cm, p97
     d35:     pico?0.4:0.5    // Grossart y cols. 2006, p97 (3.er vs 5.º dedo)
   };
   const FT = ' Límite = percentil 97 de la diferencia en sanos; anormal solo por encima de él.';
   const c1=comp('m1','r1',LIM.pulgar,'Mediano − radial · pulgar','Berkson y Buschbacher 2006.'+FT);
   const c4=comp('m4','u4',LIM.anular,'Mediano − cubital · anular (4.º dedo, el mismo dedo por los dos nervios)',
-        'Manual de Buschbacher, 3.ª ed., 192 sujetos: una diferencia de 0,5 ms o más sugiere el diagnóstico. '
-        +'Es el segundo componente del índice sensorial combinado. El manual no distingue aquí la latencia de inicio de la de pico.', true);
+        'Manual de Buschbacher, 3.ª ed., 192 sujetos: el límite superior de la normalidad es 0,5 ms cuando el mediano '
+        +'tiene la latencia más larga, y vale igual para la latencia de inicio y la de pico. '
+        +'Es el segundo componente del índice sensorial combinado.'+FT);
   const cp=comp('mp','up',LIM.palmar,'Mediano − cubital · mediopalmar','Buschbacher 1999, nervio mixto a 8 cm.'+FT);
   const c25=comp('m2','u5',LIM.d35,'Mediano (3.er dedo) − cubital (5.º dedo)','Grossart y cols. 2006.'+FT);
   const cl=comp('lum','int',1.2,'2.º lumbrical − interóseo palmar','Conserva respuesta cuando el abductor pollicis brevis ya no responde.');
