@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Túnel carpiano · evaluación electrodiagnóstica</title>
+<style>
+:root{--bg:#0e1622;--pan:#152131;--pan2:#1b293b;--bor:#28394f;--tx:#e8eef7;--dim:#93a6bf;
+--ac:#3aa0ff;--ok:#5fc48f;--wa:#e8b552;--al:#e8736b;--vi:#b48ce0}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:20px 16px 70px}
+.eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);font-weight:600}
+h1{font-size:24px;margin:6px 0 4px;line-height:1.2}
+.sub{color:var(--dim);font-size:13px;margin-bottom:18px}
+h2{font-size:15px;margin:24px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bor)}
+.panel{background:var(--pan);border:1px solid var(--bor);border-radius:9px;padding:14px 16px;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:10px}
+.f{display:flex;flex-direction:column;gap:3px}
+.f label{font-size:11.5px;color:var(--dim)}
+.f .u{font-size:10.5px;color:var(--dim);opacity:.75}
+input[type=number],select{background:var(--pan2);color:var(--tx);border:1px solid var(--bor);
+border-radius:6px;padding:7px 9px;font-size:14px;width:100%}
+input:focus,select:focus{outline:none;border-color:var(--ac)}
+.res{background:var(--pan2);border:1px solid var(--bor);border-left:3px solid var(--bor);
+border-radius:7px;padding:10px 12px;margin-bottom:8px}
+.res.ok{border-left-color:var(--ok)}.res.al{border-left-color:var(--al)}
+.res.wa{border-left-color:var(--wa)}.res.na{opacity:.55}
+.rt{font-weight:600;font-size:13.5px}
+.rv{font-size:13px;margin-top:2px}
+.rn{font-size:11.5px;color:var(--dim);margin-top:3px}
+.pill{display:inline-block;border:1px solid var(--bor);border-radius:20px;padding:1px 9px;
+font-size:10.5px;color:var(--dim);margin:4px 5px 0 0}
+.pill.ok{color:var(--ok);border-color:#2c4a3a}.pill.al{color:var(--al);border-color:#4a2f2d}
+.pill.wa{color:var(--wa);border-color:#4a3f26}.pill.vi{color:var(--vi);border-color:#3d3150}
+.grado{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.gnum{font-size:44px;font-weight:700;line-height:1;color:var(--ac);min-width:56px;text-align:center}
+.gtxt{flex:1 1 260px}
+.gname{font-size:18px;font-weight:600}
+.falta{background:#1a2333;border:1px dashed var(--bor);border-radius:7px;padding:10px 12px;margin-bottom:8px}
+.falta b{color:var(--wa)}
+button{background:var(--ac);color:#0e1622;border:0;border-radius:6px;padding:8px 14px;
+font-size:13px;font-weight:600;cursor:pointer}
+button.sec{background:var(--pan2);color:var(--tx);border:1px solid var(--bor);font-weight:500}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.inf{background:#0b1220;border:1px solid var(--bor);border-radius:7px;padding:12px;
+font:12.5px/1.6 ui-monospace,Menlo,monospace;white-space:pre-wrap;color:#c8d8ea}
+.src{font-size:11px;color:var(--dim);font-style:italic;margin-top:6px}
+table{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+th,td{text-align:left;padding:4px 8px;border-bottom:1px solid var(--bor)}
+th{color:var(--dim);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+tr.act td{background:#1d2c40;font-weight:600}
+.warn{border-left:3px solid var(--wa);background:#241f12;padding:9px 12px;border-radius:6px;margin-bottom:8px;font-size:12.5px}
+</style></head><body><div class="wrap">
+
+<div class="eyebrow">Electrodiagnóstico y ultrasonido neuromuscular · Capítulo 15</div>
+<h1>Síndrome del túnel carpiano — evaluación electrodiagnóstica</h1>
+<div class="sub">Introduzca lo medido en el paciente. La aplicación resuelve las comparaciones, calcula el
+índice sensorial combinado, gradúa según la escala de Bland y señala qué falta por hacer.
+Los límites de normalidad no se listan aquí: se consultan en la aplicación de valores de referencia.</div>
+
+<div class="warn" id="temp-warn" style="display:none"></div>
+
+<h2>1 · Condiciones del registro</h2>
+<div class="panel"><div class="grid">
+  <div class="f"><label>Temperatura cutánea de la mano</label>
+    <input type="number" id="temp" step="0.1" placeholder="p. ej. 33"><span class="u">°C · por debajo de 32 °C las latencias se alargan</span></div>
+  <div class="f"><label>Lado explorado</label>
+    <select id="lado"><option>Derecho</option><option>Izquierdo</option></select></div>
+</div></div>
+
+<h2>2 · Estudios convencionales</h2>
+<div class="panel"><div class="grid">
+  <div class="f"><label>Latencia motora distal del mediano (APB)</label>
+    <input type="number" id="dml" step="0.1" placeholder="ms"><span class="u">ms · registro en abductor pollicis brevis</span></div>
+  <div class="f"><label>Amplitud del CMAP del mediano</label>
+    <input type="number" id="cmap" step="0.1" placeholder="mV"><span class="u">mV</span></div>
+  <div class="f"><label>Latencia sensitiva distal del mediano</label>
+    <input type="number" id="sml" step="0.1" placeholder="ms"><span class="u">ms · pico, muñeca-dedo</span></div>
+  <div class="f"><label>Amplitud del SNAP del mediano</label>
+    <input type="number" id="snap" step="0.1" placeholder="µV"><span class="u">µV · 0 si es irregistrable</span></div>
+  <div class="f"><label>¿Alguna respuesta sensitiva del mediano ausente?</label>
+    <select id="sens-ausente"><option value="">—</option><option value="no">No, todas presentes</option><option value="si">Sí, una o más ausentes</option></select></div>
+  <div class="f"><label>Latencia motora distal del cubital (control)</label>
+    <input type="number" id="dml-u" step="0.1" placeholder="ms"><span class="u">ms · registro en abductor digiti minimi</span></div>
+</div></div>
+
+<h2>3 · Comparaciones sensitivas</h2>
+<div class="panel">
+<div class="grid">
+  <div class="f"><label>Mediano · pulgar (1.er dedo)</label><input type="number" id="m1" step="0.01" placeholder="ms"><span class="u">latencia de pico</span></div>
+  <div class="f"><label>Radial · pulgar</label><input type="number" id="r1" step="0.01" placeholder="ms"><span class="u">comparador</span></div>
+  <div class="f"><label>Mediano · anular (4.º dedo)</label><input type="number" id="m4" step="0.01" placeholder="ms"><span class="u">latencia de pico</span></div>
+  <div class="f"><label>Cubital · anular</label><input type="number" id="u4" step="0.01" placeholder="ms"><span class="u">comparador</span></div>
+  <div class="f"><label>Mediano palmar (mediopalmar)</label><input type="number" id="mp" step="0.01" placeholder="ms"><span class="u">palma-muñeca, 8 cm</span></div>
+  <div class="f"><label>Cubital palmar</label><input type="number" id="up" step="0.01" placeholder="ms"><span class="u">comparador</span></div>
+  <div class="f"><label>Mediano · 2.º dedo (índice)</label><input type="number" id="m2" step="0.01" placeholder="ms"><span class="u">opcional, para la comparación 2.º-5.º</span></div>
+  <div class="f"><label>Cubital · 5.º dedo (meñique)</label><input type="number" id="u5" step="0.01" placeholder="ms"><span class="u">comparador del anterior</span></div>
+</div>
+<div class="src">Los puntos de corte de cada comparación son los de uso corriente: 0,5 ms para las tres del
+índice sensorial combinado y 0,4 ms para la comparación 2.º-5.º dedo.</div>
+</div>
+
+<h2>4 · Comparación lumbrical-interóseo</h2>
+<div class="panel"><div class="grid">
+  <div class="f"><label>Mediano · 2.º lumbrical</label><input type="number" id="lum" step="0.1" placeholder="ms"><span class="u">latencia de inicio</span></div>
+  <div class="f"><label>Cubital · interóseo palmar</label><input type="number" id="int" step="0.1" placeholder="ms"><span class="u">mismo punto de registro</span></div>
+</div>
+<div class="src">Límite superior de la diferencia 2.º lumbrical menos interóseo: 1,2 ms
+(Foley y Buschbacher, J Long Term Eff Med Implants 2006;16(5):359-367). Conserva respuesta cuando el
+abductor pollicis brevis ya no responde.</div>
+</div>
+
+<div class="row" style="margin:14px 0">
+  <button onclick="calcular()">Calcular</button>
+  <button class="sec" onclick="ejemplo()">Cargar un caso de ejemplo</button>
+  <button class="sec" onclick="limpiar()">Limpiar</button>
+</div>
+
+<h2 id="h-res" style="display:none">Resultado</h2>
+<div id="res"></div>
+
+<h2 id="h-grado" style="display:none">Grado de Bland</h2>
+<div id="grado"></div>
+
+<h2 id="h-falta" style="display:none">Qué falta por hacer</h2>
+<div id="falta"></div>
+
+<h2 id="h-inf" style="display:none">Texto para el informe</h2>
+<div id="inf"></div>
+
+<h2>Advertencias de método</h2>
+<div class="panel"><ul style="margin:0 0 0 18px;padding:0;font-size:12.5px;color:var(--dim)">
+<li><b>Un estudio normal no excluye el síndrome.</b> Cuando los estudios convencionales son normales, la
+guía exige al menos una técnica comparativa antes de concluir; el grado 1 de Bland existe precisamente
+para los casos en que solo las comparaciones son anormales.</li>
+<li><b>La temperatura es la primera causa de falso positivo.</b> Por debajo de 32 °C las latencias se
+alargan y las comparaciones pierden validez.</li>
+<li><b>La escala de Bland no usa la aguja.</b> Se apoya solo en la neuroconducción, y la única motora
+exigida es la del mediano al abductor pollicis brevis.</li>
+<li><b>El grado orienta el tratamiento, y no de forma lineal:</b> la mayor proporción de buenos
+desenlaces quirúrgicos está en los grados 2 y 3, no en los más graves.</li>
+</ul>
+<div class="src">Escala y recomendaciones: Robinson LR, Bland JDP (2026), consenso de la AANEM.
+Índice sensorial combinado: Robinson LR et al., corte de 0,9 ms.</div>
+</div>
+
+</div><script>
+const $=id=>document.getElementById(id);
+const v=id=>{const x=parseFloat($(id).value);return isNaN(x)?null:x;};
+
+const BLAND=[
+ [0,"Normal","Hallazgos normales."],
+ [1,"Muy leve","La anormalidad aparece solo en las pruebas comparativas más sensibles."],
+ [2,"Leve","Enlentecimiento sensitivo del mediano con latencia motora distal normal."],
+ [3,"Moderado","Hallazgo sensitivo con todas las respuestas presentes; latencia motora distal prolongada pero ≤ 6,5 ms."],
+ [4,"Grave","Una o más respuestas sensitivas del mediano ausentes; latencia motora distal prolongada y ≤ 6,5 ms."],
+ [5,"Muy grave","Latencia motora distal > 6,5 ms."],
+ [6,"Terminal","Respuestas esencialmente irregistrables; si hay motora, amplitud < 0,2 mV."]
+];
+const TRAT={
+ 0:"Tratamiento no quirúrgico de entrada; en este grupo los resultados de la cirugía no son tan buenos.",
+ 1:"Tratamiento no quirúrgico de entrada —férula nocturna, inyección de esteroide o ambas—, precisamente porque en estos grados la cirugía rinde menos.",
+ 2:"Empezar por tratamiento no quirúrgico; si no resulta, considerar la remisión al cirujano.",
+ 3:"Momento óptimo para plantear la liberación, antes de que avance la degeneración del nervio.",
+ 4:"Momento óptimo para plantear la liberación, antes de que avance la degeneración del nervio.",
+ 5:"La liberación sigue siendo razonable, advirtiendo que las posibilidades de recuperación completa están disminuidas.",
+ 6:"La liberación sigue siendo razonable, advirtiendo que las posibilidades de recuperación completa están disminuidas."
+};
+
+function comp(a,b,corte,titulo,nota){
+  const A=v(a),B=v(b);
+  if(A===null||B===null) return {html:'<div class="res na"><div class="rt">'+titulo+'</div><div class="rn">sin datos</div></div>',dif:null,anormal:false,hecha:false};
+  const dif=+(A-B).toFixed(2);
+  const anormal=dif>corte;
+  return {dif:dif,anormal:anormal,hecha:true,
+   html:'<div class="res '+(anormal?'al':'ok')+'"><div class="rt">'+titulo+'</div>'
+     +'<div class="rv">Diferencia <b>'+dif.toFixed(2)+' ms</b> · límite '+corte.toFixed(2)+' ms — '
+     +(anormal?'<b>anormal</b>':'normal')+'</div>'
+     +(nota?'<div class="rn">'+nota+'</div>':'')+'</div>'};
+}
+
+function calcular(){
+  const t=v('temp');
+  $('temp-warn').style.display = (t!==null && t<32) ? 'block':'none';
+  if(t!==null && t<32) $('temp-warn').innerHTML='<b>Temperatura de '+t+' °C.</b> Por debajo de 32 °C las latencias se alargan y las comparaciones pierden validez: caliente la mano y repita antes de interpretar.';
+
+  let html='';
+  const c1=comp('m1','r1',0.5,'Mediano − radial · pulgar');
+  const c4=comp('m4','u4',0.5,'Mediano − cubital · anular');
+  const cp=comp('mp','up',0.5,'Mediano − cubital · mediopalmar');
+  const c25=comp('m2','u5',0.4,'Mediano (2.º dedo) − cubital (5.º dedo)');
+  const cl=comp('lum','int',1.2,'2.º lumbrical − interóseo palmar','Conserva respuesta cuando el abductor pollicis brevis ya no responde.');
+  html+=c1.html+c4.html+cp.html+c25.html+cl.html;
+
+  // CSI: suma de las tres comparaciones de Robinson
+  let csi=null;
+  if(c1.hecha&&c4.hecha&&cp.hecha){
+    csi=+(c1.dif+c4.dif+cp.dif).toFixed(2);
+    const mal=csi>0.9;
+    html+='<div class="res '+(mal?'al':'ok')+'" style="border-left-color:var(--vi)">'
+      +'<div class="rt">Índice sensorial combinado (CSI)</div>'
+      +'<div class="rv"><b>'+csi.toFixed(2)+' ms</b> · límite 0,9 ms — '+(mal?'<b>anormal</b>':'normal')+'</div>'
+      +'<div class="rn">Suma de las tres diferencias anteriores. Es la técnica más sensible y la que define el grado 1.</div></div>';
+  }
+  $('res').innerHTML=html; $('h-res').style.display='block';
+
+  // --- grado de Bland ---
+  const dml=v('dml'), cmap=v('cmap'), sml=v('sml'), snap=v('snap'), aus=$('sens-ausente').value;
+  const compAnormal = c1.anormal||c4.anormal||cp.anormal||c25.anormal||cl.anormal||(csi!==null&&csi>0.9);
+  const dmlProlong = dml!==null && dml>4.2;
+  const sensLento  = sml!==null && sml>3.5;
+  let g=null, motivo='';
+  if(dml!==null && cmap!==null && cmap<0.2 && (snap===null||snap===0)){ g=6; motivo='amplitud motora < 0,2 mV con sensitivas irregistrables'; }
+  else if(dmlProlong && dml>6.5){ g=5; motivo='latencia motora distal > 6,5 ms'; }
+  else if(dmlProlong && aus==='si'){ g=4; motivo='latencia motora distal prolongada (≤ 6,5 ms) con una o más sensitivas ausentes'; }
+  else if(dmlProlong && aus==='no'){ g=3; motivo='latencia motora distal prolongada (≤ 6,5 ms) con todas las sensitivas presentes'; }
+  else if(dmlProlong){ g=3; motivo='latencia motora distal prolongada (≤ 6,5 ms); falta precisar si alguna sensitiva está ausente'; }
+  else if(sensLento && !dmlProlong){ g=2; motivo='hallazgo sensitivo del mediano con latencia motora distal normal'; }
+  else if(compAnormal){ g=1; motivo='la anormalidad aparece solo en las técnicas comparativas'; }
+  else if(dml!==null||sml!==null||compAnormal===false&&(c1.hecha||c4.hecha)){ g=0; motivo='sin anormalidades en lo introducido'; }
+
+  if(g===null){ $('h-grado').style.display='none'; }
+  else{
+    const b=BLAND[g];
+    let tb='<table><thead><tr><th>Grado</th><th>Denominación</th><th>Criterio</th></tr></thead><tbody>';
+    BLAND.forEach(x=>{ tb+='<tr class="'+(x[0]===g?'act':'')+'"><td>'+x[0]+'</td><td>'+x[1]+'</td><td>'+x[2]+'</td></tr>'; });
+    tb+='</tbody></table>';
+    $('grado').innerHTML='<div class="panel"><div class="grado">'
+      +'<div class="gnum">'+g+'</div><div class="gtxt"><div class="gname">'+b[1]+'</div>'
+      +'<div class="rn">Asignado por: '+motivo+'.</div>'
+      +'<div style="margin-top:8px"><b>Implicación terapéutica.</b> '+TRAT[g]+'</div></div></div>'
+      +tb+'<div class="src">Escala de Bland (Canterbury), recomendada por consenso de la AANEM (Robinson y Bland, 2026).</div></div>';
+    $('h-grado').style.display='block';
+  }
+
+  // --- qué falta ---
+  let f=[];
+  if(v('temp')===null) f.push('Consignar la <b>temperatura cutánea</b>: sin ella las comparaciones no son interpretables.');
+  const convNormal = (dml!==null&&!dmlProlong) && (sml!==null&&!sensLento);
+  const algunaComp = c1.hecha||c4.hecha||cp.hecha||c25.hecha||cl.hecha;
+  if(convNormal && !algunaComp) f.push('Los estudios convencionales son normales y <b>no se ha hecho ninguna comparación</b>. La guía exige al menos una técnica comparativa antes de informar el estudio como normal.');
+  if(c1.hecha&&c4.hecha&&!cp.hecha) f.push('Falta la comparación <b>mediopalmar</b> para poder calcular el índice sensorial combinado.');
+  if(cp.hecha&&c4.hecha&&!c1.hecha) f.push('Falta la comparación <b>mediano-radial en el pulgar</b> para poder calcular el índice sensorial combinado.');
+  if(c1.hecha&&cp.hecha&&!c4.hecha) f.push('Falta la comparación <b>mediano-cubital en el anular</b> para poder calcular el índice sensorial combinado.');
+  if(cmap!==null&&cmap<0.5&&!cl.hecha) f.push('La respuesta motora del abductor pollicis brevis es muy pequeña o está ausente: considere el <b>2.º lumbrical</b>, que suele conservar respuesta.');
+  if(dmlProlong&&aus==='') f.push('Para separar el grado 3 del 4 hay que precisar <b>si alguna respuesta sensitiva del mediano está ausente</b>.');
+  if(v('dml-u')===null) f.push('Falta el <b>cubital motor</b> como control, para descartar una polineuropatía subyacente.');
+  $('falta').innerHTML = f.length ? f.map(x=>'<div class="falta">'+x+'</div>').join('') : '<div class="res ok"><div class="rt">No falta nada esencial</div><div class="rn">El estudio está completo para graduar.</div></div>';
+  $('h-falta').style.display='block';
+
+  // --- informe ---
+  let L=[];
+  L.push('Mano '+$('lado').value.toLowerCase()+(v('temp')!==null?', temperatura cutánea '+v('temp')+' °C.':'.'));
+  if(dml!==null) L.push('Latencia motora distal del mediano '+dml+' ms'+(cmap!==null?', amplitud '+cmap+' mV':'')+'.');
+  if(sml!==null) L.push('Latencia sensitiva distal del mediano '+sml+' ms'+(snap!==null?', amplitud '+snap+' µV':'')+'.');
+  [['Mediano-radial en el pulgar',c1],['Mediano-cubital en el anular',c4],['Mediopalmar',cp],
+   ['Mediano 2.º dedo-cubital 5.º dedo',c25],['2.º lumbrical-interóseo',cl]].forEach(([n,c])=>{
+    if(c.hecha) L.push(n+': diferencia de '+c.dif.toFixed(2)+' ms ('+(c.anormal?'anormal':'dentro de límites')+').');
+  });
+  if(csi!==null) L.push('Índice sensorial combinado '+csi.toFixed(2)+' ms ('+(csi>0.9?'anormal':'normal')+').');
+  if(g!==null) L.push('Conclusión: hallazgos compatibles con síndrome del túnel carpiano, grado '+g+' de la escala de Bland ('+BLAND[g][1].toLowerCase()+').');
+  if(g===0) L[L.length-1]='Conclusión: estudio dentro de límites normales. Un estudio normal no excluye el síndrome del túnel carpiano.';
+  $('inf').innerHTML='<div class="inf">'+L.join('\n')+'</div>';
+  $('h-inf').style.display='block';
+}
+
+function ejemplo(){
+  const d={temp:33,dml:4.6,cmap:6.2,sml:3.9,snap:12,m1:3.55,r1:2.95,m4:4.10,u4:3.55,mp:2.20,up:1.80,m2:3.6,u5:3.3,lum:4.9,int:3.6,'dml-u':2.9};
+  for(const k in d) $(k).value=d[k];
+  $('sens-ausente').value='no';
+  calcular();
+}
+function limpiar(){
+  document.querySelectorAll('input').forEach(i=>i.value='');
+  $('sens-ausente').value='';
+  ['h-res','h-grado','h-falta','h-inf'].forEach(x=>$(x).style.display='none');
+  ['res','grado','falta','inf'].forEach(x=>$(x).innerHTML='');
+  $('temp-warn').style.display='none';
+}
+</script></body></html>
