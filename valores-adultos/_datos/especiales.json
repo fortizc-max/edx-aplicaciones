@@ -297,8 +297,45 @@
       "11.8"
      ]
     ]
+   },
+   {
+    "name": "Diferencia entre manos",
+    "columns": [
+     "Medida",
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Latencia",
+      "0,0 ms",
+      "0,4",
+      "0,8 ms"
+     ],
+     [
+      "Amplitud",
+      "0,7 mV",
+      "3,6",
+      "53 % de caída"
+     ],
+     [
+      "Área",
+      "0,6 µVs",
+      "20,6",
+      "63 % de caída"
+     ],
+     [
+      "Duración",
+      "−0,3 ms",
+      "1,0",
+      "1,2 ms"
+     ]
+    ],
+    "source": "Foley BS, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):341-347."
    }
-  ]
+  ],
+  "reference_primaria": "Foley BS, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):341-347."
  },
  {
   "study_key": "mediano-pronador-cuadrado",
@@ -548,8 +585,69 @@
       "12.5"
      ]
     ]
+   },
+   {
+    "name": "Diferencia entre manos",
+    "columns": [
+     "Medida",
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Latencia",
+      "0,0 ms",
+      "0,3",
+      "0,6 ms"
+     ],
+     [
+      "Amplitud",
+      "0,3 mV",
+      "3,1",
+      "54 % de caída"
+     ],
+     [
+      "Área",
+      "0,3 µVs",
+      "19,3",
+      "67 % de caída"
+     ],
+     [
+      "Duración",
+      "−0,1 ms",
+      "1,3",
+      "2,3 ms"
+     ]
+    ],
+    "source": "Foley BS, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):341-347."
+   },
+   {
+    "name": "Diferencia de latencia con el flexor carpi radialis",
+    "columns": [
+     "Diferencia",
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Pronator teres − FCR",
+      "0,2",
+      "0,3",
+      "0,8"
+     ],
+     [
+      "FCR − pronator teres",
+      "−0,2",
+      "0,3",
+      "0,4"
+     ]
+    ],
+    "source": "Foley BS, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):341-347."
    }
-  ]
+  ],
+  "reference_primaria": "Foley BS, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):341-347."
  },
  {
   "study_key": "mediano-lumbrical-1",
@@ -630,8 +728,45 @@
       "9.3"
      ]
     ]
+   },
+   {
+    "name": "Diferencia entre manos",
+    "columns": [
+     "Medida",
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Latencia",
+      "0,0 ms",
+      "0,5",
+      "0,7 ms"
+     ],
+     [
+      "Amplitud",
+      "0,4 mV",
+      "2,1",
+      "59 % de caída"
+     ],
+     [
+      "Área",
+      "0,3 µVs",
+      "5,4",
+      "59 % de caída"
+     ],
+     [
+      "Duración",
+      "−0,5 ms",
+      "1,2",
+      "1,8 ms"
+     ]
+    ],
+    "source": "Foley BS, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):359-367."
    }
-  ]
+  ],
+  "reference_primaria": "Foley BS, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):359-367."
  },
  {
   "study_key": "mediano-lumbrical-2",
@@ -639,11 +774,15 @@
   "group": "especial",
   "reference": "Kumbhare D, Robinson L, Buschbacher R. Buschbacher's Manual of Nerve Conduction Studies. 3.ª ed. Springer Publishing; 2015.",
   "montaje": {
-   "Activo": "Palma, radial y 1 cm proximal al punto medio del 3.er metacarpiano",
-   "Referencia": "Distal a la 3.ª articulación metacarpofalángica",
-   "Estímulo": "Cátodo 10 cm proximal al activo"
+   "Posición": "Supino",
+   "Activo": "Palma, ligeramente radial y 1 cm proximal al punto medio entre el tercer metacarpiano y el pliegue distal de la muñeca",
+   "Referencia": "Ligeramente distal a la 3.ª articulación metacarpofalángica",
+   "Tierra": "Dorso de la mano",
+   "Estímulo": "Cátodo 10 cm proximal al activo, en una línea medida primero al punto medio del pliegue distal de la muñeca y después a un punto ligeramente cubital al tendón del flexor carpi radialis; ánodo proximal",
+   "Filtros": "2-3 Hz / 10 kHz · 2 mV/div · barrido 2 ms/div",
+   "Fibras exploradas": "Raíces C8 y T1, por el tronco inferior, la división anterior y el cordón medial del plexo braquial"
   },
-  "technique_notes": "196 sujetos, ≥32 °C. Dif. lado a lado: latencia ≤0,8 ms, amplitud ≤67 %.",
+  "technique_notes": "196 sujetos, temperatura cutánea ≥32 °C en el dorso de la mano. <b>El segundo lumbrical y el interóseo están superpuestos en este punto</b>: estimulando el mediano se activa el lumbrical y estimulando el cubital, el interóseo. Como las latencias son casi iguales, se comparan para detectar el enlentecimiento de uno de los dos. <b>Su mayor utilidad está en el túnel del carpo grave</b>: la conducción a los lumbricales puede persistir aunque la respuesta del abductor pollicis brevis haya desaparecido. Precauciones: evitar la estimulación simultánea del mediano y del cubital; la flexión mantenida de la muñeca durante 2 a 5 minutos alarga la latencia y puede dar un falso positivo de mononeuropatía del mediano; el potencial mixto premotor del mediano puede preceder a la respuesta motora y debe ignorarse; y la inervación anómala es frecuente y puede dejar sin respuesta a uno de los dos nervios.",
   "measures": [
    {
     "name": "Latencia de inicio (ms)",
@@ -712,8 +851,105 @@
       "8.4"
      ]
     ]
+   },
+   {
+    "name": "Diferencia entre manos",
+    "columns": [
+     "Medida",
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "Latencia",
+      "0,0 ms",
+      "0,4",
+      "0,8 ms"
+     ],
+     [
+      "Amplitud",
+      "−0,1 mV",
+      "2,3",
+      "67 % de caída"
+     ],
+     [
+      "Área",
+      "−1,5 µVs",
+      "6,6",
+      "70 % de caída"
+     ],
+     [
+      "Duración",
+      "−0,1 ms",
+      "1,0",
+      "1,7 ms"
+     ]
+    ],
+    "source": "Foley BS, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):359-367."
+   },
+   {
+    "name": "Diferencias de latencia entre músculos (la comparación clave del túnel del carpo)",
+    "columns": [
+     "Diferencia",
+     "Media",
+     "DE",
+     "Límite superior"
+    ],
+    "rows": [
+     [
+      "2.º lumbrical − interóseo",
+      "0,4",
+      "0,4",
+      "1,2"
+     ],
+     [
+      "Interóseo − 2.º lumbrical",
+      "−0,4",
+      "0,4",
+      "0,2"
+     ],
+     [
+      "APB − 2.º lumbrical",
+      "0,2",
+      "0,4",
+      "1,0"
+     ],
+     [
+      "2.º lumbrical − APB",
+      "−0,2",
+      "0,4",
+      "0,8"
+     ],
+     [
+      "2.º lumbrical − 1.er lumbrical",
+      "0,1",
+      "0,3",
+      "0,7"
+     ],
+     [
+      "1.er lumbrical − 2.º lumbrical",
+      "−0,1",
+      "0,3",
+      "0,6"
+     ],
+     [
+      "APB − 1.er lumbrical",
+      "0,2",
+      "0,4",
+      "1,0"
+     ],
+     [
+      "1.er lumbrical − APB",
+      "−0,2",
+      "0,4",
+      "0,6"
+     ]
+    ],
+    "source": "Foley BS, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):359-367."
    }
-  ]
+  ],
+  "reference_primaria": "Foley BS, Buschbacher RM. J Long Term Eff Med Implants. 2006;16(5):359-367."
  },
  {
   "study_key": "reflejo-h-fcr",

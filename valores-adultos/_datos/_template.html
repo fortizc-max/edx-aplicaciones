@@ -1,6 +1,14 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>EDx adulto · Valores de referencia (Buschbacher)</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Valores de referencia · adulto">
+<meta name="theme-color" content="#0e1622">
 <style>
 :root{--bg:#0e1726;--card:#16233a;--line:#2a3a59;--txt:#e8eef7;--muted:#9fb2cc;--accent:#3aa0ff;--warn:#ffb74d;--mot:#3aa0ff;--sen:#5ec5a0;--mix:#c79bff}
 *{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--txt);line-height:1.45;padding:0 0 60px}
@@ -51,6 +59,8 @@ details.crit .body li{margin-bottom:6px}
 .cres{font-size:12.5px;font-weight:700;flex-basis:100%;margin-top:1px}
 .cres.good{color:var(--sen)}.cres.bad{color:#ff6b6b}.cres.muted{color:var(--muted);font-weight:500}
 .cres .sub{color:var(--muted);font-weight:500;font-size:11px}
+.msrc{font-size:11px;opacity:.7;margin-top:4px;font-style:italic}
+.refp{opacity:.8;margin-top:3px}
 </style></head><body>
 <header>
 <h1>Electrodiagnóstico del adulto</h1>
@@ -94,16 +104,31 @@ function parseLabel(lbl){
   if(/hombre|var(?:o|ó)n/.test(s)) sex='M'; else if(/mujer/.test(s)) sex='F';
   var bmin=null,bmax=null,bm;
   bm=s.match(/imc\s*[<﹤＜]\s*(\d{2})/); if(bm) bmax=+bm[1];
-  bm=s.match(/imc\s*[≥>]\s*(\d{2})/); if(bm) bmin=+bm[1];
-  s=s.replace(/imc\s*[<>≥﹤＜]\s*\d+/g,' ');
+  bm=s.match(/imc\s*≤\s*(\d{2})/); if(bm) bmax=+bm[1]+1e-6;   // ≤30 incluye 30
+  bm=s.match(/imc\s*≥\s*(\d{2})/); if(bm) bmin=+bm[1];
+  bm=s.match(/imc\s*>\s*(\d{2})/); if(bm) bmin=+bm[1]+1e-6;   // >30 excluye 30
+  s=s.replace(/imc\s*[<>≤≥﹤＜]\s*\d+/g,' ');
   var hmin=null,hmax=null,hh;
-  hh=s.match(/(\d{3})\s*[-–—]\s*(\d{3})/); if(hh){hmin=+hh[1];hmax=+hh[2];s=s.replace(hh[0],' ');}
+  hh=s.match(/(\d{3})\s*[-–—]\s*(\d{3})/); if(hh){hmin=+hh[1];hmax=+hh[2];if(hmax%10===9)hmax+=1;s=s.replace(hh[0],' ');} // 160-169 = [160,170)
   hh=s.match(/[<﹤＜]\s*(\d{3})/); if(hh){hmax=+hh[1];s=s.replace(hh[0],' ');}
   hh=s.match(/[≥>]\s*(\d{3})/); if(hh){hmin=+hh[1];s=s.replace(hh[0],' ');}
   s=s.replace(/\d{3}/g,' ');
   var age=null, am=s.match(/(\d{2})\s*[-–—]\s*(\d{2})/); if(am) age=[+am[1],+am[2]];
   var todos=/todos|todas/.test(raw);
   return {sex:sex,age:age,hmin:hmin,hmax:hmax,bmin:bmin,bmax:bmax,todos:todos};
+}
+// Etiqueta del subgrupo: une todas las columnas descriptivas previas a "Media"
+// (p. ej. Estatura · Edad, Sexo · IMC, Edad · Talla); omite la columna n.
+function rowLabel(m,r,mediaIdx){
+  if(mediaIdx<=0) return r[0];
+  var parts=[];
+  for(var k=0;k<mediaIdx;k++){
+    var hc=String(m.columns[k]).toLowerCase().trim(), v=String(r[k]).trim();
+    if(hc==='n'||v===''||v==='—') continue;
+    if(hc==='imc'&&!/imc/i.test(v)) v='IMC '+v;
+    parts.push(v);
+  }
+  return parts.length?parts.join(' · '):r[0];
 }
 function scoreRow(c,d){
   var sc=0;
@@ -195,7 +220,8 @@ function table(m){
     var rows=[];
     m.rows.forEach(function(r){
       var md=mediaIdx>=0?pnum(r[mediaIdx]):NaN, ct=cutIdx>=0?pnum(r[cutIdx]):NaN; if(isNaN(md)&&isNaN(ct)) return;
-      rows.push({label:r[0], media:md, de:deIdx>=0?pnum(r[deIdx]):NaN, cut:ct, c:parseLabel(r[0])});
+      var lab=rowLabel(m,r,mediaIdx);
+      rows.push({label:lab, media:md, de:deIdx>=0?pnum(r[deIdx]):NaN, cut:ct, c:parseLabel(lab)});
     });
     if(rows.length){
       var cid=CALCS.length; CALCS.push({side:m.abnormal_side, cutName:cutName, measName:m.name, rows:rows});
@@ -208,7 +234,9 @@ function table(m){
   m.columns.forEach(c=> h += '<th>'+c+'</th>');
   h += '</tr></thead><tbody>';
   m.rows.forEach(r=>{ h+='<tr>'; r.forEach(c=> h+='<td>'+c+'</td>'); h+='</tr>'; });
-  h += '</tbody></table></div></div>';
+  h += '</tbody></table></div>';
+  if(m.source) h += '<div class="msrc">Fuente: '+m.source+'</div>';
+  h += '</div>';
   return h;
 }
 function render(list){
@@ -222,6 +250,7 @@ function render(list){
     if(st.technique_notes) html += '<div class="tech">'+st.technique_notes+'</div>';
     st.measures.forEach(m=> html += table(m));
     html += '<div class="ref">'+st.reference+'</div>';
+    if(st.reference_primaria) html += '<div class="ref refp">Artículo original de la serie: '+st.reference_primaria+'</div>';
     html += '</details>';
   });
   app.innerHTML = html || '<div class="empty">Sin resultados.</div>';
