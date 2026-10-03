@@ -61,7 +61,7 @@ select.cnerve{background:var(--card);border:1px solid var(--line);border-radius:
 <span class="band" id="d-band">banda: —</span>
 </div>
 
-<p class="leg">Amplitud y VC: límite inferior = <b>percentil 2,5</b>. Latencia: límite superior = <b>percentil 97,5</b> (Ryan 2019). El percentil/z es orientativo; el veredicto usa el corte publicado.</p>
+<p class="leg">Amplitud y VC: límite inferior = <b>percentil 5</b>. Latencia: límite superior = <b>percentil 95</b> (Ryan 2019, análisis no paramétrico por rangos). El percentil/z es orientativo; el veredicto usa el corte publicado.</p>
 <div id="app"></div>
 
 <details class="crit"><summary>⚠️ Nota crítica · limitaciones de Ryan 2019</summary>
@@ -111,7 +111,7 @@ function verdictRyan(row, param, val){
   var mean=d[0], sd=d[1], cut=d[2], side=(param==='lat')?'alto':'bajo';
   var parts=[], abn=null;
   if(sd){ var z=(val-mean)/sd, p=phi(z)*100; parts.push('z = '+(z>=0?'+':'')+z.toFixed(1)+' DE'); parts.push('p'+pctTxt(p)); }
-  if(cut!=null){ abn = side==='alto'? val>cut : val<cut; parts.push('límite '+(side==='alto'?'p97,5':'p2,5')+' = '+cut); }
+  if(cut!=null){ abn = side==='alto'? val>cut : val<cut; parts.push('límite '+(side==='alto'?'p95':'p5')+' = '+cut); }
   var v = abn==null?'':(abn?' · ⚠ ANORMAL':' · ✓ normal');
   return {cls: abn==null?'muted':(abn?'bad':'ok'), html: parts.join(' · ')+v};
 }
@@ -131,7 +131,7 @@ function calcBlockRyan(group, ni){
 function ryanTable(group, ni){
   var st=DATA[group][ni], rows=st.rows;
   var unit = group==='motor'?'mV':'µV';
-  var h='<div class="tw"><table><thead><tr><th>Edad</th><th>Ampl ('+unit+')<br><span>(±DE)</span></th><th>p2,5</th><th>VC m/s<br><span>(±DE)</span></th><th>p2,5</th><th>Lat ms<br><span>(±DE)</span></th><th>p97,5</th><th>N</th></tr></thead><tbody>';
+  var h='<div class="tw"><table><thead><tr><th>Edad</th><th>Ampl ('+unit+')<br><span>(±DE)</span></th><th>p5</th><th>VC m/s<br><span>(±DE)</span></th><th>p5</th><th>Lat ms<br><span>(±DE)</span></th><th>p95</th><th>N</th></tr></thead><tbody>';
   rows.forEach(function(r,i){
     function md(d){return d[0]==null?'—':(d[0]+(d[1]!=null?' ('+d[1]+')':''));}
     function c(x){return x==null?'—':x;}
